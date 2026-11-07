@@ -1,0 +1,3082 @@
+{
+ "asof": "2026-11-04",
+ "communities": [
+  {
+   "name": "Northlake",
+   "builder": "Lennar",
+   "city": "Sacramento",
+   "county": "Sacramento",
+   "url": "https://www.lennar.com/New-Homes/California/Sacramento/Sacramento/Northlake",
+   "price_min": 550990,
+   "price_max": 901434,
+   "sqft_min": 1765,
+   "sqft_max": 3460,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "One-week-only Lennar Mortgage rate promo: 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM on select greater-Sacramento homes; Northlake homes featured.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "Inventory Blowout price cuts ($22K-$50K)",
+     "detail": "Move-in-ready listings carry price cuts of $22K-$50K (e.g. $50K price cut on 5237 Delta Marina Way).",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time (Fall Super Sale)",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/sacramento/northlake/crestvue/residence-2869/2354521006"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "5237 Delta Marina Way (HS 1006)",
+     "plan": "Crestvue Residence 2869",
+     "price": 831426,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2869,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$50K price cut"
+    },
+    {
+     "addr": "3524 Emery Cove Way (HS 1224)",
+     "plan": "Residence 1941",
+     "price": 552990,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1941,
+     "lot": null,
+     "ready": "",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "3507 Emery Cove Way (HS 1238)",
+     "plan": "Residence 2179",
+     "price": 602990,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2179,
+     "lot": null,
+     "ready": "",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "185 Delta Bay Circle (HS 4019)",
+     "plan": "Residence 2419",
+     "price": 626990,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2419,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "3836 Blair Island Avenue (HS 8053)",
+     "plan": "Residence 2309",
+     "price": 640563,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2309,
+     "lot": null,
+     "ready": "",
+     "deal": "$22K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Vineyard Parke",
+   "builder": "Lennar",
+   "city": "Sacramento",
+   "county": "Sacramento",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/sacramento/vineyard-parke",
+   "price_min": 545990,
+   "price_max": 798990,
+   "sqft_min": 1596,
+   "sqft_max": 3427,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "Lennar Mortgage one-week rate promo on select greater-Sacramento homes; Vineyard Parke (Redwood IV, Vienna) featured in Homes of the Week.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "Price cuts up to $45K",
+     "detail": "Available homes show $22K-$45K price cuts (e.g. 8781 Nala Way $45K).",
+     "ends": null,
+     "conditions": "Select homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/sacramento/vineyard-parke"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "7340 Legato Way (HS 0131)",
+     "plan": "Residence 1596",
+     "price": 536990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1596,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "9047 Nota Way (HS 0144)",
+     "plan": "Residence 1596",
+     "price": 548990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1596,
+     "lot": null,
+     "ready": "",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "9054 Nota Way (HS 0187)",
+     "plan": "Residence 1596",
+     "price": 573990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1596,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "8781 Nala Way (HS 2042)",
+     "plan": "Residence 1653",
+     "price": 603990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1653,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Edgewater at Delta Shores",
+   "builder": "KB Home",
+   "city": "Sacramento",
+   "county": "Sacramento",
+   "url": "https://www2.newhomesource.com/community/ca/sacramento/edgewater-at-delta-shores-by-kb-home/194992",
+   "price_min": 575990,
+   "price_max": 641990,
+   "sqft_min": 1685,
+   "sqft_max": 2693,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "1500 Carp Way",
+     "plan": "Plan 2391",
+     "price": 648277,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2391,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "1433 Carp Way",
+     "plan": "Plan 2391",
+     "price": 651844,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 2391,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "1445 Carp Way",
+     "plan": "Plan 2391",
+     "price": 678470,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2391,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Terrace Park",
+   "builder": "Tri Pointe Homes",
+   "city": "Sacramento",
+   "county": "Sacramento",
+   "url": "https://www.tripointehomes.com/ca/sacramento/terrace-park",
+   "price_min": 536454,
+   "price_max": 612207,
+   "sqft_min": 1815,
+   "sqft_max": 2011,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Up to $60,000 closing credit",
+     "detail": "'The Value of Now' sales event: up to $60,000 closing credit usable toward Tri Pointe Paid Closing Costs, a special low rate, and/or Design Studio upgrades.",
+     "ends": null,
+     "conditions": "Limited time; select homesites; conditions apply",
+     "src": "https://www.tripointehomes.com/ca/sacramento/terrace-park"
+    },
+    {
+     "title": "3.99% first-year rate (Conventional 1/0 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 1/0 buydown, first-year rate as low as 3.99% (5.608% APR).",
+     "ends": "2026-11-15",
+     "conditions": "Purchase agreement before 11/15/26 and close by 12/31/26; must finance with Tri Pointe Connect; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-national-promo-sacramento"
+    },
+    {
+     "title": "3.49% first-year rate (FHA 2/1 buydown)",
+     "detail": "FHA 30-yr fixed with temporary 2/1 buydown, first-year rate as low as 3.49% (6.164% APR).",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/Move-into-More-sales-event-2"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "325 Shiplap Cir (HS 68)",
+     "plan": "Plan 1",
+     "price": 536454,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1815,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "341 Shiplap Cir",
+     "plan": "Plan 2",
+     "price": 540109,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1917,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "349 Shiplap Cir",
+     "plan": "Plan 3",
+     "price": 572149,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2011,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "301 Shiplap Cir",
+     "plan": "Plan 3",
+     "price": 606403,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2011,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "248 Shiplap Cir (HS 60)",
+     "plan": "Plan 2",
+     "price": 604275,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1917,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "FHA 2/1 buydown eligible"
+    },
+    {
+     "addr": "240 Shiplap Cir (HS 59)",
+     "plan": "Plan 3",
+     "price": 612207,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2011,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Conventional 1/0 buydown eligible"
+    }
+   ]
+  },
+  {
+   "name": "Symphony at Arbor Ranch",
+   "builder": "Lennar",
+   "city": "Elk Grove",
+   "county": "Sacramento",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/elk-grove/arbor-ranch/symphony",
+   "price_min": 727990,
+   "price_max": 813092,
+   "sqft_min": 2463,
+   "sqft_max": 3025,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "Lennar Mortgage one-week rate promo: 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM on select greater-Sacramento homes. Arbor Ranch (Lyric, Symphony) featured.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "Closeout price cuts $22K-$45K",
+     "detail": "Final homes at Arbor Ranch; move-in-ready homes listed with $22K-$45K price cuts.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/elk-grove/arbor-ranch/symphony"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "8185 Byerly Way (HS 0187)",
+     "plan": "Residence 2463",
+     "price": 743454,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2463,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "8188 Byerly Way (HS 0216)",
+     "plan": "Residence 2463",
+     "price": 748954,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2463,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "10329 Tourtine Way (HS 0028)",
+     "plan": "Residence 2793",
+     "price": 772372,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 2793,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "8184 Byerly Way (HS 0215)",
+     "plan": "Residence 2693",
+     "price": 779046,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2693,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "8180 Byerly Way (HS 0214)",
+     "plan": "Residence 2793",
+     "price": 780872,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 2793,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "10341 Tourtine Way (HS 0031)",
+     "plan": "Residence 3025",
+     "price": 801092,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 3025,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Hamilton Park",
+   "builder": "KB Home",
+   "city": "Elk Grove",
+   "county": "Sacramento",
+   "url": "https://www.newhomesource.com/community/ca/elk-grove/hamilton-park-by-kb-home/180564",
+   "price_min": 530825,
+   "price_max": null,
+   "sqft_min": 1885,
+   "sqft_max": 2049,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "8889 J Sheehan St",
+     "plan": "Plan 1885",
+     "price": 560005,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1885,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Highland at The Grove",
+   "builder": "KB Home",
+   "city": "Elk Grove",
+   "county": "Sacramento",
+   "url": "https://www.newhomesource.com/community/ca/elk-grove/highland-at-the-grove-by-kb-home/191116",
+   "price_min": 609990,
+   "price_max": null,
+   "sqft_min": 1738,
+   "sqft_max": 1738,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "10304 W. Hema Way",
+     "plan": "Plan 1738",
+     "price": 609990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1738,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Riverblossom at Montelena",
+   "builder": "Tri Pointe Homes",
+   "city": "Rancho Cordova",
+   "county": "Sacramento",
+   "url": "https://www.tripointehomes.com/ca/sacramento/riverblossom-at-montelena",
+   "price_min": 499000,
+   "price_max": 562265,
+   "sqft_min": 1752,
+   "sqft_max": 2181,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Up to $30,000 closing credit",
+     "detail": "'The Value of Now' sales event: up to $30,000 closing credit toward Tri Pointe Paid Closing Costs, a special low rate and/or Design Studio upgrades.",
+     "ends": "2026-10-31",
+     "conditions": "Fine print: buy eligible homesite at list price by 10/31/26, close by 3/31/27, finance with Tri Pointe Connect (30+ day rate lock). Still advertised on community pages as of 11/4/26 - verify extension",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-1"
+    },
+    {
+     "title": "3.99% first-year rate (Conventional 1/0 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 1/0 buydown, first-year rate as low as 3.99% (5.608% APR).",
+     "ends": "2026-11-15",
+     "conditions": "Purchase agreement before 11/15/26 and close by 12/31/26; must finance with Tri Pointe Connect; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-national-promo-sacramento"
+    },
+    {
+     "title": "3.49% first-year rate (FHA 2/1 buydown)",
+     "detail": "FHA 30-yr fixed with temporary 2/1 buydown, first-year rate as low as 3.49% (6.164% APR).",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/Move-into-More-sales-event-2"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "12084 Everton Way (HS 406)",
+     "plan": "Plan 1",
+     "price": 499000,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1752,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "12069 Prades Way (HS 421)",
+     "plan": "Plan 2",
+     "price": 548000,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1923,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "1 promotion available"
+    },
+    {
+     "addr": "4123 Colmas Way (HS 451)",
+     "plan": "Plan 2",
+     "price": 533927,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1923,
+     "lot": null,
+     "ready": "est. May",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Starblossom at Montelena",
+   "builder": "Tri Pointe Homes",
+   "city": "Rancho Cordova",
+   "county": "Sacramento",
+   "url": "https://www.newhomesource.com/community/ca/rancho-cordova/starblossom-at-montelena-by-tri-pointe-homes/197078",
+   "price_min": 649000,
+   "price_max": 699000,
+   "sqft_min": 1723,
+   "sqft_max": 2705,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "2.99% first-year rate (Conventional 3/2/1 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 3/2/1 buydown, first-year rate as low as 2.99% (5.810% APR).",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/Move-into-More-sales-event-2"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "12046 Mircado Way",
+     "plan": "Plan 2",
+     "price": 659000,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2557,
+     "lot": null,
+     "ready": "",
+     "deal": "Listed at $659,000 vs. $699,000 (reduced ~$40K)"
+    },
+    {
+     "addr": "12068 Mircado Way",
+     "plan": "Plan 2",
+     "price": 649000,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2557,
+     "lot": null,
+     "ready": "",
+     "deal": "Listed at $649,000 vs. $673,547 (reduced ~$24.5K)"
+    }
+   ]
+  },
+  {
+   "name": "Bloom at Sunridge Park",
+   "builder": "Tri Pointe Homes",
+   "city": "Rancho Cordova",
+   "county": "Sacramento",
+   "url": "https://tripointehomes.com/ca/sacramento/bloom-at-sunridge-park",
+   "price_min": 650905,
+   "price_max": 798516,
+   "sqft_min": 2430,
+   "sqft_max": 3375,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Up to $60,000 closing credit",
+     "detail": "'The Value of Now' sales event lists Bloom among communities with up to $60,000 closing credit (also up to $30,000 tier) toward closing costs, rate, or design upgrades.",
+     "ends": null,
+     "conditions": "Limited time; select homesites; conditions apply",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/Move-into-More-sales-event-2"
+    },
+    {
+     "title": "3.99% first-year rate (Conventional 1/0 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 1/0 buydown, first-year rate as low as 3.99% (5.608% APR).",
+     "ends": "2026-11-15",
+     "conditions": "Purchase agreement before 11/15/26 and close by 12/31/26; must finance with Tri Pointe Connect; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-national-promo-sacramento"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "4024 Timberland Dr (HS 10)",
+     "plan": "Plan 2",
+     "price": 787526,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 3165,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "1 promotion available"
+    },
+    {
+     "addr": "12201 Blue Indigo Cir (HS 39)",
+     "plan": "Plan 2",
+     "price": 798516,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 3165,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "12243 Blue Indigo Cir (HS 12)",
+     "plan": "Plan 1",
+     "price": 650905,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 2430,
+     "lot": null,
+     "ready": "est. March",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Juniper at Winding Creek",
+   "builder": "Tri Pointe Homes",
+   "city": "Roseville",
+   "county": "Placer",
+   "url": "https://www.tripointehomes.com/ca/sacramento/juniper-at-winding-creek",
+   "price_min": 769000,
+   "price_max": 885424,
+   "sqft_min": 2870,
+   "sqft_max": 3542,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Up to $60,000 closing credit",
+     "detail": "Tri Pointe sales event lists Juniper among communities with up to $60,000 closing credit (and a separate up to $40,000 tier) usable toward closing costs, rate buydown, or design upgrades.",
+     "ends": null,
+     "conditions": "Limited time; select homesites; conditions apply",
+     "src": "https://www.tripointehomes.com/ca/sacramento/juniper-at-winding-creek"
+    },
+    {
+     "title": "2.99% first-year rate (Conventional 3/2/1 buydown)",
+     "detail": "Conventional 30-yr fixed with 3/2/1 temporary buydown, first-year rate as low as 2.99% (5.810% APR).",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/ca/sacramento/juniper-at-winding-creek"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "5016 Canteen Drive (HS 40)",
+     "plan": "Plan 2",
+     "price": 769000,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 3197,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "5049 Canteen Drive (HS 49)",
+     "plan": "Plan 1",
+     "price": 778768,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2870,
+     "lot": null,
+     "ready": "est. Feb",
+     "deal": "$40,000 closing credit"
+    },
+    {
+     "addr": "5056 Canteen Drive (HS 45)",
+     "plan": "Plan 3",
+     "price": 885424,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3542,
+     "lot": null,
+     "ready": "est. Feb",
+     "deal": "$40,000 closing credit"
+    }
+   ]
+  },
+  {
+   "name": "Heritage Placer Vineyards (Active Adult 55+)",
+   "builder": "Lennar",
+   "city": "Roseville",
+   "county": "Placer",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/roseville/heritage-placer-vineyards/lazio",
+   "price_min": 517990,
+   "price_max": 753189,
+   "sqft_min": 1634,
+   "sqft_max": 2988,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week (Heritage 55+): 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "One-week-only Lennar Mortgage rate promo on select move-in-ready homes in Heritage Active Adult communities (El Dorado Hills and Roseville): 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes; 55+ community",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26_heritage"
+    },
+    {
+     "title": "Price cuts $22K-$45K on move-in-ready homes",
+     "detail": "Inventory Blowout / Fall Super Sale: move-in-ready homes in Lazio, Molise and Emilia listed with $22K-$45K price cuts.",
+     "ends": null,
+     "conditions": "Select homes; limited time; 55+ age-restricted",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26_heritage"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "8120 Chamomile Road (HS 0836)",
+     "plan": "Residence 1903",
+     "price": 558345,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1903,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "5101 Wallflower Way (HS 0868)",
+     "plan": "Residence 1903",
+     "price": 565345,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1903,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "5060 Wallflower Way (HS 0874)",
+     "plan": "Residence 2246",
+     "price": 596740,
+     "beds": 3,
+     "baths": 3,
+     "sqft": 2246,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "8376 English Lace Loop",
+     "plan": "Molise Residence 1634",
+     "price": 517990,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1634,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "8342 Scarlet Sage St",
+     "plan": "Molise Residence 1779",
+     "price": 529990,
+     "beds": 3,
+     "baths": 3,
+     "sqft": 1779,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "8222 Sonnet Cir",
+     "plan": "Emilia Residence 2750",
+     "price": 713912,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 2750,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    }
+   ]
+  },
+  {
+   "name": "The Links at Sierra View",
+   "builder": "Lennar",
+   "city": "Roseville",
+   "county": "Placer",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/roseville/the-links-at-sierra-view",
+   "price_min": 664990,
+   "price_max": 909204,
+   "sqft_min": 1789,
+   "sqft_max": 2966,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "Lennar Mortgage one-week rate promo: 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM on select greater-Sacramento homes.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "$45K price cuts",
+     "detail": "Available homes listed with $45K price cuts under Lennar's Inventory Blowout / Fall Super Sale.",
+     "ends": null,
+     "conditions": "Select homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/roseville/the-links-at-sierra-view"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "3065 Torrey Pines Drive (HS 0057)",
+     "plan": "Residence 2595",
+     "price": 770568,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2595,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "3048 Torrey Pines Drive (HS 0036)",
+     "plan": "Residence 2595",
+     "price": 771206,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2595,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "3032 Torrey Pines Drive (HS 0034)",
+     "plan": "Residence 2595",
+     "price": 778348,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2595,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "3088 Torrey Pines Drive (HS 0039)",
+     "plan": "Residence 2693",
+     "price": 788529,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2693,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Vista Oaks",
+   "builder": "Toll Brothers",
+   "city": "Rocklin",
+   "county": "Placer",
+   "url": "https://www.newhomesource.com/community/ca/rocklin/vista-oaks-by-toll-brothers/213696",
+   "price_min": 1142995,
+   "price_max": 1595000,
+   "sqft_min": 2584,
+   "sqft_max": 4156,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Up to $100,000 toward Design Studio options",
+     "detail": "Toll Brothers National Kitchen & Bath Event: up to $100,000 toward Design Studio options on select home sites, running Nov 7-22, 2026.",
+     "ends": "2026-11-22",
+     "conditions": "Select home sites; event starts 11/07/26; terms apply",
+     "src": "https://www.tollbrothers.com/luxury-homes-for-sale/California/Vista-Oaks/Alderwood"
+    },
+    {
+     "title": "4.625% first-year rate Jumbo 5/1 ARM with 2/1 buydown",
+     "detail": "4.625% (7.33% APR) first-year rate on a Jumbo 5/1 ARM with 2/1 buydown on select homes.",
+     "ends": null,
+     "conditions": "Select homes; see event terms",
+     "src": "https://www.tollbrothers.com/luxury-homes-for-sale/California/Vista-Oaks/Alderwood"
+    },
+    {
+     "title": "5.49% 30-year fixed rate",
+     "detail": "Limited-time 5.49% (5.76% APR) 30-year fixed rate on select Toll Brothers quick move-in homes in the Sacramento/Folsom area.",
+     "ends": null,
+     "conditions": "Limited time; select homes",
+     "src": "https://www.tollbrothers.com/new-quick-move-in-homes/Folsom-CA"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "3916 Calverhall Way",
+     "plan": "Alderwood",
+     "price": 1298000,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2584,
+     "lot": null,
+     "ready": "Apr 2027",
+     "deal": "Hot home"
+    },
+    {
+     "addr": "3928 Calverhall Way",
+     "plan": "Alderwood",
+     "price": 1349000,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2584,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Hot home"
+    },
+    {
+     "addr": "3901 Calverhall Way",
+     "plan": "Burwood",
+     "price": 1419000,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3864,
+     "lot": null,
+     "ready": "Feb 2027",
+     "deal": ""
+    },
+    {
+     "addr": "3920 Calverhall Way",
+     "plan": "Burwood",
+     "price": 1447000,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3864,
+     "lot": null,
+     "ready": "May 2027",
+     "deal": ""
+    },
+    {
+     "addr": "3923 Calverhall Way",
+     "plan": "Burwood",
+     "price": 1499000,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3864,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "3932 Calverhall Way",
+     "plan": "Burwood",
+     "price": 1595000,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3864,
+     "lot": null,
+     "ready": "Jan 2027",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Westhaven at Whitney Ranch",
+   "builder": "KB Home",
+   "city": "Rocklin",
+   "county": "Placer",
+   "url": "https://www.newhomesource.com/community/ca/rocklin/westhaven-at-whitney-ranch-by-kb-home/202804",
+   "price_min": 462990,
+   "price_max": 505990,
+   "sqft_min": 1570,
+   "sqft_max": 1882,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Quarry Row",
+   "builder": "KB Home",
+   "city": "Rocklin",
+   "county": "Placer",
+   "url": "https://kbhome.com/new-homes-sacramento/1064453",
+   "price_min": 483990,
+   "price_max": null,
+   "sqft_min": null,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Jubilee at Independence",
+   "builder": "Tri Pointe Homes",
+   "city": "Lincoln",
+   "county": "Placer",
+   "url": "https://www.tripointehomes.com/ca/sacramento/jubilee-at-independence",
+   "price_min": 552395,
+   "price_max": 590750,
+   "sqft_min": 1752,
+   "sqft_max": 2129,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "3.99% first-year rate (Conventional 1/0 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 1/0 buydown, first-year rate as low as 3.99% (5.608% APR).",
+     "ends": "2026-11-15",
+     "conditions": "Purchase agreement before 11/15/26 and close by 12/31/26; must finance with Tri Pointe Connect; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-national-promo-sacramento"
+    },
+    {
+     "title": "3.49% first-year rate (FHA 2/1 buydown)",
+     "detail": "FHA 30-yr fixed with temporary 2/1 buydown, first-year rate as low as 3.49% (6.164% APR).",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/ca/sacramento/jubilee-at-independence"
+    },
+    {
+     "title": "Up to $30,000 closing credit (Independence)",
+     "detail": "Up to $30,000 closing credit listed for the Independence master plan toward closing costs, rate, or design upgrades.",
+     "ends": "2026-10-31",
+     "conditions": "Fine print: buy eligible homesite at list price by 10/31/26, close by 3/31/27, finance with Tri Pointe Connect (30+ day rate lock). Still advertised on community pages as of 11/4/26 - verify extension",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-1"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "448 Paine Court (HS 42)",
+     "plan": "Plan 1",
+     "price": 559046,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1752,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "1704 Wolcott Street (HS 56)",
+     "plan": "Plan 2",
+     "price": 562211,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1923,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Conventional 1/0 buydown eligible"
+    },
+    {
+     "addr": "451 Paine Court (HS 48)",
+     "plan": "Plan 1",
+     "price": 572423,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1752,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "FHA 2/1 buydown eligible"
+    }
+   ]
+  },
+  {
+   "name": "Monument at Independence",
+   "builder": "Tri Pointe Homes",
+   "city": "Lincoln",
+   "county": "Placer",
+   "url": "https://www.tripointehomes.com/ca/sacramento/monument-at-independence",
+   "price_min": 604509,
+   "price_max": 668515,
+   "sqft_min": 2158,
+   "sqft_max": 2921,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "3.99% first-year rate (Conventional 1/0 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 1/0 buydown, first-year rate as low as 3.99% (5.608% APR).",
+     "ends": "2026-11-15",
+     "conditions": "Purchase agreement before 11/15/26 and close by 12/31/26; must finance with Tri Pointe Connect; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-national-promo-sacramento"
+    },
+    {
+     "title": "Up to $30,000 closing credit (Independence)",
+     "detail": "Up to $30,000 closing credit listed for Independence communities toward closing costs, rate, or design upgrades.",
+     "ends": "2026-10-31",
+     "conditions": "Fine print: buy eligible homesite at list price by 10/31/26, close by 3/31/27, finance with Tri Pointe Connect (30+ day rate lock). Still advertised on community pages as of 11/4/26 - verify extension",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-1"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "2749 Congress Avenue (HS 1069)",
+     "plan": "Plan 2",
+     "price": 616795,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2481,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "2761 Congress Avenue (HS 1070)",
+     "plan": "Plan 3",
+     "price": 643470,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2721,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "1 promotion available"
+    },
+    {
+     "addr": "2636 Thornton Lane (HS 1007)",
+     "plan": "Plan 4",
+     "price": 668515,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 2921,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "1 promotion available"
+    }
+   ]
+  },
+  {
+   "name": "Aurora Heights at Twelve Bridges",
+   "builder": "KB Home",
+   "city": "Lincoln",
+   "county": "Placer",
+   "url": "https://kbhome.com/new-homes-sacramento/1064453",
+   "price_min": 422990,
+   "price_max": null,
+   "sqft_min": 1373,
+   "sqft_max": 1803,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Sendero at Folsom Ranch",
+   "builder": "Tri Pointe Homes",
+   "city": "Folsom",
+   "county": "Sacramento",
+   "url": "https://www.tripointehomes.com/ca/sacramento/sendero-at-folsom-ranch",
+   "price_min": 535530,
+   "price_max": 607990,
+   "sqft_min": 1566,
+   "sqft_max": 1870,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "3.99% first-year rate (Conventional 1/0 buydown)",
+     "detail": "Conventional 30-yr fixed with temporary 1/0 buydown, first-year rate as low as 3.99% (5.608% APR).",
+     "ends": "2026-11-15",
+     "conditions": "Purchase agreement before 11/15/26 and close by 12/31/26; must finance with Tri Pointe Connect; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-national-promo-sacramento"
+    },
+    {
+     "title": "3.49% first-year rate (FHA 2/1 buydown)",
+     "detail": "FHA 30-yr fixed with temporary 2/1 buydown, first-year rate as low as 3.49% (6.164% APR).",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/Move-into-More-sales-event-6"
+    },
+    {
+     "title": "Up to $30,000 closing credit",
+     "detail": "Up to $30,000 builder closing credit toward rate buydown, closing costs and/or Design Studio options.",
+     "ends": "2026-10-31",
+     "conditions": "Fine print: buy eligible homesite at list price by 10/31/26, close by 3/31/27, finance with Tri Pointe Connect. Still advertised as of 11/4/26 - verify extension",
+     "src": "https://www.tripointehomes.com/promotion/ca/sacramento/the-value-of-now-sales-event-1"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "14545 Southpointe Drive #46",
+     "plan": "Plan 1",
+     "price": 535530,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1566,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Conv. 1/0 buydown eligible"
+    },
+    {
+     "addr": "14545 Southpointe Drive #31",
+     "plan": "Plan 1",
+     "price": 553861,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1566,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Closing credit eligible"
+    },
+    {
+     "addr": "14545 Southpointe Drive #44",
+     "plan": "Plan 2",
+     "price": 597058,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 1636,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Conv. 1/0 buydown eligible"
+    }
+   ]
+  },
+  {
+   "name": "Regency at Folsom Ranch (55+)",
+   "builder": "Toll Brothers",
+   "city": "Folsom",
+   "county": "Sacramento",
+   "url": "https://www.tollbrothers.com/luxury-homes-for-sale/California/Regency-at-Folsom-Ranch/Tahoe-Collection/Quick-Move-In/283505",
+   "price_min": 525000,
+   "price_max": 1850000,
+   "sqft_min": 1398,
+   "sqft_max": 2441,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "5.49% 30-year fixed rate",
+     "detail": "Limited-time 5.49% (5.76% APR) 30-year fixed rate on select Toll Brothers quick move-in homes in the Folsom area.",
+     "ends": null,
+     "conditions": "Limited time; select homes",
+     "src": "https://www.tollbrothers.com/new-quick-move-in-homes/Folsom-CA"
+    },
+    {
+     "title": "Up to $100,000 toward Design Studio options",
+     "detail": "Toll Brothers National Kitchen & Bath Event (Nov 7-22, 2026): up to $100,000 toward Design Studio options on select home sites.",
+     "ends": "2026-11-22",
+     "conditions": "Select home sites; event starts 11/07/26; terms apply",
+     "src": "https://www.tollbrothers.com/luxury-homes-for-sale/California/Vista-Oaks/Alderwood"
+    },
+    {
+     "title": "4.625% first-year Jumbo 5/1 ARM with 2/1 buydown",
+     "detail": "4.625% (7.33% APR) first-year rate, Jumbo 5/1 ARM with 2/1 buydown on select homes.",
+     "ends": null,
+     "conditions": "Select homes; terms per Toll event page",
+     "src": "https://www.tollbrothers.com/luxury-homes-for-sale/California/Regency-at-Folsom-Ranch/Tahoe-Collection/Quick-Move-In/283505"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "4283 Meadow Crest Dr (HS 840)",
+     "plan": "Crystal (Sequoia duet)",
+     "price": 525000,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1398,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "4299 Meadow Crest Dr (HS 844)",
+     "plan": "Crystal (Sequoia duet)",
+     "price": 525000,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1398,
+     "lot": null,
+     "ready": "Jan 2027",
+     "deal": ""
+    },
+    {
+     "addr": "4232 Dalea Ln (HS 450)",
+     "plan": "Redding (Redwood)",
+     "price": 635000,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1563,
+     "lot": null,
+     "ready": "Feb 2027",
+     "deal": ""
+    },
+    {
+     "addr": "4227 Dalea Ln (HS 473)",
+     "plan": "Cresthaven (Redwood)",
+     "price": 659000,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1542,
+     "lot": null,
+     "ready": "Dec 2026",
+     "deal": ""
+    },
+    {
+     "addr": "4103 Sunny Oaks Dr (HS 618)",
+     "plan": "Caldwell (Shasta)",
+     "price": 819000,
+     "beds": 3,
+     "baths": 3,
+     "sqft": 2012,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "4164 Meadow Crest Dr (HS 691)",
+     "plan": "Petaluma (Tahoe)",
+     "price": 1135000,
+     "beds": 2,
+     "baths": 2.5,
+     "sqft": 2441,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Preserve at Folsom Ranch - Oak Trails",
+   "builder": "Toll Brothers",
+   "city": "Folsom",
+   "county": "Sacramento",
+   "url": "https://www.newhomesource.com/community/ca/folsom/preserve-at-folsom-ranch-oak-trails-by-toll-brothers/192651",
+   "price_min": 1004000,
+   "price_max": 1053000,
+   "sqft_min": 2940,
+   "sqft_max": 3274,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "5.49% 30-year fixed rate",
+     "detail": "Limited-time 5.49% (5.76% APR) 30-year fixed rate on select Toll Brothers quick move-in homes in the Folsom area.",
+     "ends": null,
+     "conditions": "Limited time; select homes",
+     "src": "https://www.tollbrothers.com/new-quick-move-in-homes/Folsom-CA"
+    },
+    {
+     "title": "Up to $100,000 toward Design Studio options",
+     "detail": "Toll Brothers National Kitchen & Bath Event (Nov 7-22, 2026): up to $100,000 toward Design Studio options on select home sites.",
+     "ends": "2026-11-22",
+     "conditions": "Select home sites; event starts 11/07/26; terms apply",
+     "src": "https://www.tollbrothers.com/luxury-homes-for-sale/California/Vista-Oaks/Alderwood"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "3987 Rock Ridge Way (HS 163)",
+     "plan": "Greenstone",
+     "price": 1004000,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2940,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "3975 Rock Ridge Way (HS 160)",
+     "plan": "Hayduke",
+     "price": 1037000,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 3105,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    },
+    {
+     "addr": "3991 Rock Ridge Way (HS 164)",
+     "plan": "Hayduke",
+     "price": 1038000,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 3105,
+     "lot": null,
+     "ready": "Nov 2026",
+     "deal": ""
+    },
+    {
+     "addr": "3611 Black Sage St (HS 146)",
+     "plan": "Hayduke",
+     "price": 1053000,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 3274,
+     "lot": null,
+     "ready": "ready now",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Esquire at Folsom Ranch",
+   "builder": "KB Home",
+   "city": "Folsom",
+   "county": "Sacramento",
+   "url": "https://kbhome.com/new-homes-sacramento/1064453",
+   "price_min": 667990,
+   "price_max": null,
+   "sqft_min": null,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Heritage Carson Creek (Active Adult 55+)",
+   "builder": "Lennar",
+   "city": "El Dorado Hills",
+   "county": "El Dorado",
+   "url": "https://www2.newhomesource.com/community/ca/el-dorado-hills/heritage-carson-creek-active-adult-by-lennar/199173",
+   "price_min": 443990,
+   "price_max": 678342,
+   "sqft_min": 1251,
+   "sqft_max": 2246,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week (Heritage 55+): 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "One-week-only Lennar Mortgage rate promo on select move-in-ready homes in Heritage Active Adult communities (El Dorado Hills and Roseville): 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes; 55+ community",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26_heritage"
+    },
+    {
+     "title": "Price cuts $22K-$45K on move-in-ready homes",
+     "detail": "Move-in-ready Legends II homes show $45K and Roxbury/Mosaic II homes $22K price cuts.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26_heritage"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "6073 Wynola St",
+     "plan": "Legends II Residence 2079",
+     "price": 606342,
+     "beds": 2,
+     "baths": 2.5,
+     "sqft": 2079,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "2004 Oswego St",
+     "plan": "Legends II Residence 2246",
+     "price": 608112,
+     "beds": 3,
+     "baths": 3,
+     "sqft": 2246,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "2005 Oswego St",
+     "plan": "Legends II Residence 1903",
+     "price": 652994,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1903,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "885 Claret St",
+     "plan": "Mosaic II Residence 1497",
+     "price": 527622,
+     "beds": 2,
+     "baths": 2.5,
+     "sqft": 1497,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "322 Tercero St",
+     "plan": "Roxbury Residence 1423",
+     "price": 501990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1423,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "330 Tercero St",
+     "plan": "Roxbury Residence 1437",
+     "price": 506990,
+     "beds": 2,
+     "baths": 2,
+     "sqft": 1437,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Manzanita at Saratoga Estates",
+   "builder": "Elliott Homes",
+   "city": "El Dorado Hills",
+   "county": "El Dorado",
+   "url": "https://www.elliotthomes.com/communities/california/sacramento/manzanita-at-saratoga",
+   "price_min": 911950,
+   "price_max": 986950,
+   "sqft_min": 2296,
+   "sqft_max": 2976,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [],
+   "qmi": [
+    {
+     "addr": "6906 Saratoga Estates Dr (Lot 095)",
+     "plan": "Plan 2296",
+     "price": 918580,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2296,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Closeout community"
+    },
+    {
+     "addr": "1686 Seneca Cir (Lot 113)",
+     "plan": "Plan 2296",
+     "price": 921820,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2296,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Closeout community"
+    },
+    {
+     "addr": "1584 Seneca Cir (Lot 041)",
+     "plan": "Plan 2296",
+     "price": 921790,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2296,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Closeout community"
+    },
+    {
+     "addr": "1654 Seneca Cir (Lot 117)",
+     "plan": "Plan 2296",
+     "price": 922560,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2296,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Closeout community"
+    }
+   ]
+  },
+  {
+   "name": "Stone Canyon",
+   "builder": "KB Home",
+   "city": "Cameron Park (near El Dorado Hills)",
+   "county": "El Dorado",
+   "url": "https://kbhome.com/new-homes-sacramento/1064453",
+   "price_min": 699990,
+   "price_max": 805990,
+   "sqft_min": 2321,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "The Cottages at Greenwood",
+   "builder": "Lennar",
+   "city": "Galt",
+   "county": "Sacramento",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/galt/greenwood/the-cottages",
+   "price_min": 463990,
+   "price_max": 580990,
+   "sqft_min": 1883,
+   "sqft_max": 2339,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "Lennar Mortgage one-week rate promo: 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM on select greater-Sacramento homes. Greenwood (The Cottages, The Towns) featured.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "$45K price cuts on move-in-ready homes",
+     "detail": "11 move-in-ready Cottages homes listed with $45K (one $22K) price cuts, from $463,990.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/galt/greenwood/the-cottages"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "1150 Bellawood Dr (HS 0183)",
+     "plan": "Residence 2048",
+     "price": 463990,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2048,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "1131 Bellawood Dr (HS 0198)",
+     "plan": "Residence 2065",
+     "price": 468990,
+     "beds": 3,
+     "baths": 3.5,
+     "sqft": 2065,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "1118 Bellawood Dr (HS 0208)",
+     "plan": "Residence 2065",
+     "price": 470990,
+     "beds": 3,
+     "baths": 3.5,
+     "sqft": 2065,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "1162 Bellawood Dr (HS 0171)",
+     "plan": "Residence 1883",
+     "price": 478990,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1883,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$22K price cut"
+    },
+    {
+     "addr": "1137 Bellawood Dr (HS 0192)",
+     "plan": "Residence 2339",
+     "price": 503990,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2339,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "1136 Bellawood Dr (HS 0191)",
+     "plan": "Residence 2339",
+     "price": 506990,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2339,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    }
+   ]
+  },
+  {
+   "name": "The Towns at Greenwood",
+   "builder": "Lennar",
+   "city": "Galt",
+   "county": "Sacramento",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/galt/greenwood/the-towns",
+   "price_min": 431990,
+   "price_max": 528990,
+   "sqft_min": 1328,
+   "sqft_max": 2072,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "Lennar Mortgage one-week rate promo: 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM on select greater-Sacramento homes. Greenwood (The Cottages, The Towns) featured.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "$45K price cuts on move-in-ready homes",
+     "detail": "Move-in-ready Towns homes listed with $45K price cuts, from $431,990.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/galt/greenwood/the-towns"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "737 Lake Park Circle (HS 0097)",
+     "plan": "Residence 1328",
+     "price": 431990,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1328,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "739 Lake Park Circle (HS 0099)",
+     "plan": "Residence 1328",
+     "price": 432990,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1328,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "751 Lake Park Circle (HS 0089)",
+     "plan": "Residence 1629",
+     "price": 459990,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 1629,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "757 Lake Park Circle (HS 0094)",
+     "plan": "Residence 1629",
+     "price": 459990,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 1629,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "709 Lake Park Circle (HS 0110)",
+     "plan": "Residence 1636",
+     "price": 499990,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 1636,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "713 Lake Park Circle (HS 0109)",
+     "plan": "Residence 1894",
+     "price": 522990,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 1894,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Westlake (Lakeside & Waterfront)",
+   "builder": "Lennar",
+   "city": "Stockton",
+   "county": "San Joaquin",
+   "url": "https://www.lennar.com/new-homes/california/sacramento/stockton/westlake",
+   "price_min": 601000,
+   "price_max": 847714,
+   "sqft_min": 2355,
+   "sqft_max": 3647,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Cyber Week: 3.99% FHA 5/1 ARM or 4.25% Conventional 7/6 ARM",
+     "detail": "Lennar Mortgage one-week rate promo: 3.99% (7.118% APR) FHA 5/1 ARM or 4.25% (6.736% APR) conventional 7/6 ARM on select greater-Sacramento homes. Westlake (Lakeside, Waterfront) featured.",
+     "ends": "2026-11-08",
+     "conditions": "Purchase agreement signed 11/02/26-11/08/26; must finance with Lennar Mortgage; select homes only",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/promo/lsclen_cyb26"
+    },
+    {
+     "title": "$45K price cuts",
+     "detail": "Available Westlake homes listed with $45K price cuts.",
+     "ends": null,
+     "conditions": "Select homes; limited time",
+     "src": "https://www.lennar.com/new-homes/california/sacramento/stockton/westlake"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "10451 Newport Cove Drive (HS 2050)",
+     "plan": "Lakeside Residence 3167",
+     "price": 715962,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 3167,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "6898 Horizon Bay Lane (HS 2072)",
+     "plan": "Lakeside Residence 3167",
+     "price": 773962,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 3167,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "6814 Oyster Point Lane (HS 2022)",
+     "plan": "Waterfront Residence 3568",
+     "price": 802863,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3568,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    },
+    {
+     "addr": "10332 Shorecliff Street (HS 1056)",
+     "plan": "Waterfront Residence 3568",
+     "price": 847714,
+     "beds": 5,
+     "baths": 4.5,
+     "sqft": 3568,
+     "lot": null,
+     "ready": "",
+     "deal": "$45K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Cannery Park",
+   "builder": "LGI Homes",
+   "city": "Stockton",
+   "county": "San Joaquin",
+   "url": "https://www.lgihomes.com/california/sacramento/cannery-park",
+   "price_min": 499900,
+   "price_max": 663900,
+   "sqft_min": 1122,
+   "sqft_max": 2215,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Up to $20,000 additional savings on move-in-ready homes",
+     "detail": "For a limited time, up to $20,000 in additional savings on select move-in-ready homes.",
+     "ends": null,
+     "conditions": "Limited time; select move-in-ready homes",
+     "src": "https://homes.com/new-homes/for-sale/stockton-ca/communities/"
+    },
+    {
+     "title": "Rates as low as 4.99% + builder-paid closing costs",
+     "detail": "Make Your Move National Sales Event: rates as low as 4.99% (5.864% APR) and builder-paid closing costs.",
+     "ends": null,
+     "conditions": "See New Home Consultant for terms; preferred lender likely required",
+     "src": "https://www.lgihomes.com/california/sacramento/cannery-park"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Sundance at Cannery Park",
+   "builder": "Richmond American",
+   "city": "Stockton",
+   "county": "San Joaquin",
+   "url": "https://www.newhomesource.com/community/ca/stockton/sundance-at-cannery-park-by-richmond-american-homes/210522",
+   "price_min": 540950,
+   "price_max": 681924,
+   "sqft_min": 1740,
+   "sqft_max": 3030,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Special financing on select homes ('Come home for the holidays')",
+     "detail": "Richmond American advertises special financing on select homes plus recently reduced prices (Hot Deal).",
+     "ends": null,
+     "conditions": "Select homes; contact builder for terms (HomeAmerican Mortgage)",
+     "src": "https://www.newhomesource.com/community/ca/stockton/sundance-at-cannery-park-by-richmond-american-homes/210522"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "10438 Fender Way",
+     "plan": "Alexandrite",
+     "price": 551155,
+     "beds": 4,
+     "baths": 2,
+     "sqft": 1740,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "10416 Reba Way",
+     "plan": "Agate",
+     "price": 575549,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2080,
+     "lot": null,
+     "ready": "",
+     "deal": "Shown at $575,549 vs. $587,295"
+    },
+    {
+     "addr": "10414 Fender Way",
+     "plan": "Ammolite",
+     "price": 659964,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 3030,
+     "lot": null,
+     "ready": "",
+     "deal": "Shown at $659,964 vs. $673,714"
+    },
+    {
+     "addr": "3942 Jennings Lane",
+     "plan": "Palmetto",
+     "price": 681924,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2670,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Parkside at Kennedy Ranch",
+   "builder": "KB Home",
+   "city": "Stockton",
+   "county": "San Joaquin",
+   "url": "https://homes.com/new-homes/for-sale/stockton-ca/communities/",
+   "price_min": 449990,
+   "price_max": 529990,
+   "sqft_min": 1481,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Tracy Hills",
+   "builder": "Lennar",
+   "city": "Tracy",
+   "county": "San Joaquin",
+   "url": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/tracy/tracy-hills",
+   "price_min": 691342,
+   "price_max": 1139880,
+   "sqft_min": 1945,
+   "sqft_max": 4095,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Fall Super Sale price cuts $72K-$227K",
+     "detail": "Lennar move-in-ready homes listed with price cuts of $72K-$227K (e.g. $219K off a Slateshire Residence 2, $132.8K off Boulder Residence 4).",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time ('Limited-Time Deals on New Homes')",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_cyb26"
+    },
+    {
+     "title": "Rate buydowns / closing cost assistance with Lennar Mortgage",
+     "detail": "Lennar Bay Area/Central Valley offers rate buydowns and closing cost assistance on select homes when financing with Lennar Mortgage (recent promo: 4.99% fixed conventional, 5.078% APR, for contracts signed 10/19-10/25/26, close by 11/30/26).",
+     "ends": null,
+     "conditions": "Must finance with Lennar Mortgage; select homes; amounts and current signing window not stated - confirm with sales",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_homes_of_the_week_bay_area"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "7435 Forbes Ave (HS 0001)",
+     "plan": "Boulder Residence 1",
+     "price": 691342,
+     "beds": 4,
+     "baths": 2,
+     "sqft": 2164,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$72K price cut"
+    },
+    {
+     "addr": "2706 Emery St (HS 0002)",
+     "plan": "Cairnway Residence 1",
+     "price": 729016,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2220,
+     "lot": null,
+     "ready": "",
+     "deal": "$74K price cut"
+    },
+    {
+     "addr": "7278 Oscar Dr (HS 0106)",
+     "plan": "Crestwick Residence 1",
+     "price": 729233,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2500,
+     "lot": null,
+     "ready": "",
+     "deal": "$85K price cut"
+    },
+    {
+     "addr": "7399 Forbes Ave (HS 0004)",
+     "plan": "Boulder Residence 4",
+     "price": 743999,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2795,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$132.8K price cut"
+    },
+    {
+     "addr": "2881 Chauncy St (HS 0022)",
+     "plan": "Ridgerton Residence 2",
+     "price": 762777,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 3051,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$115.5K price cut"
+    },
+    {
+     "addr": "3315 Layla Way (HS 0027)",
+     "plan": "Slateshire Residence 2",
+     "price": 859443,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 3766,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$219K price cut"
+    }
+   ]
+  },
+  {
+   "name": "River Islands (Heritage, Driftway, Meridian)",
+   "builder": "Lennar",
+   "city": "Lathrop",
+   "county": "San Joaquin",
+   "url": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_lowrates",
+   "price_min": 565880,
+   "price_max": 843322,
+   "sqft_min": null,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Fall Super Sale price cuts $42.2K-$98.9K",
+     "detail": "Lennar move-in-ready homes listed with price cuts of $42.2K-$98.9K.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time ('Limited-Time Deals on New Homes')",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_lowrates"
+    },
+    {
+     "title": "Rate buydowns / closing cost assistance with Lennar Mortgage",
+     "detail": "Lennar Bay Area/Central Valley offers rate buydowns and closing cost assistance on select homes when financing with Lennar Mortgage (recent promo: 4.99% fixed conventional, 5.078% APR, for contracts signed 10/19-10/25/26, close by 11/30/26).",
+     "ends": null,
+     "conditions": "Must finance with Lennar Mortgage; select homes; amounts and current signing window not stated - confirm with sales",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_homes_of_the_week_bay_area"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "3139 Workman Ave",
+     "plan": "Driftway Residence 1X",
+     "price": 565880,
+     "beds": null,
+     "baths": null,
+     "sqft": null,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$42.2K price cut"
+    },
+    {
+     "addr": "4846 Badger Creek Ct (HS 0081)",
+     "plan": "Heritage Residence 2",
+     "price": 595880,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2075,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$98.9K price cut"
+    },
+    {
+     "addr": "4841 Badger Creek Ct",
+     "plan": "Heritage Residence 3",
+     "price": 611923,
+     "beds": null,
+     "baths": null,
+     "sqft": null,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$98.9K price cut"
+    },
+    {
+     "addr": "4660 Concordia Ave",
+     "plan": "Meridian Residence 1",
+     "price": 734966,
+     "beds": null,
+     "baths": null,
+     "sqft": null,
+     "lot": null,
+     "ready": "est. 2026-12-21",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Lakeshore (Turano, Maggiore)",
+   "builder": "Lennar",
+   "city": "Mountain House",
+   "county": "San Joaquin",
+   "url": "https://lennar.com/new-homes/california/san-francisco-bay-area/mountain-house/lakeshore/mezzano",
+   "price_min": 775074,
+   "price_max": 1243880,
+   "sqft_min": null,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Fall Super Sale price cuts $184.9K-$211.3K",
+     "detail": "Lennar move-in-ready homes listed with price cuts of $184.9K-$211.3K.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time ('Limited-Time Deals on New Homes')",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_lowrates"
+    },
+    {
+     "title": "Rate buydowns / closing cost assistance with Lennar Mortgage",
+     "detail": "Lennar Bay Area/Central Valley offers rate buydowns and closing cost assistance on select homes when financing with Lennar Mortgage (recent promo: 4.99% fixed conventional, 5.078% APR, for contracts signed 10/19-10/25/26, close by 11/30/26).",
+     "ends": null,
+     "conditions": "Must finance with Lennar Mortgage; select homes; amounts and current signing window not stated - confirm with sales",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_homes_of_the_week_bay_area"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "246 W Adriana Dr",
+     "plan": "Maggiore Residence 4",
+     "price": 818880,
+     "beds": null,
+     "baths": null,
+     "sqft": null,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$211.3K price cut"
+    },
+    {
+     "addr": "1423 N. Girardi Dr (HS 8094)",
+     "plan": "Turano Residence 1",
+     "price": 853880,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2710,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$184.9K price cut"
+    },
+    {
+     "addr": "1322 N. Martorella Ave (HS 8123)",
+     "plan": "Turano Residence 2",
+     "price": 999880,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 3359,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$201.3K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Meadowood (Courts & Parks)",
+   "builder": "Lennar",
+   "city": "Ripon",
+   "county": "San Joaquin",
+   "url": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_lowrates",
+   "price_min": null,
+   "price_max": null,
+   "sqft_min": null,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Fall Super Sale price cuts $36K-$63.8K",
+     "detail": "Lennar move-in-ready homes listed with price cuts of $36K-$63.8K.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time ('Limited-Time Deals on New Homes')",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_cyb26"
+    },
+    {
+     "title": "Rate buydowns / closing cost assistance with Lennar Mortgage",
+     "detail": "Lennar Bay Area/Central Valley offers rate buydowns and closing cost assistance on select homes when financing with Lennar Mortgage (recent promo: 4.99% fixed conventional, 5.078% APR, for contracts signed 10/19-10/25/26, close by 11/30/26).",
+     "ends": null,
+     "conditions": "Must finance with Lennar Mortgage; select homes; amounts and current signing window not stated - confirm with sales",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_homes_of_the_week_bay_area"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "722 Schut Ct (HS 0072)",
+     "plan": "Courts Residence 2",
+     "price": 576880,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2083,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$63.8K price cut"
+    },
+    {
+     "addr": "882 Shasta Ave",
+     "plan": "Parks Residence 3x",
+     "price": 675497,
+     "beds": null,
+     "baths": null,
+     "sqft": null,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$36K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Cedar Point",
+   "builder": "Lennar",
+   "city": "Manteca",
+   "county": "San Joaquin",
+   "url": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_homes_of_the_week_bay_area",
+   "price_min": 475999,
+   "price_max": null,
+   "sqft_min": null,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Fall Super Sale price cuts $16K",
+     "detail": "Lennar move-in-ready homes listed with price cuts of $16K.",
+     "ends": null,
+     "conditions": "Select move-in-ready homes; limited time ('Limited-Time Deals on New Homes')",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_cyb26"
+    },
+    {
+     "title": "Rate buydowns / closing cost assistance with Lennar Mortgage",
+     "detail": "Lennar Bay Area/Central Valley offers rate buydowns and closing cost assistance on select homes when financing with Lennar Mortgage (recent promo: 4.99% fixed conventional, 5.078% APR, for contracts signed 10/19-10/25/26, close by 11/30/26).",
+     "ends": null,
+     "conditions": "Must finance with Lennar Mortgage; select homes; amounts and current signing window not stated - confirm with sales",
+     "src": "https://www.lennar.com/new-homes/california/san-francisco-bay-area/promo/bahlen_homes_of_the_week_bay_area"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "1082 Bruin Rd (HS 0179)",
+     "plan": "Cypress Residence 1",
+     "price": 475999,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1245,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "$16K price cut"
+    }
+   ]
+  },
+  {
+   "name": "Paddlewheel at River Islands",
+   "builder": "Taylor Morrison",
+   "city": "Lathrop",
+   "county": "San Joaquin",
+   "url": "https://www2.newhomesource.com/community/ca/lathrop/paddlewheel-at-river-islands-by-taylor-morrison/204274",
+   "price_min": 932633,
+   "price_max": 1213610,
+   "sqft_min": 2725,
+   "sqft_max": 3465,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Price reductions up to $146,165",
+     "detail": "'Hot Deal' community: select homes and plans show reduced prices, up to $146,165 off (e.g. Lenten plan from $975,825, was $1,121,990).",
+     "ends": null,
+     "conditions": "Select homes/plans; not labeled with an end date",
+     "src": "https://www2.newhomesource.com/community/ca/lathrop/paddlewheel-at-river-islands-by-taylor-morrison/204274"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "16536 Barnett St",
+     "plan": "Lacewood",
+     "price": 932633,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 2725,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "16567 Barnett St",
+     "plan": "Lacewood",
+     "price": 964000,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 2928,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "16540 Barnett St",
+     "plan": "Lily",
+     "price": 995773,
+     "beds": 6,
+     "baths": 4,
+     "sqft": 3397,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "16559 Barnett St",
+     "plan": "Lenten",
+     "price": 1040000,
+     "beds": 5,
+     "baths": 4,
+     "sqft": 3201,
+     "lot": null,
+     "ready": "under construction",
+     "deal": "Reduced $81,440 (was $1,121,440)"
+    },
+    {
+     "addr": "16555 Barnett St",
+     "plan": "Luna",
+     "price": 1213610,
+     "beds": 6,
+     "baths": 4.5,
+     "sqft": 3465,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Silverleaf at Lakeshore",
+   "builder": "Taylor Morrison",
+   "city": "Mountain House",
+   "county": "San Joaquin",
+   "url": "https://www.newhomesource.com/community/ca/mountain-house/silverleaf-at-lakeshore-by-taylor-morrison/208763",
+   "price_min": 850000,
+   "price_max": 950000,
+   "sqft_min": 2654,
+   "sqft_max": 3063,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [],
+   "qmi": [
+    {
+     "addr": "461 W Calabria Drive",
+     "plan": "Lotus",
+     "price": 850000,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2654,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "471 W Calabria Drive",
+     "plan": "Lilac",
+     "price": 881000,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2835,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "481 W Calabria Drive",
+     "plan": "Lupine",
+     "price": 899000,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 3001,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "444 W Volta Street",
+     "plan": "Lilac",
+     "price": 910000,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2835,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "401 W Calabria Drive",
+     "plan": "Lupine",
+     "price": 915000,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 3001,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "433 W Volta Street",
+     "plan": "Lupine",
+     "price": 950000,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 3001,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Altamira at College Park",
+   "builder": "KB Home",
+   "city": "Mountain House",
+   "county": "San Joaquin",
+   "url": "https://www.newhomesource.com/community/ca/mountain-house/altamira-at-college-park-by-kb-home/211353",
+   "price_min": 802990,
+   "price_max": 968990,
+   "sqft_min": 2029,
+   "sqft_max": 2694,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Cielo at Villa Ticino West",
+   "builder": "KB Home",
+   "city": "Manteca",
+   "county": "San Joaquin",
+   "url": "https://www.newhomesource.com/community/ca/manteca/cielo-at-villa-ticino-by-kb-home/200184",
+   "price_min": 614990,
+   "price_max": 651990,
+   "sqft_min": 2346,
+   "sqft_max": 2621,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "The Estates (Meridian & Rosewood)",
+   "builder": "K. Hovnanian Homes",
+   "city": "Manteca",
+   "county": "San Joaquin",
+   "url": "https://www-prd.khov.com/new-construction-homes/california/manteca/the-estates",
+   "price_min": 573490,
+   "price_max": 737090,
+   "sqft_min": 1774,
+   "sqft_max": 3247,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% Conventional 7/6 ARM on select QMI homes",
+     "detail": "Initial rate 4.99% fixed for 84 months (5.883% APR example) on select eligible quick move-in homes via K. Hovnanian American Mortgage.",
+     "ends": "2026-11-30",
+     "conditions": "New contracts 10/27/26-11/30/26; close by 12/31/26; must pre-apply and finance with K. Hovnanian American Mortgage; primary residence; not combinable",
+     "src": "https://www-prd.khov.com/new-construction-homes/california/manteca/the-estates"
+    },
+    {
+     "title": "QMI price reductions up to $43,690",
+     "detail": "Select quick move-in homes shown below original price (e.g. 1850 Bedrock St $654,990, was $698,680).",
+     "ends": null,
+     "conditions": "Select QMI homes; price reduction does not require builder's lender; using outside lender/cash cuts non-price incentives by 5% of price",
+     "src": "https://www-prd.khov.com/new-construction-homes/california/manteca/the-estates"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "1850 Bedrock St (HS 0056)",
+     "plan": "Barcelona",
+     "price": 654990,
+     "beds": 4,
+     "baths": 2,
+     "sqft": 2277,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Reduced $43,690; 4.99% promo rate"
+    },
+    {
+     "addr": "1891 Bedrock St (HS 0036)",
+     "plan": "Barcelona",
+     "price": 659990,
+     "beds": 4,
+     "baths": 2,
+     "sqft": 2277,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Reduced $24,990; 4.99% promo rate"
+    },
+    {
+     "addr": "1806 Bedrock St (HS 0127)",
+     "plan": "Barcelona",
+     "price": 649990,
+     "beds": 4,
+     "baths": 2,
+     "sqft": 2277,
+     "lot": null,
+     "ready": "Dec 2026",
+     "deal": "Reduced $30,200"
+    },
+    {
+     "addr": "2521 Larimar Ave (HS 0001)",
+     "plan": "Faro",
+     "price": 660990,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2249,
+     "lot": null,
+     "ready": "Dec 2026",
+     "deal": "Reduced $5,500"
+    },
+    {
+     "addr": "2064 Bedrock St (HS 0081)",
+     "plan": "Asheville",
+     "price": 604590,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1774,
+     "lot": null,
+     "ready": "Feb 2027",
+     "deal": ""
+    },
+    {
+     "addr": "1782 Bedrock St (HS 0129)",
+     "plan": "Aegean",
+     "price": 716190,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 2461,
+     "lot": null,
+     "ready": "Feb 2027",
+     "deal": "Reduced $8,000"
+    }
+   ]
+  },
+  {
+   "name": "Sonterra",
+   "builder": "K. Hovnanian Homes",
+   "city": "Lodi",
+   "county": "San Joaquin",
+   "url": "https://www.khov.com/new-construction-homes/california/lodi/sonterra",
+   "price_min": 632490,
+   "price_max": 685990,
+   "sqft_min": 1917,
+   "sqft_max": 3124,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% Conventional 7/6 ARM on select QMI homes",
+     "detail": "Initial rate 4.99% fixed for 84 months (5.883% APR example) on select eligible quick move-in homes via K. Hovnanian American Mortgage.",
+     "ends": "2026-11-30",
+     "conditions": "New contracts 10/27/26-11/30/26; close by 12/31/26; must pre-apply and finance with K. Hovnanian American Mortgage; owner-occupant; not combinable",
+     "src": "https://www.khov.com/new-construction-homes/california/lodi/sonterra"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "113 Solera Drive (HS 0125)",
+     "plan": "Boise",
+     "price": 654990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1917,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Shown at $654,990 vs. $664,363 (~$9.4K); 4.99% promo rate"
+    },
+    {
+     "addr": "136 Solera Drive (HS 0146)",
+     "plan": "Boise",
+     "price": 644990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1917,
+     "lot": null,
+     "ready": "ready now",
+     "deal": "Shown at $644,990 vs. $662,099 (~$17.1K); 4.99% promo rate"
+    }
+   ]
+  },
+  {
+   "name": "Summerfield at Tivoli",
+   "builder": "KB Home",
+   "city": "Modesto",
+   "county": "Stanislaus",
+   "url": "https://www.kbhome.com/new-homes-central-valley/summerfield-at-tivoli",
+   "price_min": 513990,
+   "price_max": 609990,
+   "sqft_min": 1557,
+   "sqft_max": 2190,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "2636 Barn Owl Dr.",
+     "plan": "Plan 2000 Modeled",
+     "price": 579990,
+     "beds": 4,
+     "baths": 2,
+     "sqft": 2000,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "2645 Redtail Hawk Rd.",
+     "plan": "Plan 2000 Modeled",
+     "price": 609990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 2000,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Autumnwood at Tivoli",
+   "builder": "KB Home",
+   "city": "Modesto",
+   "county": "Stanislaus",
+   "url": "https://www.newhomesource.com/community/ca/modesto/autumnwood-at-tivoli-by-kb-home/211079",
+   "price_min": 481990,
+   "price_max": 594990,
+   "sqft_min": 1397,
+   "sqft_max": 2069,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "3801 Popolari Way",
+     "plan": "Plan 1468 Modeled",
+     "price": 529990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1468,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "2608 Valerio Ct.",
+     "plan": "Plan 1950",
+     "price": 544990,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 1950,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    },
+    {
+     "addr": "2609 Umbria Ct.",
+     "plan": "Plan 2069 Modeled",
+     "price": 594990,
+     "beds": 4,
+     "baths": 3.5,
+     "sqft": 2069,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Fifth Edition",
+   "builder": "Florsheim Homes",
+   "city": "Turlock",
+   "county": "Stanislaus",
+   "url": "https://www2.newhomesource.com/community/ca/turlock/fifth-edition-by-florsheim-homes/194786",
+   "price_min": 376990,
+   "price_max": 456990,
+   "sqft_min": 884,
+   "sqft_max": 1830,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "'Massive incentives' on quick move-in homes",
+     "detail": "Florsheim advertises massive incentives on Fifth Edition quick move-in homes; amounts are in the builder's flyer (not stated on listing).",
+     "ends": "2026-11-14",
+     "conditions": "Quick move-in homes only; offer runs through 11/14/2026; see florsheimhomes.com flyer for amounts",
+     "src": "https://www2.newhomesource.com/community/ca/turlock/fifth-edition-by-florsheim-homes/194786"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "465 Quarto Drive",
+     "plan": "Residence 1 - The Haven",
+     "price": 379675,
+     "beds": 2,
+     "baths": 1,
+     "sqft": 884,
+     "lot": null,
+     "ready": "",
+     "deal": "QMI incentive through 11/14/26"
+    }
+   ]
+  },
+  {
+   "name": "Camden Shire",
+   "builder": "LGI Homes",
+   "city": "Patterson",
+   "county": "Stanislaus",
+   "url": "https://www.lgihomes.com/california/sacramento/camden-shire",
+   "price_min": 484900,
+   "price_max": 580900,
+   "sqft_min": 1235,
+   "sqft_max": 2208,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Rates as low as 4.99% + builder-paid closing costs",
+     "detail": "Make Your Move National Sales Event: rates as low as 4.99% (5.864% APR) and builder-paid closing costs; community marked move-in ready.",
+     "ends": null,
+     "conditions": "Limited time; see New Home Consultant for full terms",
+     "src": "https://www.lgihomes.com/california/sacramento/camden-shire"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Acacia II at Patterson Ranch",
+   "builder": "KB Home",
+   "city": "Patterson",
+   "county": "Stanislaus",
+   "url": "https://www.homes.com/new-homes/for-sale/stanislaus-county-ca/",
+   "price_min": 479990,
+   "price_max": 499990,
+   "sqft_min": 1593,
+   "sqft_max": null,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "4.99% 5/1 FHA ARM + $5,000 closing cost credit",
+     "detail": "KB Home special low rate as low as 4.99% (5.781% APR) on a 5/1 ARM; advertised APR includes a $5,000 closing cost credit plus additional KB seller contributions.",
+     "ends": "2026-11-30",
+     "conditions": "Purchase agreement by 11/30/26; rate lock with KBHS within 30 days; must finance with KBHS Home Loans; owner-occupied; some communities may be excluded",
+     "src": "https://www.kbhome.com/special-low-rate"
+    }
+   ],
+   "qmi": []
+  },
+  {
+   "name": "Saddlewood",
+   "builder": "Florsheim Homes",
+   "city": "Oakdale",
+   "county": "Stanislaus",
+   "url": "https://www.newhomesource.com/community/ca/oakdale/saddlewood-by-florsheim-homes/213339",
+   "price_min": 499000,
+   "price_max": 562685,
+   "sqft_min": 1637,
+   "sqft_max": 2039,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [
+    {
+     "title": "Pre-model pricing with solar included",
+     "detail": "Community is offered at 'Pre-Model Pricing' from $499,000 with solar included in the price.",
+     "ends": null,
+     "conditions": "Pre-model release pricing; no end date stated",
+     "src": "https://www.newhomesource.com/community/ca/oakdale/saddlewood-by-florsheim-homes/213339"
+    }
+   ],
+   "qmi": [
+    {
+     "addr": "181 Twister Lane",
+     "plan": "The Vantage",
+     "price": 562685,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 2039,
+     "lot": null,
+     "ready": "",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Monarch at Saddlewood",
+   "builder": "D.R. Horton",
+   "city": "Oakdale",
+   "county": "Stanislaus",
+   "url": "https://www.newhomesource.com/community/ca/oakdale/monarch-at-saddlewood-by-dr-horton/219411",
+   "price_min": 459490,
+   "price_max": 531490,
+   "sqft_min": 1588,
+   "sqft_max": 1906,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [],
+   "qmi": [
+    {
+     "addr": "2813 Woodhouse Lane",
+     "plan": "Reyes",
+     "price": 459490,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 1615,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "2817 Woodhouse Lane",
+     "plan": "Madrone",
+     "price": 520990,
+     "beds": 3,
+     "baths": 2,
+     "sqft": 1588,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "2806 Woodhouse Lane",
+     "plan": "Palisade",
+     "price": 529490,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 1858,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    }
+   ]
+  },
+  {
+   "name": "Eve at Founders Point",
+   "builder": "D.R. Horton",
+   "city": "Modesto",
+   "county": "Stanislaus",
+   "url": "https://www.newhomesource.com/community/ca/modesto/eve-at-founders-point-by-dr-horton/217846",
+   "price_min": 499490,
+   "price_max": 632490,
+   "sqft_min": 1582,
+   "sqft_max": 2311,
+   "lot_min": null,
+   "lot_max": null,
+   "incentives": [],
+   "qmi": [
+    {
+     "addr": "4312 Frontier Way",
+     "plan": "Muir",
+     "price": 499490,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1582,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "4317 Frontier Way",
+     "plan": "Muir",
+     "price": 509490,
+     "beds": 3,
+     "baths": 2.5,
+     "sqft": 1582,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "4308 Frontier Way",
+     "plan": "Palisade",
+     "price": 539490,
+     "beds": 4,
+     "baths": 2.5,
+     "sqft": 1858,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "1421 Artisan Lane",
+     "plan": "Montara",
+     "price": 599490,
+     "beds": 5,
+     "baths": 3,
+     "sqft": 2311,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    },
+    {
+     "addr": "1425 Founders Point Drive",
+     "plan": "Rockaway",
+     "price": 613490,
+     "beds": 4,
+     "baths": 3,
+     "sqft": 2098,
+     "lot": null,
+     "ready": "under construction",
+     "deal": ""
+    }
+   ]
+  }
+ ]
+}

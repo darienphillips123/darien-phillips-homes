@@ -1,0 +1,1044 @@
+<title>Assumable Property Search</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root {
+  /* Layout: teal masthead with agent row, town search and market chips; sticky nav; town results (filter bar, home cards, live lists); payment check; how it works; contact */
+  --paper: #F3F7F6;
+  --card: #FFFFFF;
+  --ink: #132826;
+  --muted: #56706B;
+  --line: #D3E0DC;
+  --soft: #E6F0ED;
+  --mast: #0E3A3F;
+  --mast-ink: #F2FAF8;
+  --mast-muted: #B4CFCA;
+  --mast-line: #2A5A5E;
+  --accent: #FF7A59;
+  --accent-ink: #2B0D04;
+  --accent-soft: #FFE6DD;
+  --accent-text: #B5401A;
+  --fha: #0F7B6C;
+  --fha-soft: #DDF2EE;
+  --va: #6C4BC2;
+  --va-soft: #ECE6FA;
+  --usda: #A86A00;
+  --usda-soft: #F8ECD3;
+  --good: #1D7444;
+  --good-soft: #E1F2E7;
+  --over: #B5401A;
+  --over-soft: #FBE6DE;
+  --link: #0F6E86;
+  --focus: #FF7A59;
+  --shadow: 0 1px 2px rgba(19, 40, 38, 0.06);
+  --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0B1514; --card: #122321; --ink: #E4EFEC; --muted: #9DB6B0; --line: #22403C; --soft: #183230;
+    --mast: #0A2A2D; --mast-ink: #EEF7F5; --mast-muted: #A6C4BE; --mast-line: #22494C;
+    --accent: #FF8E70; --accent-ink: #2B0D04; --accent-soft: #3A1E15; --accent-text: #FFAD95;
+    --fha: #4FD1BC; --fha-soft: #123430; --va: #B49CF5; --va-soft: #251C40; --usda: #E8B85C; --usda-soft: #33280F;
+    --good: #5BCB8E; --good-soft: #123020; --over: #FF9C7C; --over-soft: #3A1F15; --link: #7FD3E6; --focus: #FF8E70;
+    --shadow: none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0B1514; --card: #122321; --ink: #E4EFEC; --muted: #9DB6B0; --line: #22403C; --soft: #183230;
+  --mast: #0A2A2D; --mast-ink: #EEF7F5; --mast-muted: #A6C4BE; --mast-line: #22494C;
+  --accent: #FF8E70; --accent-ink: #2B0D04; --accent-soft: #3A1E15; --accent-text: #FFAD95;
+  --fha: #4FD1BC; --fha-soft: #123430; --va: #B49CF5; --va-soft: #251C40; --usda: #E8B85C; --usda-soft: #33280F;
+  --good: #5BCB8E; --good-soft: #123020; --over: #FF9C7C; --over-soft: #3A1F15; --link: #7FD3E6; --focus: #FF8E70;
+  --shadow: none; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--card); }
+a { color: var(--link); }
+button, input, select { font: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1140px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Masthead */
+.mast { background: var(--mast); color: var(--mast-ink); }
+.mast .wrap { padding-block: 22px 30px; }
+.agent { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.agent img { width: 52px; height: 52px; border-radius: 50%; flex: none; background: var(--mast-line); object-fit: cover; }
+.who { line-height: 1.25; min-width: 0; }
+.who b { font-family: var(--f-display); font-stretch: 108%; font-size: 1.02rem; }
+.who span { display: block; color: var(--mast-muted); font-size: 0.9rem; }
+.phone { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.phone .sel { font-family: var(--f-mono); font-size: 0.95rem; user-select: all; }
+.eyebrow { margin-top: 26px; color: var(--accent); }
+.mast h1 { font-size: clamp(2.1rem, 6.2vw, 3.9rem); font-stretch: 118%; font-weight: 850; line-height: 0.98; letter-spacing: -0.01em; margin-top: 8px; }
+.lede { max-width: 64ch; color: var(--mast-muted); font-size: 1.08rem; margin-top: 14px; }
+
+.finder { margin-top: 22px; display: grid; gap: 12px; max-width: 820px; }
+.search-row { display: flex; gap: 10px; }
+.combo { position: relative; flex: 1; min-width: 0; }
+#town-q {
+  width: 100%; font-weight: 600; font-size: 1.15rem; padding: 14px 16px; min-height: 54px;
+  border: 2px solid transparent; border-radius: 12px; background: var(--card); color: var(--ink);
+}
+#town-q::placeholder { color: var(--muted); font-weight: 400; }
+#town-q:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255, 122, 89, 0.3); }
+#town-list {
+  position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; right: 0; margin: 0; padding: 6px; list-style: none;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22); max-height: min(360px, 60vh); overflow: auto;
+}
+#town-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 9px 10px; border-radius: 8px; cursor: pointer; }
+#town-list li[aria-selected="true"] { background: var(--soft); }
+.opt-name { font-weight: 600; min-width: 0; }
+.opt-meta { font-size: 0.8rem; color: var(--muted); text-align: right; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 10px 18px; min-height: 44px;
+  font: 700 0.98rem var(--f-body); cursor: pointer; text-decoration: none; border: 1.5px solid transparent;
+}
+.btn-accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn-accent:hover { filter: brightness(1.05); }
+.btn-go { border-radius: 12px; min-height: 54px; padding: 0 22px; font-family: var(--f-display); font-stretch: 108%; font-size: 1.05rem; }
+.btn-ghost { background: transparent; color: var(--mast-ink); border-color: var(--mast-line); }
+.btn-ghost:hover { border-color: var(--mast-muted); }
+.btn-line { background: var(--card); color: var(--ink); border-color: var(--line); }
+.btn-line:hover { border-color: var(--muted); }
+.btn-sm { padding: 6px 12px; min-height: 34px; font-size: 0.88rem; font-weight: 600; }
+.msg { font-size: 0.95rem; color: var(--accent); }
+.msg:empty { display: none; }
+.markets { display: grid; gap: 8px; margin-top: 4px; }
+.mrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.mrow .mono { color: var(--mast-muted); min-width: 132px; }
+.mchip {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1.5px solid var(--mast-line); background: transparent; color: var(--mast-ink); border-radius: 999px;
+  padding: 5px 12px; font: 600 0.88rem var(--f-body); cursor: pointer; min-height: 34px;
+}
+.mchip:hover { border-color: var(--mast-muted); }
+.mchip .n { font-family: var(--f-mono); font-size: 0.72rem; padding: 1px 6px; border-radius: 999px; background: var(--mast-line); color: var(--mast-ink); }
+.mchip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.mchip[aria-pressed="true"] .n { background: rgba(43, 13, 4, 0.16); color: var(--accent-ink); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; border-top: 1px solid var(--mast-line); }
+.stat { padding: 16px 18px 4px 0; min-width: 0; }
+.stat + .stat { padding-left: 18px; border-left: 1px solid var(--mast-line); }
+.stat .v { font-family: var(--f-display); font-stretch: 112%; font-weight: 800; font-size: clamp(1.5rem, 3.4vw, 2.2rem); line-height: 1.05; }
+.stat .v.hot { color: var(--accent); }
+.stat .k { color: var(--mast-muted); font-size: 0.92rem; margin-top: 4px; max-width: 32ch; }
+
+/* Nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 4px 18px; flex-wrap: wrap; align-items: center; padding-block: 8px; }
+.nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 6px 2px; border-bottom: 2px solid transparent; }
+.nav a:hover { border-bottom-color: var(--accent); }
+.nav .here { margin-left: auto; color: var(--muted); }
+
+section { padding-block: 36px 6px; scroll-margin-top: 60px; }
+.shead { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 24px; margin-bottom: 16px; }
+.shead h2 { font-size: clamp(1.5rem, 3.3vw, 2.1rem); font-stretch: 112%; font-weight: 800; line-height: 1.08; }
+.shead p { margin-top: 6px; color: var(--muted); max-width: 68ch; }
+.shead .mono { color: var(--muted); }
+
+/* Town bar */
+.townbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
+  background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--accent); border-radius: var(--r);
+  padding: 16px 18px; box-shadow: var(--shadow);
+}
+.townbar h2 { font-size: clamp(1.8rem, 5vw, 2.6rem); font-stretch: 116%; font-weight: 850; line-height: 1; }
+.townbar .county { color: var(--muted); margin-top: 4px; }
+.townbar .tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.copied { font-size: 0.85rem; color: var(--good); }
+@keyframes rise { from { transform: translateY(6px); opacity: 0.5; } to { transform: none; opacity: 1; } }
+.townbar.flip { animation: rise 0.22s ease-out; }
+
+/* Homes */
+.homes { margin-top: 22px; display: grid; gap: 14px; }
+.homes-head h3 { font-size: 1.35rem; font-stretch: 110%; font-weight: 800; }
+.homes-head p { color: var(--muted); font-size: 0.92rem; margin-top: 2px; max-width: 76ch; }
+.fbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px;
+}
+.fgroup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.fgroup .mono { color: var(--muted); margin-right: 2px; }
+.fchip {
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px;
+  padding: 5px 12px; font: 600 0.88rem var(--f-body); cursor: pointer; min-height: 34px;
+}
+.fchip:hover { border-color: var(--muted); }
+.fchip[aria-pressed="true"] { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.fbar select {
+  color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 8px; padding: 5px 8px; min-height: 34px;
+}
+.fbar select:focus { border-color: var(--accent); outline: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
+.fcount { margin-left: auto; color: var(--muted); font-size: 0.9rem; }
+
+.hlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr)); gap: 12px; align-items: start; }
+.hcard {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; box-shadow: var(--shadow);
+  display: grid; gap: 10px; min-width: 0;
+}
+.hc-top { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; }
+.rate { text-align: center; border-radius: 10px; padding: 8px 8px; min-width: 86px; }
+.rate b { display: block; font-family: var(--f-display); font-stretch: 110%; font-weight: 850; font-size: 1.55rem; line-height: 1; }
+.rate b.txt { font-size: 1rem; line-height: 1.15; }
+.rate span { display: block; font-family: var(--f-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 5px; }
+.r-low { background: var(--good-soft); color: var(--good); }
+.r-mid { background: var(--fha-soft); color: var(--fha); }
+.r-hi { background: var(--usda-soft); color: var(--usda); }
+.r-top { background: var(--over-soft); color: var(--over); }
+.r-ask { background: var(--soft); color: var(--muted); }
+.hcard h3 { font-size: 1.1rem; font-stretch: 104%; font-weight: 750; line-height: 1.2; overflow-wrap: anywhere; }
+.sub { color: var(--muted); font-size: 0.88rem; }
+.pricerow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-top: 4px; }
+.price { font-family: var(--f-display); font-stretch: 110%; font-weight: 800; font-size: 1.35rem; }
+.cut { font-size: 0.8rem; font-weight: 700; color: var(--good); }
+.ltype { display: inline-block; font-family: var(--f-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 5px; }
+.ltype.FHA { background: var(--fha-soft); color: var(--fha); }
+.ltype.VA { background: var(--va-soft); color: var(--va); }
+.ltype.USDA { background: var(--usda-soft); color: var(--usda); }
+.ltype.none { background: var(--soft); color: var(--muted); }
+.facts { font-size: 0.93rem; }
+.astats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--line); padding-top: 10px; }
+.astats div { min-width: 0; }
+.astats span { display: block; font-size: 0.75rem; color: var(--muted); line-height: 1.2; }
+.astats b { font-size: 1rem; font-variant-numeric: tabular-nums; }
+.astats small { display: block; font-size: 0.72rem; color: var(--muted); }
+.astats .ask { color: var(--muted); font-weight: 600; }
+.nostat { border-top: 1px solid var(--line); padding-top: 10px; color: var(--muted); font-size: 0.88rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 0.78rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: var(--soft); color: var(--ink); }
+.tag.va { background: var(--va-soft); color: var(--va); }
+.tag.ok { background: var(--good-soft); color: var(--good); }
+.tag.credit { background: var(--usda-soft); color: var(--usda); }
+.tag.new { background: var(--accent-soft); color: var(--accent-text); }
+details.more { border-top: 1px solid var(--line); padding-top: 8px; }
+details.more summary { cursor: pointer; font-weight: 600; color: var(--link); font-size: 0.92rem; }
+.more-body { display: grid; gap: 10px; margin-top: 8px; }
+.remarks { font-size: 0.92rem; line-height: 1.55; max-width: 70ch; }
+.feats { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 0.86rem; }
+.feats dt { color: var(--muted); }
+.feats dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.srcline { font-size: 0.78rem; color: var(--muted); }
+.empty { background: var(--card); border: 1.5px dashed var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 6px; }
+.empty h4 { margin: 0; font-family: var(--f-display); font-size: 1.1rem; font-stretch: 106%; }
+.empty p { color: var(--muted); max-width: 70ch; }
+
+/* Live lists */
+.lists { margin-top: 26px; display: grid; gap: 12px; }
+.lists-head h3 { font-size: 1.25rem; font-stretch: 110%; font-weight: 800; }
+.lists-head p { color: var(--muted); font-size: 0.92rem; margin-top: 2px; max-width: 72ch; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.tile {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center;
+  padding: 12px 14px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line);
+  color: var(--ink); text-decoration: none; box-shadow: var(--shadow); min-width: 0;
+}
+.tile:hover { border-color: var(--accent); }
+.tile b { font-family: var(--f-display); font-stretch: 106%; font-weight: 800; font-size: 1rem; line-height: 1.25; }
+.tile small { grid-column: 1; color: var(--muted); font-size: 0.84rem; line-height: 1.35; }
+.tile i { grid-column: 2; grid-row: 1 / span 2; font-style: normal; font-weight: 800; color: var(--accent-text); }
+.tile.main { grid-column: 1 / -1; background: var(--mast); border-color: var(--mast); color: var(--mast-ink); padding: 16px 18px; }
+.tile.main b { font-size: 1.15rem; }
+.tile.main small { color: var(--mast-muted); }
+.tile.main i { color: var(--accent); font-size: 1.2rem; }
+
+/* Payment check */
+.calc { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 14px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; box-shadow: var(--shadow); }
+.checking { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; background: var(--accent-soft); color: var(--ink); border-radius: 10px; padding: 10px 14px; font-size: 0.95rem; }
+.checking b { font-family: var(--f-display); font-stretch: 106%; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field label, .field .lbl { font-weight: 600; font-size: 0.9rem; }
+.field small { color: var(--muted); font-size: 0.8rem; }
+.field input, .field select {
+  color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 42px; width: 100%;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); outline: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
+.seg { display: flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { flex: 1; border: 0; background: transparent; color: var(--ink); font: 600 0.92rem var(--f-body); padding: 8px 6px; cursor: pointer; min-height: 40px; }
+.seg button[aria-pressed="true"] { background: var(--mast); color: var(--mast-ink); }
+.big { font-family: var(--f-display); font-stretch: 112%; font-weight: 850; font-size: clamp(2.1rem, 5vw, 2.9rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.big.ok { color: var(--good); }
+.big.over { color: var(--over); }
+.big.wait { color: var(--muted); font-size: 1.4rem; line-height: 1.2; }
+.break { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid var(--line); }
+.break li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.break li span:first-child { color: var(--muted); }
+.break li.strong span { color: var(--ink); font-weight: 700; }
+.fine { color: var(--muted); font-size: 0.84rem; margin-top: 10px; }
+
+/* How it works */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 0; margin: 0; list-style: none; counter-reset: s; }
+.steps li { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px 14px 52px; position: relative; counter-increment: s; min-width: 0; }
+.steps li::before {
+  content: counter(s); position: absolute; left: 14px; top: 13px; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent-text); font: 700 0.9rem/26px var(--f-mono); text-align: center;
+}
+.steps b { display: block; font-family: var(--f-display); font-stretch: 106%; }
+.steps span { color: var(--muted); font-size: 0.95rem; }
+
+/* Contact */
+.contact { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px 20px; align-items: center; }
+.contact img { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; background: var(--soft); }
+.contact h3 { font-size: 1.3rem; font-stretch: 108%; }
+.contact p { color: var(--muted); margin-top: 4px; max-width: 64ch; }
+.contact .ctas { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.number { font-family: var(--f-mono); font-size: 1.1rem; user-select: all; padding: 6px 12px; border-radius: 8px; background: var(--soft); }
+
+footer { margin-top: 40px; background: var(--mast); color: var(--mast-ink); }
+footer .wrap { padding-block: 24px 32px; display: grid; gap: 10px; }
+footer .fine { color: var(--mast-muted); margin: 0; }
+
+@media (max-width: 900px) {
+  .calc { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .search-row { flex-direction: column; }
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .stat, .stat + .stat { padding: 12px 0 2px; border-left: 0; }
+  .stat + .stat { border-top: 1px solid var(--mast-line); }
+  .phone { margin-left: 0; width: 100%; }
+  .fields { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .mrow .mono { min-width: 0; width: 100%; }
+  .nav .here { display: none; }
+  .fcount { margin-left: 0; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .townbar.flip { animation: none; }
+}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="agent">
+      <img src="__PHOTO__" alt="Darien Phillips">
+      <div class="who"><b>Darien Phillips, REALTOR®</b><span>eXp Realty of Northern California · DRE #02439090</span></div>
+      <div class="phone">
+        <span class="sel">209.882.6469</span>
+        <a class="btn btn-ghost btn-sm" href="tel:+12098826469">Call</a>
+        <a class="btn btn-ghost btn-sm" href="sms:+12098826469">Text</a>
+      </div>
+    </div>
+    <div class="mono eyebrow">Sacramento · Placer · San Joaquin · Stanislaus</div>
+    <h1>Assumable Property Search</h1>
+    <p class="lede">Every home for sale on the MLS whose listing offers an assumable FHA or VA loan, so you can take over the seller's rate. Search a town or browse them all.</p>
+
+    <div class="finder" role="search">
+      <label for="town-q" class="mono" style="color:var(--mast-muted)">Search a city or town</label>
+      <div class="search-row">
+        <div class="combo">
+          <input id="town-q" type="text" autocomplete="off" spellcheck="false" placeholder="Roseville, Elk Grove, Modesto…" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="town-list">
+          <ul id="town-list" role="listbox" aria-label="Matching towns" hidden></ul>
+        </div>
+        <button type="button" class="btn btn-accent btn-go" id="go">Find homes</button>
+      </div>
+      <p id="msg" class="msg" role="status" aria-live="polite"></p>
+      <div class="markets" id="markets"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v num" id="stat-count">82</div><div class="k" id="stat-count-k">Homes for sale with an assumable loan in the listing</div></div>
+      <div class="stat"><div class="v num hot" id="stat-low">1.75%</div><div class="k" id="stat-low-k">Lowest seller rate listed</div></div>
+      <div class="stat"><div class="v num">7.24%</div><div class="k">Average rate on a new 30-year loan this week (Freddie Mac, Oct 29)</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a href="#homes">Homes</a><a href="#payment">Payment check</a><a href="#how">How it works</a><a href="#contact">Talk to Darien</a>
+    <span class="mono here" id="nav-town"></span>
+  </div>
+</nav>
+
+<main>
+  <section id="homes">
+    <div class="wrap">
+      <div class="townbar" id="townbar">
+        <div>
+          <h2 id="town-name">All areas</h2>
+          <div class="county" id="town-county"></div>
+        </div>
+        <div class="tools">
+          <button type="button" class="btn btn-line btn-sm" id="copy-town">Copy link to this view</button>
+          <span class="copied" id="copied" role="status"></span>
+        </div>
+      </div>
+
+      <div class="homes">
+        <div class="homes-head">
+          <h3 id="homes-title">Assumable homes for sale</h3>
+          <p id="homes-sub"></p>
+        </div>
+        <div class="fbar" role="group" aria-label="Filter homes">
+          <div class="fgroup" role="group" aria-label="Loan type">
+            <span class="mono">Loan</span>
+            <button type="button" class="fchip" data-type="all" aria-pressed="true">All</button>
+            <button type="button" class="fchip" data-type="FHA" aria-pressed="false">FHA</button>
+            <button type="button" class="fchip" data-type="VA" aria-pressed="false">VA</button>
+            <button type="button" class="fchip" data-type="none" aria-pressed="false">Not stated</button>
+          </div>
+          <div class="fgroup">
+            <label class="mono" for="f-beds">Beds</label>
+            <select id="f-beds">
+              <option value="0">Any</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5">5+</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label class="mono" for="f-max">Max price</label>
+            <select id="f-max">
+              <option value="0">Any</option><option value="400000">$400k</option><option value="500000">$500k</option><option value="600000">$600k</option><option value="750000">$750k</option><option value="1000000">$1M</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label class="mono" for="f-sort">Sort</label>
+            <select id="f-sort">
+              <option value="rate">Lowest rate</option><option value="price">Lowest price</option><option value="new">Newest</option><option value="gap">Smallest cash gap</option>
+            </select>
+          </div>
+          <span class="fcount" id="fcount" aria-live="polite"></span>
+        </div>
+        <div class="hlist" id="hlist"></div>
+      </div>
+
+      <div class="lists">
+        <div class="lists-head">
+          <h3 id="lists-title">More assumable homes</h3>
+          <p id="lists-sub">These open live and also catch homes whose listings don't mention the loan, using public loan records.</p>
+        </div>
+        <div class="tiles" id="tiles"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="payment">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <h2>Payment check</h2>
+          <p>Tap "Run the numbers" on any home, or type your own. Compares taking over the seller's loan with a new loan at today's rate.</p>
+        </div>
+        <span class="mono">Principal and interest</span>
+      </div>
+      <div class="calc">
+        <div class="checking" id="checking" hidden></div>
+        <div class="panel">
+          <div class="fields">
+            <div class="field"><label for="c-price">Price</label><input id="c-price" type="text" inputmode="numeric" value="575,000"></div>
+            <div class="field"><label for="c-bal">Loan balance</label><input id="c-bal" type="text" inputmode="numeric" value="410,000"><small id="c-bal-note"></small></div>
+            <div class="field"><label for="c-rate">Seller's rate (%)</label><input id="c-rate" type="text" inputmode="decimal" value="2.875"></div>
+            <div class="field"><label for="c-years">Years left on the loan</label><input id="c-years" type="text" inputmode="decimal" value="25"><small id="c-years-note">Ask the listing agent for the exact term</small></div>
+            <div class="field" style="grid-column:1/-1">
+              <span class="lbl" id="type-l">Loan type</span>
+              <div class="seg" role="group" aria-labelledby="type-l">
+                <button type="button" data-ltype="FHA" aria-pressed="true">FHA</button>
+                <button type="button" data-ltype="VA" aria-pressed="false">VA</button>
+                <button type="button" data-ltype="USDA" aria-pressed="false">USDA</button>
+              </div>
+            </div>
+            <div class="field"><label for="c-cash">Cash toward the gap</label><input id="c-cash" type="text" inputmode="numeric" value="165,000"><small>Anything left over goes on a 2nd loan</small></div>
+            <div class="field"><label for="c-r2">2nd loan rate (%)</label><input id="c-r2" type="text" inputmode="decimal" value="9.5"><small>Example; ask a lender</small></div>
+            <div class="field"><label for="c-today">New 30-yr loan rate (%)</label><input id="c-today" type="text" inputmode="decimal" value="7.24"><small>This week's national average</small></div>
+          </div>
+        </div>
+        <div class="panel" aria-live="polite">
+          <div class="mono" style="color:var(--muted)">Monthly difference</div>
+          <div class="big ok" id="r-big">–</div>
+          <p class="sub" id="r-sub" style="margin-top:6px"></p>
+          <ul class="break" id="r-break"></ul>
+          <p class="fine">Estimate only. FHA servicers can charge up to $1,800 to process an assumption; VA charges a 0.5% funding fee plus processing. Taxes, insurance and mortgage insurance aren't included.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="shead"><div><h2>How taking over a loan works</h2></div></div>
+      <ol class="steps">
+        <li><b>Keep the seller's rate</b><span>You take over their balance, rate and remaining years.</span></li>
+        <li><b>Cover the cash gap</b><span>Pay the difference between the price and the balance in cash or with a 2nd loan.</span></li>
+        <li><b>Get the lender's OK</b><span>FHA buyers must live in the home. Anyone who qualifies can take over a VA loan, though some sellers want a veteran.</span></li>
+        <li><b>Plan for 45 to 90 days</b><span>The seller's loan servicer has to approve you, so closing takes longer.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="panel contact">
+        <img src="__PHOTO__" alt="">
+        <div>
+          <h3>Talk to Darien</h3>
+          <p>Darien can confirm the rate, balance and years left with the listing agent, line up showings, and set up alerts for the towns you like.</p>
+        </div>
+        <div class="ctas">
+          <span class="number" id="phone-main">209.882.6469</span>
+          <button type="button" class="btn btn-line btn-sm" id="copy-phone">Copy number</button>
+          <a class="btn btn-accent btn-sm" href="sms:+12098826469">Text Darien</a>
+          <a class="btn btn-line btn-sm" href="tel:+12098826469">Call</a>
+          <span class="copied" id="copied-phone" role="status"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="agent">
+      <div class="who"><b>Darien Phillips, REALTOR®</b><span>eXp Realty of Northern California · DRE #02439090 · 209.882.6469</span></div>
+    </div>
+    <p class="fine" id="foot-mls"></p>
+    <p class="fine">Live lists open on Roots.homes, Zillow and Google. New-loan rate: Freddie Mac weekly average, Oct 29, 2026. Payments are estimates, not a loan offer. Equal Housing Opportunity.</p>
+  </div>
+</footer>
+
+<script type="application/json" id="homes-data">__HOMES__</script>
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
+  };
+  const PAGE_URL = 'https://claude.ai/artifact/THvyrDqS5zCVQq1XDB2aVu';
+  const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const short = (n) => n >= 1e6 ? '$' + (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' : '$' + Math.round(n / 1e3) + 'k';
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const parseMoney = (s) => {
+    let t = String(s == null ? '' : s).trim().toLowerCase().replace(/[$,\s]/g, '');
+    if (!t) return NaN;
+    let m = 1;
+    if (t.endsWith('k')) { m = 1e3; t = t.slice(0, -1); } else if (t.endsWith('m')) { m = 1e6; t = t.slice(0, -1); }
+    const v = parseFloat(t);
+    return isFinite(v) ? v * m : NaN;
+  };
+  const parseNum = (s) => { const v = parseFloat(String(s == null ? '' : s).replace(/[%,\s]/g, '')); return isFinite(v) ? v : NaN; };
+  const pmt = (P, ratePct, months) => {
+    if (!(P > 0) || !(months > 0)) return 0;
+    const r = ratePct / 100 / 12;
+    if (!(r > 0)) return P / months;
+    return P * r / (1 - Math.pow(1 + r, -months));
+  };
+
+  /* Towns: [name, county, lat, lng, zoom, market chip?, other names] */
+  const RAW = [
+    ['Modesto', 'Stanislaus', 37.6391, -120.9969, 11, 1, ['village one', 'del rio', 'north modesto', 'east modesto']],
+    ['Salida', 'Stanislaus', 37.7058, -121.0849, 13, 1],
+    ['Riverbank', 'Stanislaus', 37.7360, -120.9354, 12.5, 1],
+    ['Ceres', 'Stanislaus', 37.5949, -120.9577, 12.5, 1],
+    ['Turlock', 'Stanislaus', 37.4947, -120.8466, 12, 1],
+    ['Oakdale', 'Stanislaus', 37.7666, -120.8471, 12.5, 1],
+    ['Patterson', 'Stanislaus', 37.4716, -121.1297, 12.5, 1, ['diablo grande']],
+    ['Newman', 'Stanislaus', 37.3138, -121.0208, 13.5, 1],
+    ['Hughson', 'Stanislaus', 37.5966, -120.8663, 13.5],
+    ['Waterford', 'Stanislaus', 37.6413, -120.7605, 13.5],
+    ['Empire', 'Stanislaus', 37.6385, -120.9022, 14],
+    ['Keyes', 'Stanislaus', 37.5563, -120.9152, 14],
+    ['Denair', 'Stanislaus', 37.5266, -120.7969, 14],
+    ['Hickman', 'Stanislaus', 37.6235, -120.7527, 14],
+    ['Crows Landing', 'Stanislaus', 37.3941, -121.0697, 14],
+    ['Westley', 'Stanislaus', 37.5480, -121.1980, 14],
+    ['Grayson', 'Stanislaus', 37.5635, -121.1771, 14],
+    ['Knights Ferry', 'Stanislaus', 37.8188, -120.5702, 13.5],
+    ['Valley Home', 'Stanislaus', 37.8327, -120.9124, 13.5],
+    ['Sacramento', 'Sacramento', 38.5816, -121.4944, 10.5, 1, ['sac', 'sacto', 'natomas', 'north natomas', 'south natomas', 'land park', 'midtown', 'east sacramento', 'east sac', 'pocket', 'greenhaven', 'oak park', 'curtis park', 'tahoe park', 'arden arcade', 'south sacramento', 'florin', 'vineyard', 'del paso heights', 'foothill farms']],
+    ['Elk Grove', 'Sacramento', 38.4088, -121.3716, 11.5, 1, ['laguna', 'laguna west', 'east franklin', 'sheldon']],
+    ['Citrus Heights', 'Sacramento', 38.7071, -121.2811, 12.5, 1],
+    ['Folsom', 'Sacramento', 38.6780, -121.1761, 12, 1, ['empire ranch', 'folsom ranch']],
+    ['Rancho Cordova', 'Sacramento', 38.5891, -121.3027, 12, 1, ['anatolia', 'sunridge']],
+    ['Carmichael', 'Sacramento', 38.6171, -121.3283, 12.5, 1],
+    ['Fair Oaks', 'Sacramento', 38.6446, -121.2722, 12.5],
+    ['Orangevale', 'Sacramento', 38.6785, -121.2258, 13],
+    ['Antelope', 'Sacramento', 38.7082, -121.3299, 13],
+    ['North Highlands', 'Sacramento', 38.6857, -121.3722, 13],
+    ['Rio Linda', 'Sacramento', 38.6910, -121.4486, 13],
+    ['Elverta', 'Sacramento', 38.7138, -121.4627, 13],
+    ['Gold River', 'Sacramento', 38.6263, -121.2466, 13.5],
+    ['Mather', 'Sacramento', 38.5549, -121.2861, 13.5],
+    ['Rancho Murieta', 'Sacramento', 38.5016, -121.0947, 13],
+    ['Wilton', 'Sacramento', 38.4113, -121.2725, 12.5],
+    ['Galt', 'Sacramento', 38.2546, -121.2999, 13, 1],
+    ['Herald', 'Sacramento', 38.2963, -121.2441, 13],
+    ['Isleton', 'Sacramento', 38.1619, -121.6111, 13.5],
+    ['Walnut Grove', 'Sacramento', 38.2421, -121.5116, 14],
+    ['Courtland', 'Sacramento', 38.3313, -121.5683, 14],
+    ['Roseville', 'Placer', 38.7521, -121.2880, 11.5, 1, ['west roseville', 'sierra vista', 'blue oaks', 'fiddyment']],
+    ['Rocklin', 'Placer', 38.7907, -121.2358, 12, 1, ['whitney ranch', 'stanford ranch']],
+    ['Lincoln', 'Placer', 38.8916, -121.2930, 12, 1, ['lincoln hills', 'sun city lincoln hills', 'twelve bridges']],
+    ['Granite Bay', 'Placer', 38.7632, -121.1638, 12.5],
+    ['Loomis', 'Placer', 38.8213, -121.1930, 13],
+    ['Auburn', 'Placer', 38.8966, -121.0769, 12, 1, ['north auburn']],
+    ['Newcastle', 'Placer', 38.8738, -121.1333, 13],
+    ['Penryn', 'Placer', 38.8524, -121.1694, 13.5],
+    ['Sheridan', 'Placer', 38.9796, -121.3753, 13],
+    ['Meadow Vista', 'Placer', 38.9969, -121.0219, 13],
+    ['Applegate', 'Placer', 38.9993, -120.9927, 13.5],
+    ['Colfax', 'Placer', 39.1007, -120.9533, 13],
+    ['Foresthill', 'Placer', 39.0202, -120.8180, 12.5],
+    ['Weimar', 'Placer', 39.0371, -120.9727, 13.5],
+    ['Alta', 'Placer', 39.2018, -120.8135, 13.5],
+    ['Dutch Flat', 'Placer', 39.2060, -120.8366, 14],
+    ['Tahoe City', 'Placer', 39.1677, -120.1452, 12.5, 0, ['lake tahoe', 'tahoe']],
+    ['Kings Beach', 'Placer', 39.2377, -120.0266, 13],
+    ['Tahoe Vista', 'Placer', 39.2391, -120.0510, 13.5],
+    ['Carnelian Bay', 'Placer', 39.2266, -120.0802, 13.5],
+    ['Olympic Valley', 'Placer', 39.1971, -120.2349, 13, 0, ['squaw valley', 'palisades tahoe']],
+    ['Homewood', 'Placer', 39.0857, -120.1602, 13.5],
+    ['Stockton', 'San Joaquin', 37.9577, -121.2908, 11, 1, ['brookside', 'spanos park', 'lincoln village', 'weston ranch']],
+    ['Lodi', 'San Joaquin', 38.1302, -121.2724, 12.5, 1],
+    ['Manteca', 'San Joaquin', 37.7974, -121.2161, 12, 1],
+    ['Lathrop', 'San Joaquin', 37.8227, -121.2766, 12.5, 1, ['river islands', 'mossdale']],
+    ['Tracy', 'San Joaquin', 37.7397, -121.4252, 12],
+    ['Ripon', 'San Joaquin', 37.7416, -121.1244, 13],
+    ['Escalon', 'San Joaquin', 37.7977, -120.9969, 13.5],
+    ['Mountain House', 'San Joaquin', 37.7827, -121.5430, 13],
+    ['Lockeford', 'San Joaquin', 38.1635, -121.1494, 13.5],
+    ['Woodbridge', 'San Joaquin', 38.1541, -121.3011, 13.5],
+    ['Merced', 'Merced', 37.3022, -120.4830, 12],
+    ['Atwater', 'Merced', 37.3477, -120.6091, 12.5],
+    ['Los Banos', 'Merced', 37.0583, -120.8499, 12.5],
+    ['Sonora', 'Tuolumne', 37.9841, -120.3822, 13],
+    ['Angels Camp', 'Calaveras', 38.0683, -120.5396, 13],
+    ['Valley Springs', 'Calaveras', 38.1916, -120.8291, 13],
+    ['Jackson', 'Amador', 38.3488, -120.7741, 13],
+    ['West Sacramento', 'Yolo', 38.5805, -121.5302, 12],
+    ['Davis', 'Yolo', 38.5449, -121.7405, 12],
+    ['Woodland', 'Yolo', 38.6785, -121.7733, 12],
+    ['El Dorado Hills', 'El Dorado', 38.6857, -121.0822, 12],
+    ['Cameron Park', 'El Dorado', 38.6688, -120.9872, 12.5],
+    ['Placerville', 'El Dorado', 38.7296, -120.7985, 12.5],
+    ['Yuba City', 'Sutter', 39.1404, -121.6169, 12],
+    ['Marysville', 'Yuba', 39.1457, -121.5914, 13],
+    ['Plumas Lake', 'Yuba', 39.0207, -121.5580, 13],
+    ['Grass Valley', 'Nevada', 39.2191, -121.0611, 12.5],
+    ['Truckee', 'Nevada', 39.3280, -120.1833, 12],
+    ['Brentwood', 'Contra Costa', 37.9319, -121.6958, 12.5],
+    ['Antioch', 'Contra Costa', 38.0049, -121.8058, 12],
+    ['Livermore', 'Alameda', 37.6819, -121.7680, 12],
+    ['Vacaville', 'Solano', 38.3566, -121.9877, 12],
+    ['Fairfield', 'Solano', 38.2494, -122.0400, 12],
+    ['Fresno', 'Fresno', 36.7378, -119.7871, 11],
+    ['Bakersfield', 'Kern', 35.3733, -119.0187, 11],
+    ['San Jose', 'Santa Clara', 37.3382, -121.8863, 11],
+    ['Los Angeles', 'Los Angeles', 34.0522, -118.2437, 10.5],
+    ['San Diego', 'San Diego', 32.7157, -117.1611, 11]
+  ];
+  const MARKETS = ['Sacramento', 'Placer', 'Stanislaus', 'San Joaquin'];
+  const slugOf = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const TOWNS = RAW.map(([n, c, lat, lng, z, mk, aka]) => ({ n, c, lat, lng, z, mk: !!mk, aka: aka || [], slug: slugOf(n) }));
+  const ALL = { n: 'All areas', c: '', slug: 'all', all: true, lat: 38.2, lng: -121.15, z: 8.2, aka: ['all', 'everything', 'all areas', 'all towns'] };
+  const bySlug = { all: ALL };
+  TOWNS.forEach((t) => { bySlug[t.slug] = t; });
+
+  /* Homes */
+  const DATA = JSON.parse($('homes-data').textContent || '{"homes":[]}');
+  const HOMES = DATA.homes;
+  const countBy = {};
+  HOMES.forEach((h) => { const s = slugOf(h.city); countBy[s] = (countBy[s] || 0) + 1; });
+  const countFor = (t) => t.all ? HOMES.length : (countBy[t.slug] || 0);
+  const countyOf = (city) => { const t = bySlug[slugOf(city)]; return t ? t.c + ' County' : ''; };
+  const mlsHomes = HOMES.filter((h) => h.src === 'mls');
+  const lowest = HOMES.filter((h) => h.rate != null).sort((a, b) => a.rate - b.rate)[0];
+  $('stat-count').textContent = mlsHomes.length;
+  $('stat-count-k').textContent = 'Homes on the MLS whose listing offers an assumable loan (' + DATA.asof + ')';
+  if (lowest) { $('stat-low').textContent = lowest.rate + '%'; $('stat-low-k').textContent = 'Lowest seller rate listed, in ' + lowest.city; }
+  $('foot-mls').textContent = 'Listing information from MetroList Services, Inc., as of ' + DATA.asof + '. Loan rates, balances and terms come from each listing\'s public remarks and are not verified; confirm them with the listing agent and the seller\'s loan servicer before writing an offer. All measurements are approximate. Information is deemed reliable but not guaranteed. Homes marked "Darien\'s pick" use Roots.homes estimates checked ' + DATA.picksChecked + '.';
+
+  /* Market chips */
+  (function buildMarkets() {
+    const top = document.createElement('div'); top.className = 'mrow';
+    const lab = document.createElement('span'); lab.className = 'mono'; lab.textContent = 'Browse';
+    top.append(lab, chip(ALL));
+    $('markets').appendChild(top);
+    MARKETS.forEach((cn) => {
+      const row = document.createElement('div'); row.className = 'mrow';
+      const l = document.createElement('span'); l.className = 'mono'; l.textContent = cn + ' County';
+      row.appendChild(l);
+      TOWNS.filter((t) => t.c === cn && (t.mk || countFor(t))).sort((a, b) => countFor(b) - countFor(a) || a.n.localeCompare(b.n)).forEach((t) => row.appendChild(chip(t)));
+      $('markets').appendChild(row);
+    });
+    function chip(t) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'mchip'; b.dataset.town = t.slug; b.setAttribute('aria-pressed', 'false');
+      b.append(document.createTextNode(t.n));
+      const c = countFor(t);
+      if (c) { const n = document.createElement('span'); n.className = 'n'; n.textContent = c; b.appendChild(n); }
+      return b;
+    }
+  })();
+
+  /* Filters */
+  const F = Object.assign({ type: 'all', beds: 0, max: 0, sort: 'rate' }, store.get('aps-filters2', {}) || {});
+  function syncFilters() {
+    document.querySelectorAll('.fchip[data-type]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.type === F.type)));
+    $('f-beds').value = String(F.beds); $('f-max').value = String(F.max); $('f-sort').value = F.sort;
+  }
+  document.querySelectorAll('.fchip[data-type]').forEach((b) => b.addEventListener('click', () => { F.type = b.dataset.type; store.set('aps-filters2', F); syncFilters(); renderHomes(); }));
+  $('f-beds').addEventListener('change', (e) => { F.beds = +e.target.value; store.set('aps-filters2', F); renderHomes(); });
+  $('f-max').addEventListener('change', (e) => { F.max = +e.target.value; store.set('aps-filters2', F); renderHomes(); });
+  $('f-sort').addEventListener('change', (e) => { F.sort = e.target.value; store.set('aps-filters2', F); renderHomes(); });
+
+  const tier = (h) => h.rate == null ? (h.sortRate < 99 ? (h.sortRate < 3 ? 'r-low' : 'r-mid') : 'r-ask') : h.rate < 3 ? 'r-low' : h.rate < 4 ? 'r-mid' : h.rate < 5 ? 'r-hi' : 'r-top';
+  const zillowHome = (h) => 'https://www.zillow.com/homes/' + encodeURIComponent((h.street + ', ' + h.city + ', CA ' + h.zip).replace(/#/g, '')).replace(/%20/g, '-') + '_rb/';
+  const mapHome = (h) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(h.street.replace(/#.*$/, '') + ', ' + h.city + ', CA ' + h.zip);
+  const smsHome = (h) => 'sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, I\'d like to know more about the assumable loan on ' + h.street + ', ' + h.city + (h.mls ? ' (MLS# ' + h.mls + ')' : '') + '.');
+  const fmtBaths = (b) => (Math.round(b * 10) / 10).toString();
+
+  function cardHTML(h) {
+    const rateBig = h.rate != null ? '<b class="num">' + esc(h.rate) + '%</b>' : '<b class="txt">' + esc(h.rateText || 'Ask') + '</b>';
+    const typeLbl = h.type ? h.type + ' loan' : 'Seller rate';
+    const facts = [
+      h.beds ? h.beds + ' bd' : '', h.baths ? fmtBaths(h.baths) + ' ba' : '', h.sqft ? h.sqft.toLocaleString('en-US') + ' sq ft' : '',
+      h.acres ? (h.acres >= 1 ? h.acres + ' ac' : Math.round(h.acres * 43560).toLocaleString('en-US') + ' sq ft lot') : '',
+      h.year ? 'Built ' + h.year : '', h.garage ? h.garage + '-car garage' : '', h.pool ? 'Pool' : ''
+    ].filter(Boolean).join(' · ');
+    const balCell = h.balance
+      ? '<b>' + money(h.balance) + '</b>' + (h.balanceNote ? '<small>' + esc(h.balanceNote) + '</small>' : '')
+      : '<b class="ask">Ask</b><small>Not in listing</small>';
+    const gapCell = h.gap != null
+      ? '<b>' + money(h.gap) + '</b><small>Price minus balance</small>'
+      : h.gapText ? '<b>' + esc(h.gapText) + '</b><small>Per listing</small>' : '<b class="ask">Ask</b><small>Needs balance</small>';
+    const payCell = h.pi
+      ? '<b>' + money(h.pi) + '/mo</b><small>Stated P&amp;I' + (h.matures ? ', ends ' + esc(h.matures) : '') + '</small>'
+      : h.monthly ? '<b>' + money(h.monthly) + '/mo</b><small>Estimate</small>' : '<b class="ask">Ask</b><small>Try Run the numbers</small>';
+    const tags = (h.tags || []).map(([k, t]) => '<span class="tag ' + esc(k) + '">' + esc(t) + '</span>');
+    if (h.dom != null && h.dom <= 7) tags.unshift('<span class="tag new">New this week</span>');
+    if (h.orig) tags.push('<span class="tag ok">Price cut ' + short(h.orig - h.price) + '</span>');
+    if (h.note) tags.push('<span class="tag">' + esc(h.note) + '</span>');
+    const feats = (h.feats || []).map(([k, v]) => '<dt>' + esc(k) + '</dt><dd>' + esc(v.replace(/,/g, ', ')) + '</dd>').join('');
+    const listed = h.listed ? 'Listed ' + esc(h.listed) + (h.dom != null ? ' · ' + h.dom + ' days on market' : '') : '';
+    const more = (h.remarks || feats)
+      ? '<details class="more"><summary>Full listing details</summary><div class="more-body">' +
+          (h.remarks ? '<p class="remarks">' + esc(h.remarks) + '</p>' : '') +
+          (feats ? '<dl class="feats">' + feats + '</dl>' : '') +
+          (listed ? '<p class="sub">' + listed + '</p>' : '') +
+        '</div></details>'
+      : '';
+    const links = [
+      '<button type="button" class="btn btn-accent btn-sm" data-run="' + esc(h.id) + '">Run the numbers</button>',
+      h.roots ? '<a class="btn btn-line btn-sm" href="' + esc(h.roots) + '" target="_blank" rel="noopener">Loan details</a>' : '',
+      '<a class="btn btn-line btn-sm" href="' + esc(zillowHome(h)) + '" target="_blank" rel="noopener">Zillow</a>',
+      h.redfin ? '<a class="btn btn-line btn-sm" href="' + esc(h.redfin) + '" target="_blank" rel="noopener">Redfin</a>' : '',
+      '<a class="btn btn-line btn-sm" href="' + esc(mapHome(h)) + '" target="_blank" rel="noopener">Map</a>',
+      '<a class="btn btn-line btn-sm" href="' + esc(smsHome(h)) + '">Text Darien</a>'
+    ].join('');
+    const src = h.src === 'mls'
+      ? 'MetroList MLS# ' + esc(h.mls) + (h.dom != null ? ' · ' + h.dom + ' days on market' : '')
+      : 'Darien\'s pick · Roots.homes estimate, checked ' + esc(DATA.picksChecked);
+    return '<article class="hcard">' +
+      '<div class="hc-top"><div class="rate ' + tier(h) + '">' + rateBig + '<span>' + esc(typeLbl) + '</span></div>' +
+        '<div><h3>' + esc(h.street) + '</h3><div class="sub">' + esc(h.city) + ' ' + esc(h.zip) + (countyOf(h.city) ? ' · ' + esc(countyOf(h.city)) : '') + '</div>' +
+        '<div class="pricerow"><span class="price num">' + money(h.price) + '</span></div></div></div>' +
+      (facts ? '<div class="facts">' + esc(facts) + '</div>' : '') +
+      (h.balance || h.gap != null || h.gapText || h.pi || h.monthly
+        ? '<div class="astats"><div><span>Loan balance</span>' + balCell + '</div><div><span>Cash gap</span>' + gapCell + '</div><div><span>Assumed payment</span>' + payCell + '</div></div>'
+        : '<p class="nostat">The listing doesn\'t give the loan balance. Ask Darien for it, then tap Run the numbers.</p>') +
+      (tags.length ? '<div class="tags">' + tags.join('') + '</div>' : '') +
+      more +
+      '<div class="actions">' + links + '</div>' +
+      '<div class="srcline">' + src + '</div>' +
+    '</article>';
+  }
+
+  let cur = null;
+  function homesFor(t) {
+    return t.all ? HOMES.slice() : HOMES.filter((h) => slugOf(h.city) === t.slug);
+  }
+  function renderHomes() {
+    if (!cur) return;
+    const base = cur.unknown ? [] : homesFor(cur);
+    let list = base.filter((h) =>
+      (F.type === 'all' || (F.type === 'none' ? !h.type : h.type === F.type)) &&
+      (!F.beds || (h.beds || 0) >= F.beds) &&
+      (!F.max || h.price <= F.max));
+    const by = {
+      rate: (a, b) => a.sortRate - b.sortRate || a.price - b.price,
+      price: (a, b) => a.price - b.price,
+      new: (a, b) => (a.dom == null ? 1e9 : a.dom) - (b.dom == null ? 1e9 : b.dom),
+      gap: (a, b) => (a.gap == null ? 1e12 : a.gap) - (b.gap == null ? 1e12 : b.gap) || a.sortRate - b.sortRate
+    }[F.sort] || ((a, b) => a.sortRate - b.sortRate);
+    list.sort(by);
+    const name = cur.all ? 'every area' : cur.n;
+    $('homes-title').textContent = base.length ? base.length + ' assumable home' + (base.length === 1 ? '' : 's') + ' for sale in ' + name : 'Assumable homes in ' + cur.n;
+    $('homes-sub').textContent = base.length
+      ? 'Each listing says the seller\'s loan can be taken over. Rates and balances come from the listing; tap "Full listing details" for everything the MLS has.'
+      : '';
+    $('fcount').textContent = base.length ? 'Showing ' + list.length + ' of ' + base.length : '';
+    document.querySelector('.fbar').hidden = !base.length;
+    if (!base.length) {
+      $('hlist').innerHTML = '<div class="empty"><h4>No MLS listings in ' + esc(cur.n) + ' mention an assumable loan right now</h4>' +
+        '<p>The live lists below also catch homes whose listings don\'t mention it. Text Darien at <b class="num">209.882.6469</b> to get alerts the moment one is listed here.</p></div>';
+      return;
+    }
+    $('hlist').innerHTML = list.length ? list.map(cardHTML).join('') : '<div class="empty"><h4>No homes match these filters</h4><p>Try "All" loan types or loosen the beds and price filters.</p></div>';
+  }
+  $('hlist').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-run]');
+    if (!b) return;
+    const h = HOMES.find((x) => x.id === b.dataset.run);
+    if (h) runNumbers(h);
+  });
+
+  /* Live lists */
+  const LISTS = [
+    { t: 'All assumable homes', s: 'Every home for sale with a loan you can take over', p: {}, main: true },
+    { t: 'New this week', s: 'Listed in the last 7 days', p: { daysOnMarket: 7 } },
+    { t: 'Rates 3% or lower', s: 'The biggest monthly savings', p: { interestRateMax: 3 } },
+    { t: 'Rates 4% or lower', s: 'Still far below today\'s 7.24%', p: { interestRateMax: 4 } },
+    { t: '$100k or less down', s: 'Smaller cash gap to cover', p: { downPaymentMax: 100000 } },
+    { t: '3+ bedrooms', s: 'Family-size homes', p: { bedsMin: 3 } },
+    { t: 'Zillow', s: 'Listings whose ad mentions "assumable"', zillow: true },
+    { t: 'Web search', s: 'Agent pages advertising assumable homes', web: true }
+  ];
+  const rootsUrl = (t, extra) => {
+    const p = new URLSearchParams({ lat: t.lat, lng: t.lng, zoom: t.z, place: t.all ? 'Sacramento Region' : t.n + ', CA', isAssumable: 'true', view: 'list' });
+    Object.keys(extra || {}).forEach((k) => p.set(k, extra[k]));
+    return 'https://www.roots.homes/listings?' + p.toString();
+  };
+  const zillowUrl = (name) => 'https://www.zillow.com/' + slugOf(name) + '-ca/?searchQueryState=' + encodeURIComponent(JSON.stringify({ filterState: { att: { value: 'assumable' } }, isListVisible: true }));
+  const webUrl = (name) => 'https://www.google.com/search?q=' + encodeURIComponent('"assumable" home for sale "' + name + ', CA"');
+  function renderLists(t) {
+    const box = $('tiles');
+    box.innerHTML = '';
+    const items = t.unknown ? LISTS.filter((l) => l.zillow || l.web) : t.all ? LISTS.filter((l) => !l.zillow && !l.web) : LISTS;
+    items.forEach((l) => {
+      const a = document.createElement('a');
+      a.className = 'tile' + (l.main ? ' main' : '');
+      a.href = l.zillow ? zillowUrl(t.n) : l.web ? webUrl(t.n) : rootsUrl(t, l.p);
+      a.target = '_blank'; a.rel = 'noopener';
+      const b = document.createElement('b'); b.textContent = l.main ? (t.all ? 'All assumable homes in the region' : 'All assumable homes in ' + t.n) : l.t;
+      const s = document.createElement('small'); s.textContent = l.s;
+      const i = document.createElement('i'); i.textContent = '↗'; i.setAttribute('aria-hidden', 'true');
+      a.append(b, s, i);
+      box.appendChild(a);
+    });
+    $('lists-title').textContent = t.all ? 'Search the whole region live' : 'More assumable homes in ' + t.n;
+    $('lists-sub').textContent = t.unknown
+      ? t.n + ' isn\'t on the map yet, so only these two searches work for it. Text Darien to add it.'
+      : 'These open live and also catch homes whose listings don\'t mention the loan, using public loan records.';
+  }
+
+  /* Show a town */
+  function showTown(t, opts) {
+    opts = opts || {};
+    cur = t;
+    $('town-name').textContent = t.n;
+    $('town-county').textContent = t.all ? 'Sacramento, Placer, Stanislaus and San Joaquin counties' : t.unknown ? 'Not on the map yet' : t.c + ' County';
+    $('nav-town').textContent = t.n;
+    input.value = t.all ? '' : t.n;
+    document.querySelectorAll('.mchip').forEach((b) => b.setAttribute('aria-pressed', String(!t.unknown && b.dataset.town === t.slug)));
+    renderHomes();
+    renderLists(t);
+    $('copy-town').hidden = !!t.unknown;
+    $('copied').textContent = '';
+    if (!t.unknown) {
+      store.set('aps-town', t.slug);
+      if (opts.record !== false && location.hash.slice(1) !== t.slug) location.hash = t.slug;
+    }
+    const bar = $('townbar');
+    bar.classList.remove('flip'); void bar.offsetWidth; bar.classList.add('flip');
+    if (opts.scroll) $('homes').scrollIntoView({ block: 'start' });
+  }
+
+  /* Search box */
+  const input = $('town-q');
+  const list = $('town-list');
+  const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/,?\s*(ca|california)$/i, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  const titleCase = (s) => s.replace(/\b[a-z]/g, (m) => m.toUpperCase());
+  let items = [];
+  let active = -1;
+  const say = (t) => { $('msg').textContent = t || ''; };
+  function suggest(q) {
+    const nq = norm(q);
+    if (!nq) return [];
+    const out = [];
+    [ALL].concat(TOWNS).forEach((t) => {
+      const nn = norm(t.n);
+      let score = -1;
+      if (nn === nq) score = 0;
+      else if (nn.startsWith(nq)) score = 1;
+      else if (nn.split(' ').some((w) => w.startsWith(nq))) score = 2;
+      else if (nq.length >= 3 && nn.includes(nq)) score = 3;
+      if (score >= 0) { out.push({ t, score }); return; }
+      const a = t.aka.find((x) => { const na = norm(x); return na.startsWith(nq) || (nq.length >= 3 && na.includes(nq)); });
+      if (a) out.push({ t, alias: t.all ? null : a, score: 4 });
+    });
+    out.sort((a, b) => (a.score - b.score) || (countFor(b.t) - countFor(a.t)) || (+!!b.t.mk - +!!a.t.mk) || a.t.n.localeCompare(b.t.n));
+    return out.slice(0, 8);
+  }
+  function closeList() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); active = -1; }
+  function setActive(i) {
+    active = i;
+    [...list.children].forEach((li, j) => li.setAttribute('aria-selected', String(j === i)));
+    const li = list.children[i];
+    if (li) { input.setAttribute('aria-activedescendant', li.id); li.scrollIntoView({ block: 'nearest' }); }
+  }
+  function renderList(found) {
+    items = found; list.innerHTML = ''; active = -1;
+    if (!found.length) { closeList(); return; }
+    found.forEach((it, i) => {
+      const li = document.createElement('li');
+      li.id = 'opt-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', 'false');
+      const nm = document.createElement('span'); nm.className = 'opt-name'; nm.textContent = it.alias ? titleCase(it.alias) : it.t.n;
+      const meta = document.createElement('span'); meta.className = 'opt-meta';
+      const c = countFor(it.t);
+      meta.textContent = it.alias ? 'Part of ' + it.t.n : (it.t.all ? 'Every town' : it.t.c + ' County') + (c ? ' · ' + c + ' home' + (c === 1 ? '' : 's') : '');
+      li.append(nm, meta);
+      li.addEventListener('mousedown', (e) => { e.preventDefault(); pick(it); });
+      list.appendChild(li);
+    });
+    list.hidden = false; input.setAttribute('aria-expanded', 'true');
+  }
+  function pick(it) {
+    closeList();
+    say(it.alias ? titleCase(it.alias) + ' homes are listed under ' + it.t.n + '.' : '');
+    showTown(it.t, { scroll: true });
+  }
+  function runSearch() {
+    const typed = input.value.trim();
+    if (!typed) { showTown(ALL, { scroll: true }); return; }
+    const choice = !list.hidden && active >= 0 ? items[active] : suggest(typed)[0];
+    if (choice) { pick(choice); return; }
+    closeList();
+    say('');
+    showTown({ n: titleCase(norm(typed)), unknown: true, slug: '', aka: [] }, { scroll: true });
+  }
+  input.addEventListener('input', () => { say(''); renderList(suggest(input.value)); });
+  input.addEventListener('focus', () => input.select());
+  input.addEventListener('blur', () => setTimeout(closeList, 120));
+  input.addEventListener('keydown', (e) => {
+    const n = items.length;
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (list.hidden) renderList(suggest(input.value)); else if (n) setActive((active + 1) % n); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (!list.hidden && n) setActive((active - 1 + n) % n); }
+    else if (e.key === 'Enter') { e.preventDefault(); runSearch(); }
+    else if (e.key === 'Escape') { closeList(); }
+  });
+  $('go').addEventListener('click', runSearch);
+  $('markets').addEventListener('click', (e) => {
+    const b = e.target.closest('.mchip');
+    if (b && bySlug[b.dataset.town]) { say(''); showTown(bySlug[b.dataset.town], { scroll: true }); }
+  });
+  window.addEventListener('hashchange', () => {
+    const s = location.hash.slice(1);
+    if (bySlug[s] && (!cur || cur.slug !== s)) showTown(bySlug[s]);
+  });
+
+  /* Copy buttons */
+  async function copyText(text, statusId, okMsg, fallbackEl) {
+    try { await navigator.clipboard.writeText(text); $(statusId).textContent = okMsg; }
+    catch (e) {
+      if (fallbackEl) { const r = document.createRange(); r.selectNodeContents(fallbackEl); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      $(statusId).textContent = fallbackEl ? 'Selected. Press Ctrl+C or Cmd+C to copy.' : text;
+    }
+  }
+  $('copy-town').addEventListener('click', () => { if (cur && !cur.unknown) copyText(PAGE_URL + '#' + cur.slug, 'copied', 'Link copied. It opens straight to ' + cur.n + '.'); });
+  $('copy-phone').addEventListener('click', () => copyText('209.882.6469', 'copied-phone', 'Copied.', $('phone-main')));
+
+  /* Payment check */
+  let loanType = 'FHA';
+  const fee = (type, bal) => type === 'FHA' ? 1800 : type === 'VA' ? Math.round(Math.max(bal, 0) * 0.005 + 763) : 0;
+  function setType(t) {
+    loanType = t;
+    document.querySelectorAll('.seg [data-ltype]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.ltype === t)));
+  }
+  function compute() {
+    const price = Math.max(parseMoney($('c-price').value) || 0, 0);
+    const bal = Math.max(parseMoney($('c-bal').value) || 0, 0);
+    const r1 = parseNum($('c-rate').value);
+    const years = parseNum($('c-years').value) || 0;
+    const cash = Math.max(parseMoney($('c-cash').value) || 0, 0);
+    const r2 = parseNum($('c-r2').value) || 0;
+    const rNew = parseNum($('c-today').value) || 0;
+    const big = $('r-big');
+    const missing = [];
+    if (!(price > 0)) missing.push('the price');
+    if (!(bal > 0)) missing.push('the loan balance');
+    if (!isFinite(r1)) missing.push('the seller\'s rate');
+    if (missing.length) {
+      big.textContent = 'Enter ' + missing.join(' and ');
+      big.className = 'big wait';
+      $('r-sub').textContent = 'Ask the listing agent for anything the listing doesn\'t say.';
+      $('r-break').innerHTML = '';
+      return;
+    }
+    const gap = Math.max(price - bal, 0);
+    const second = Math.max(gap - Math.min(cash, gap), 0);
+    const down = gap - second;
+    const f = fee(loanType, bal);
+    const pi1 = pmt(bal, r1, Math.round(years * 12));
+    const pi2 = pmt(second, r2, 360);
+    const total = pi1 + pi2;
+    const newPI = pmt(Math.max(price - down, 0), rNew, 360);
+    const diff = newPI - total;
+    big.textContent = money(Math.abs(diff)) + (diff >= 0 ? ' less' : ' more');
+    big.className = 'big ' + (diff >= 0 ? 'ok' : 'over');
+    $('r-sub').textContent = 'each month than a new 30-year loan at ' + rNew + '% with the same ' + money(down) + ' down';
+    $('r-break').innerHTML = [
+      ['Cash gap (price minus balance)', money(gap)],
+      ['Your cash toward it', money(down)],
+      ['2nd loan for the rest', money(second)],
+      ['Assumption fee (estimate)', loanType === 'USDA' ? 'Ask the servicer' : money(f)],
+      ['Assumed loan payment', money(pi1) + '/mo'],
+      ['2nd loan payment', money(pi2) + '/mo'],
+      ['Total payment', money(total) + '/mo', 1],
+      ['New 30-yr loan at ' + rNew + '%', money(newPI) + '/mo'],
+      ['Over 5 years', money(Math.abs(diff * 60)) + (diff >= 0 ? ' saved' : ' extra')]
+    ].map(([k, v, s]) => '<li' + (s ? ' class="strong"' : '') + '><span>' + k + '</span><span>' + v + '</span></li>').join('');
+  }
+  function runNumbers(h) {
+    $('c-price').value = Math.round(h.price).toLocaleString('en-US');
+    $('c-bal').value = h.balance ? Math.round(h.balance).toLocaleString('en-US') : '';
+    $('c-bal-note').textContent = h.balance ? (h.balanceNote ? 'Listing says ' + h.balanceNote : 'From the listing') : 'Not in the listing. Ask the listing agent and enter it here.';
+    $('c-rate').value = h.rate != null ? h.rate : '';
+    let yrs = 25, yNote = 'Estimate; ask the listing agent for the exact term';
+    if (h.matures) {
+      const m = /([A-Za-z]+)\s+(\d{4})/.exec(h.matures);
+      if (m) {
+        const mi = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(m[1].slice(0, 3).toLowerCase());
+        const now = new Date();
+        const left = (+m[2] - now.getFullYear()) + ((mi < 0 ? 0 : mi) - now.getMonth()) / 12;
+        if (left > 0) { yrs = Math.round(left * 10) / 10; yNote = 'Loan ends ' + h.matures + ', per the listing'; }
+      }
+    }
+    $('c-years').value = yrs;
+    $('c-years-note').textContent = yNote;
+    if (h.type === 'FHA' || h.type === 'VA' || h.type === 'USDA') setType(h.type);
+    const box = $('checking');
+    box.hidden = false;
+    box.innerHTML = 'Checking <b>' + esc(h.street) + ', ' + esc(h.city) + '</b> <span class="sub">' + money(h.price) + (h.rate != null ? ' · ' + h.rate + '% seller rate' : ' · rate not stated') + '</span>';
+    compute();
+    $('payment').scrollIntoView({ block: 'start' });
+  }
+  document.querySelectorAll('.seg [data-ltype]').forEach((b) => b.addEventListener('click', () => { setType(b.dataset.ltype); compute(); }));
+  ['c-price', 'c-bal', 'c-rate', 'c-years', 'c-cash', 'c-r2', 'c-today'].forEach((id) => $(id).addEventListener('input', compute));
+  ['c-price', 'c-bal', 'c-cash'].forEach((id) => $(id).addEventListener('blur', () => {
+    const v = parseMoney($(id).value);
+    if (!isNaN(v)) $(id).value = Math.round(v).toLocaleString('en-US');
+  }));
+  compute();
+
+  /* Start on the view in the link, else the last one viewed, else all areas */
+  syncFilters();
+  const start = bySlug[location.hash.slice(1)] || bySlug[store.get('aps-town', '')] || ALL;
+  showTown(start, { record: false });
+})();
+</script>

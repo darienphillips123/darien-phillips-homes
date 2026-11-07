@@ -1,0 +1,773 @@
+<title>Placer Assumable Homes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root {
+  /* Layout: teal masthead with agent row and budget stats; sticky nav; budget bar then home cards; price-range table; email sign-up with live message preview; how it works; footer */
+  --paper: #F3F7F6;
+  --card: #FFFFFF;
+  --ink: #132826;
+  --muted: #56706B;
+  --line: #D3E0DC;
+  --soft: #E6F0ED;
+  --mast: #0E3A3F;
+  --mast-ink: #F2FAF8;
+  --mast-muted: #B4CFCA;
+  --mast-line: #2A5A5E;
+  --accent: #FF7A59;
+  --accent-ink: #2B0D04;
+  --accent-soft: #FFE6DD;
+  --accent-text: #B5401A;
+  --fha: #0F7B6C;
+  --fha-soft: #DDF2EE;
+  --va: #6C4BC2;
+  --va-soft: #ECE6FA;
+  --good: #1D7444;
+  --good-soft: #E1F2E7;
+  --over: #B5401A;
+  --over-soft: #FBE6DE;
+  --link: #0F6E86;
+  --focus: #FF7A59;
+  --shadow: 0 1px 2px rgba(19, 40, 38, 0.06);
+  --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0B1514; --card: #122321; --ink: #E4EFEC; --muted: #9DB6B0; --line: #22403C; --soft: #183230;
+    --mast: #0A2A2D; --mast-ink: #EEF7F5; --mast-muted: #A6C4BE; --mast-line: #22494C;
+    --accent: #FF8E70; --accent-ink: #2B0D04; --accent-soft: #3A1E15; --accent-text: #FFAD95;
+    --fha: #4FD1BC; --fha-soft: #123430; --va: #B49CF5; --va-soft: #251C40;
+    --good: #5BCB8E; --good-soft: #123020; --over: #FF9C7C; --over-soft: #3A1F15; --link: #7FD3E6; --focus: #FF8E70;
+    --shadow: none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0B1514; --card: #122321; --ink: #E4EFEC; --muted: #9DB6B0; --line: #22403C; --soft: #183230;
+  --mast: #0A2A2D; --mast-ink: #EEF7F5; --mast-muted: #A6C4BE; --mast-line: #22494C;
+  --accent: #FF8E70; --accent-ink: #2B0D04; --accent-soft: #3A1E15; --accent-text: #FFAD95;
+  --fha: #4FD1BC; --fha-soft: #123430; --va: #B49CF5; --va-soft: #251C40;
+  --good: #5BCB8E; --good-soft: #123020; --over: #FF9C7C; --over-soft: #3A1F15; --link: #7FD3E6; --focus: #FF8E70;
+  --shadow: none; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+a { color: var(--link); }
+button, input, select, textarea { font: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1140px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Masthead */
+.mast { background: var(--mast); color: var(--mast-ink); }
+.mast .wrap { padding-block: 22px 30px; }
+.agent { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.agent img { width: 52px; height: 52px; border-radius: 50%; flex: none; background: var(--mast-line); object-fit: cover; }
+.who { line-height: 1.25; min-width: 0; }
+.who b { font-family: var(--f-display); font-stretch: 108%; font-size: 1.02rem; }
+.who span { display: block; color: var(--mast-muted); font-size: 0.9rem; }
+.phone { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.phone .sel { font-family: var(--f-mono); font-size: 0.95rem; user-select: all; }
+.eyebrow { margin-top: 26px; color: var(--accent); }
+.mast h1 { font-size: clamp(2.1rem, 6vw, 3.7rem); font-stretch: 118%; font-weight: 850; line-height: 0.98; letter-spacing: -0.01em; margin-top: 8px; }
+.lede { max-width: 64ch; color: var(--mast-muted); font-size: 1.08rem; margin-top: 14px; }
+.ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; border-top: 1px solid var(--mast-line); }
+.stat { padding: 16px 18px 4px 0; min-width: 0; }
+.stat + .stat { padding-left: 18px; border-left: 1px solid var(--mast-line); }
+.stat .v { font-family: var(--f-display); font-stretch: 112%; font-weight: 800; font-size: clamp(1.5rem, 3.4vw, 2.2rem); line-height: 1.05; }
+.stat .v.hot { color: var(--accent); }
+.stat .k { color: var(--mast-muted); font-size: 0.92rem; margin-top: 4px; max-width: 30ch; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 10px 18px; min-height: 44px;
+  font: 700 0.98rem var(--f-body); cursor: pointer; text-decoration: none; border: 1.5px solid transparent;
+}
+.btn-accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn-accent:hover { filter: brightness(1.05); }
+.btn-ghost { background: transparent; color: var(--mast-ink); border-color: var(--mast-line); }
+.btn-ghost:hover { border-color: var(--mast-muted); }
+.btn-line { background: var(--card); color: var(--ink); border-color: var(--line); }
+.btn-line:hover { border-color: var(--muted); }
+.btn-sm { padding: 6px 12px; min-height: 34px; font-size: 0.88rem; font-weight: 600; }
+
+/* Nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 4px 18px; flex-wrap: wrap; align-items: center; padding-block: 8px; }
+.nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 6px 2px; border-bottom: 2px solid transparent; }
+.nav a:hover { border-bottom-color: var(--accent); }
+.nav .saved-link { margin-left: auto; color: var(--accent-text); }
+
+section { padding-block: 36px 6px; scroll-margin-top: 60px; }
+.shead { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 24px; margin-bottom: 16px; }
+.shead h2 { font-size: clamp(1.5rem, 3.3vw, 2.1rem); font-stretch: 112%; font-weight: 800; line-height: 1.08; }
+.shead p { margin-top: 6px; color: var(--muted); max-width: 70ch; }
+.shead .mono { color: var(--muted); }
+
+/* Budget bar */
+.budget {
+  background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--accent); border-radius: var(--r);
+  padding: 14px 16px; display: grid; gap: 12px; box-shadow: var(--shadow);
+}
+.brow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field label, .field .lbl { font-weight: 600; font-size: 0.9rem; }
+.field small { color: var(--muted); font-size: 0.8rem; }
+.field input, .field select, .field textarea {
+  color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 42px; width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); outline: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
+.money { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 8px; background: var(--card); }
+.money:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.money i { font-style: normal; color: var(--muted); font-family: var(--f-mono); padding-left: 10px; }
+.money.suf i { padding: 0 10px 0 0; }
+.field .money input { border: 0; box-shadow: none; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.field .money input:focus { box-shadow: none; }
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.chips .mono { color: var(--muted); margin-right: 2px; min-width: 52px; }
+.chip {
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px;
+  padding: 5px 12px; font: 600 0.88rem var(--f-body); cursor: pointer; min-height: 34px;
+}
+.chip:hover { border-color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.chip .n { font-family: var(--f-mono); font-size: 0.72rem; margin-left: 4px; opacity: 0.75; }
+.bfoot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.bfoot select { color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 8px; padding: 5px 8px; min-height: 34px; }
+.count { font-weight: 700; }
+.count .sub { font-weight: 400; }
+
+/* Cards */
+.group-h { margin: 22px 0 10px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.group-h h3 { font-size: 1.3rem; font-stretch: 110%; font-weight: 800; }
+.group-h p { color: var(--muted); font-size: 0.92rem; }
+.hlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; align-items: start; }
+.hcard {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; box-shadow: var(--shadow);
+  display: grid; gap: 10px; min-width: 0;
+}
+.hcard.over { border-style: dashed; }
+.hc-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.rate { text-align: center; border-radius: 10px; padding: 8px 8px; min-width: 84px; }
+.rate b { display: block; font-family: var(--f-display); font-stretch: 110%; font-weight: 850; font-size: 1.5rem; line-height: 1; }
+.rate span { display: block; font-family: var(--f-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 5px; }
+.r-FHA { background: var(--fha-soft); color: var(--fha); }
+.r-VA { background: var(--va-soft); color: var(--va); }
+.hcard h4 { font-size: 1.08rem; font-stretch: 104%; font-weight: 750; line-height: 1.2; overflow-wrap: anywhere; }
+.sub { color: var(--muted); font-size: 0.88rem; }
+.price { font-family: var(--f-display); font-stretch: 110%; font-weight: 800; font-size: 1.3rem; margin-top: 2px; }
+.heart {
+  border: 1.5px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; min-width: 40px; height: 36px; padding: 0 10px;
+  cursor: pointer; font: 600 0.85rem var(--f-body); display: inline-flex; align-items: center; gap: 6px;
+}
+.heart svg { width: 16px; height: 16px; }
+.heart[aria-pressed="true"] { color: var(--over); border-color: var(--over); background: var(--over-soft); }
+.heart[aria-pressed="true"] svg path { fill: currentColor; }
+.facts { font-size: 0.93rem; }
+.astats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--line); padding-top: 10px; }
+.astats div { min-width: 0; }
+.astats span { display: block; font-size: 0.75rem; color: var(--muted); line-height: 1.2; }
+.astats b { font-size: 1.02rem; font-variant-numeric: tabular-nums; }
+.astats small { display: block; font-size: 0.72rem; color: var(--muted); }
+.fit { color: var(--good); }
+.nofit { color: var(--over); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 0.78rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: var(--soft); color: var(--ink); }
+.tag.ok { background: var(--good-soft); color: var(--good); }
+.tag.va { background: var(--va-soft); color: var(--va); }
+.tag.warn { background: var(--over-soft); color: var(--over); }
+.tag.new { background: var(--accent-soft); color: var(--accent-text); }
+details.more { border-top: 1px solid var(--line); padding-top: 8px; }
+details.more summary { cursor: pointer; font-weight: 600; color: var(--link); font-size: 0.92rem; }
+.break { list-style: none; padding: 0; margin: 8px 0 0; }
+.break li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.break li span:first-child { color: var(--muted); }
+.break li.strong span { color: var(--ink); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.srcline { font-size: 0.78rem; color: var(--muted); }
+.empty { background: var(--card); border: 1.5px dashed var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 6px; }
+.empty p { color: var(--muted); }
+
+/* Live search */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 10px; margin-top: 12px; }
+.tile {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center;
+  padding: 12px 14px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line);
+  color: var(--ink); text-decoration: none; box-shadow: var(--shadow); min-width: 0;
+}
+.tile:hover { border-color: var(--accent); }
+.tile b { font-family: var(--f-display); font-stretch: 106%; font-weight: 800; font-size: 1rem; line-height: 1.25; }
+.tile small { grid-column: 1; color: var(--muted); font-size: 0.84rem; }
+.tile i { grid-column: 2; grid-row: 1 / span 2; font-style: normal; font-weight: 800; color: var(--accent-text); }
+
+/* Ranges table */
+.scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); }
+table.ranges { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+.ranges th, .ranges td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+.ranges th:first-child, .ranges td:first-child { text-align: left; }
+.ranges th { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.ranges tr:last-child td { border-bottom: 0; }
+.ranges td.none { color: var(--muted); }
+
+/* Sign-up */
+.signup { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 14px; align-items: start; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; box-shadow: var(--shadow); }
+.fgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.wide { grid-column: 1 / -1; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; padding: 0; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.checks label { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 0.9rem; min-height: 36px; background: var(--card); }
+.checks input { width: auto; min-height: 0; margin: 0; accent-color: var(--accent); }
+.checks label:has(input:checked) { border-color: var(--ink); background: var(--soft); }
+.req { color: var(--over); }
+.savedlist { display: flex; flex-wrap: wrap; gap: 6px; }
+.savedlist span { display: inline-flex; align-items: center; gap: 6px; background: var(--soft); border-radius: 999px; padding: 4px 6px 4px 10px; font-size: 0.86rem; }
+.savedlist button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px 4px; }
+.msgbox { position: sticky; top: 64px; display: grid; gap: 10px; }
+.msgbox textarea { min-height: 280px; font-family: var(--f-mono); font-size: 0.82rem; line-height: 1.5; resize: vertical; }
+.toast { min-height: 1.4em; font-size: 0.9rem; color: var(--good); }
+.toast.err { color: var(--over); }
+.fine { color: var(--muted); font-size: 0.84rem; }
+.number { font-family: var(--f-mono); user-select: all; }
+
+/* How it works */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 0; margin: 0; list-style: none; counter-reset: s; }
+.steps li { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px 14px 52px; position: relative; counter-increment: s; min-width: 0; }
+.steps li::before {
+  content: counter(s); position: absolute; left: 14px; top: 13px; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent-text); font: 700 0.9rem/26px var(--f-mono); text-align: center;
+}
+.steps b { display: block; font-family: var(--f-display); font-stretch: 106%; }
+.steps span { color: var(--muted); font-size: 0.95rem; }
+
+footer { margin-top: 40px; background: var(--mast); color: var(--mast-ink); }
+footer .wrap { padding-block: 24px 32px; display: grid; gap: 10px; }
+footer .fine { color: var(--mast-muted); }
+
+@media (max-width: 900px) {
+  .signup { grid-template-columns: minmax(0, 1fr); }
+  .msgbox { position: static; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .stat, .stat + .stat { padding: 12px 0 2px; border-left: 0; }
+  .stat + .stat { border-top: 1px solid var(--mast-line); }
+  .phone { margin-left: 0; width: 100%; }
+  .brow, .fgrid { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .chips .mono { width: 100%; }
+  .nav .wrap { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .nav a { white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="agent">
+      <img src="data:image/webp;base64,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" alt="Darien Phillips">
+      <div class="who"><b>Darien Phillips, REALTOR®</b><span>eXp Realty of Northern California · DRE #02439090</span></div>
+      <div class="phone">
+        <span class="sel">209.882.6469</span>
+        <a class="btn btn-ghost btn-sm" href="tel:+12098826469">Call</a>
+        <a class="btn btn-ghost btn-sm" href="sms:+12098826469">Text</a>
+      </div>
+    </div>
+    <div class="mono eyebrow">Loomis · Rocklin · Roseville · Lincoln · Placer County</div>
+    <h1>Placer Homes Under $2,500 a Month</h1>
+    <p class="lede">Homes for sale in Loomis and Placer County where you can take over the seller's low-rate FHA or VA loan and keep the monthly payment at about $2,500 or less. Change the budget below to see what fits you.</p>
+    <div class="ctas">
+      <a class="btn btn-accent" href="#signup">Get these homes by email</a>
+      <a class="btn btn-ghost" href="#homes">See the homes</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v num hot" id="s-count">12</div><div class="k" id="s-count-k">Homes that fit $2,500 a month</div></div>
+      <div class="stat"><div class="v num" id="s-price">$315,000</div><div class="k">Lowest price among them</div></div>
+      <div class="stat"><div class="v num" id="s-loomis">$1,758/mo</div><div class="k" id="s-loomis-k">3394 Margaret Dr in Loomis</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a href="#homes">Homes</a><a href="#ranges">Price ranges</a><a href="#signup">Get them by email</a><a href="#how">How it works</a>
+    <a href="#signup" class="saved-link" id="nav-saved" hidden></a>
+  </div>
+</nav>
+
+<main>
+  <section id="homes">
+    <div class="wrap">
+      <div class="budget" role="group" aria-label="Your budget and filters">
+        <div class="brow">
+          <div class="field">
+            <label for="b-budget">Monthly budget</label>
+            <span class="money"><i>$</i><input id="b-budget" type="text" inputmode="numeric" value="2,500"></span>
+            <small>Loan, taxes, insurance, mortgage insurance and HOA</small>
+          </div>
+          <div class="field">
+            <label for="b-cash">Cash you can bring</label>
+            <span class="money"><i>$</i><input id="b-cash" type="text" inputmode="numeric" placeholder="Optional"></span>
+            <small>Blank means you pay the whole gap in cash. Anything over this goes on a 2nd loan</small>
+          </div>
+          <div class="field">
+            <label for="b-r2">2nd loan rate</label>
+            <span class="money suf"><input id="b-r2" type="text" inputmode="decimal" value="9.5"><i>%</i></span>
+            <small>Used only when your cash doesn't cover the gap</small>
+          </div>
+        </div>
+        <div class="chips" id="town-chips" role="group" aria-label="Town"><span class="mono">Town</span></div>
+        <div class="chips" id="price-chips" role="group" aria-label="Price"><span class="mono">Price</span></div>
+        <div class="bfoot">
+          <p class="count" id="count" aria-live="polite"></p>
+          <label class="sub">Sort
+            <select id="sort">
+              <option value="pay">Lowest monthly payment</option>
+              <option value="price">Lowest price</option>
+              <option value="cash">Least cash needed</option>
+              <option value="rate">Lowest rate</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="group-h"><h3 id="fit-h">Homes that fit your budget</h3><p id="fit-p"></p></div>
+      <div class="hlist" id="fit"></div>
+
+      <div id="over-wrap">
+        <div class="group-h"><h3>Just over your budget</h3><p>Worth a look if you can stretch or bring more cash.</p></div>
+        <div class="hlist" id="over"></div>
+      </div>
+
+      <div class="group-h"><h3>Search for more</h3><p>These open live on Roots.homes and include homes listed after this page was checked. Roots figures the payment with the seller's current tax bill, so the real payment can run a little higher.</p></div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </section>
+
+  <section id="ranges">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <h2>Price ranges that fit your budget</h2>
+          <p id="ranges-p">Homes at every price can fit $2,500 a month. The difference is how much cash it takes to cover the gap between the price and the seller's loan.</p>
+        </div>
+      </div>
+      <div class="scroll"><table class="ranges" id="ranges-table"></table></div>
+    </div>
+  </section>
+
+  <section id="signup">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <h2>Get these homes by email</h2>
+          <p>Send Darien your email and budget. He'll set up your own MLS search so new homes that fit come straight to your inbox every day.</p>
+        </div>
+      </div>
+      <form class="signup" id="form" novalidate>
+        <div class="panel">
+          <div class="fgrid">
+            <div class="field"><label for="f-name">Your name <span class="req">*</span></label><input id="f-name" autocomplete="name"></div>
+            <div class="field"><label for="f-email">Email <span class="req">*</span></label><input id="f-email" type="email" autocomplete="email" inputmode="email"></div>
+            <div class="field"><label for="f-phone">Mobile number</label><input id="f-phone" type="tel" autocomplete="tel" inputmode="tel"></div>
+            <div class="field"><label for="f-va">VA loan eligible?</label>
+              <select id="f-va"><option>Not sure</option><option>Yes</option><option>No</option></select>
+            </div>
+            <div class="field"><label for="f-budget">Max monthly payment</label><span class="money"><i>$</i><input id="f-budget" type="text" inputmode="numeric" value="2,500"></span></div>
+            <div class="field"><label for="f-cash">Cash for the gap and closing</label><span class="money"><i>$</i><input id="f-cash" type="text" inputmode="numeric" placeholder="For example 150,000"></span></div>
+            <fieldset class="field wide"><legend>Towns</legend>
+              <div class="checks" id="f-towns"></div>
+            </fieldset>
+            <div class="field"><label for="f-beds">Bedrooms</label>
+              <select id="f-beds"><option value="Any">Any</option><option value="2+">2+</option><option value="3+" selected>3+</option><option value="4+">4+</option></select>
+            </div>
+            <div class="field"><label for="f-when">Moving timeline</label>
+              <select id="f-when"><option>As soon as possible</option><option selected>1 to 3 months</option><option>3 to 6 months</option><option>6+ months</option></select>
+            </div>
+            <div class="field wide"><span class="lbl">Homes you saved</span><div class="savedlist" id="f-saved"></div></div>
+            <div class="field wide"><label for="f-notes">Anything else</label><textarea id="f-notes" rows="3" placeholder="Must-haves, acreage, single-story, schools, commute"></textarea></div>
+          </div>
+        </div>
+        <div class="panel msgbox">
+          <label for="f-msg" class="lbl" style="font-weight:600">Your request to Darien</label>
+          <textarea id="f-msg" readonly></textarea>
+          <div class="ctas" style="margin-top:0">
+            <a class="btn btn-accent" id="send-email" href="mailto:darienphillips45@gmail.com">Email it to Darien</a>
+            <a class="btn btn-line" id="send-text" href="sms:+12098826469">Text it</a>
+            <button class="btn btn-line" type="button" id="copy-msg">Copy</button>
+          </div>
+          <p class="toast" id="toast" role="status"></p>
+          <p class="fine">This opens your own email or text app with the request filled in. If nothing opens, copy it and send it to <span class="number">darienphillips45@gmail.com</span> or text <span class="number">209.882.6469</span>. Nothing you type is stored on this page.</p>
+          <p class="fine">Your MLS search lets you save or pass on each home, and Darien can see which homes you open and save so he can send better matches.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="shead"><div><h2>How taking over a loan works</h2></div></div>
+      <ol class="steps">
+        <li><b>Keep the seller's rate</b><span>You take over their loan balance, rate and remaining years, often under 4%.</span></li>
+        <li><b>Cover the cash gap</b><span>Pay the difference between the price and the balance in cash, or put part of it on a 2nd loan.</span></li>
+        <li><b>Get the lender's OK</b><span>FHA buyers must live in the home. Anyone who qualifies can take over a VA loan, though some sellers want a veteran.</span></li>
+        <li><b>Plan for 45 to 90 days</b><span>The seller's loan servicer approves you, so closing takes longer than usual.</span></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="agent">
+      <div class="who"><b>Darien Phillips, REALTOR®</b><span>eXp Realty of Northern California · DRE #02439090 · 209.882.6469 · darienphillips45@gmail.com</span></div>
+    </div>
+    <p class="fine" id="foot"></p>
+    <p class="fine">Monthly payments are estimates, not a loan offer: the seller's loan payment, property tax at 1.1% of the price, homeowners insurance at 0.35% of the price a year, FHA mortgage insurance at 0.55% of the balance a year, and HOA dues. Your lender's figures will differ. Equal Housing Opportunity.</p>
+  </div>
+</footer>
+
+<script type="application/json" id="homes-data">{"checked":"Oct 31, 2026","homes":[{"id":"226069041","street":"1360 Oak Ridge Dr","city":"Colfax","zip":"95713","price":315000,"type":"VA","rate":3.25,"verified":true,"nonvet":true,"balance":204259,"years":24,"pi":1034,"rootsTI":404,"hoa":106,"beds":2,"baths":2,"sqft":1032,"lot":828,"year":2002,"kind":"Townhouse","dom":154,"feats":["2-car garage"],"office":"Centurion Realty","roots":"https://www.roots.homes/listings/1360-oak-ridge-drive-colfax-ca-95713_rhid-cmpvoqzn602k9r5ey6386o9q6"},{"id":"226107401","street":"1240 Whitney Ranch Pkwy #PW321","city":"Rocklin","zip":"95765","price":325000,"type":"FHA","rate":4.99,"balance":74485,"years":13,"pi":636,"rootsTI":395,"hoa":326,"beds":3,"baths":2,"sqft":1050,"lot":1163,"year":2007,"kind":"Condo","dom":61,"feats":["Pool","Single-story","Clubhouse"],"office":"NextHome Haven Properties","roots":"https://www.roots.homes/listings/1240-whitney-ranch-parkway-pw321-rocklin-ca-95765_rhid-cmthojh5evtmm3myv4mdrbveg"},{"id":"226133713","street":"712 Horizon Cove #2040","city":"Rocklin","zip":"95677","price":395000,"type":"FHA","rate":2.81,"balance":274894,"years":24,"pi":1298,"rootsTI":606,"hoa":388,"beds":3,"baths":2,"sqft":1183,"lot":1189,"year":2000,"kind":"Condo","dom":1,"feats":["Pool","Single-story"],"office":"Realty ONE Group Complete","roots":"https://www.roots.homes/listings/712-horizon-cove-2040-rocklin-ca-95677_rhid-cmvwwjcue9hqb20jnidnm5kdr"},{"id":"226133342","street":"924 Hollingsworth Ct","city":"Lincoln","zip":"95648","price":399000,"type":"FHA","rate":4.07,"balance":78487,"years":15,"pi":581,"rootsTI":188,"hoa":0,"beds":3,"baths":2,"sqft":1080,"lot":7980,"year":1972,"kind":"Single family","dom":2,"feats":["Single-story","Cul-de-sac","2-car garage"],"note":"Leased solar, a separate monthly payment","office":"eXp Realty of California, Inc.","roots":"https://www.roots.homes/listings/924-hollingsworth-court-lincoln-ca-95648_rhid-cmvua7qxhs372tnj4ujqx6wlh"},{"id":"226130850","street":"1014 Hudson Cir","city":"Lincoln","zip":"95648","price":410000,"type":"VA","rate":2.375,"balance":234073,"years":24,"pi":1072,"rootsTI":503,"hoa":260,"beds":3,"baths":3,"sqft":1751,"lot":1420,"year":2008,"kind":"Condo","dom":9,"feats":["Panoramic view","Playground","2-car garage"],"note":"Seller offers up to $10,000 toward closing costs","office":"NextHome Collective","roots":"https://www.roots.homes/listings/1014-hudson-circle-lincoln-ca-95648_rhid-cmvjt8vpofneg824low191utb"},{"id":"226110197","street":"2125 Camino Real Way","city":"Roseville","zip":"95747","price":515000,"type":"FHA","rate":3.16,"balance":262954,"years":24,"pi":1312,"rootsTI":748,"hoa":186,"beds":4,"baths":3,"sqft":2123,"lot":2945,"year":2015,"kind":"Single family","dom":58,"feats":["Covered patio","2-car garage"],"office":"Redfin Corporation","roots":"https://www.roots.homes/listings/2125-camino-real-way-roseville-ca-95747_rhid-cmtm7sw0hqzlvzixg0ty3chdh"},{"id":"226117853","street":"907 Fitzroy Ct","city":"Roseville","zip":"95747","price":535000,"type":"VA","rate":3.41,"balance":130522,"years":16,"pi":870,"rootsTI":540,"hoa":0,"beds":3,"baths":2,"sqft":1448,"lot":6756,"year":1995,"kind":"Single family","dom":43,"feats":["Single-story","Cul-de-sac","Covered patio","2-car garage"],"office":"Compass","roots":"https://www.roots.homes/listings/907-fitzroy-court-roseville-ca-95747_rhid-cmu7tl4nyw8l1fz2mwu9a36e8"},{"id":"226122042","street":"3394 Margaret Dr","city":"Loomis","zip":"95650","price":575000,"type":"FHA","rate":4.56,"balance":124244,"years":14,"pi":1006,"rootsTI":467,"hoa":0,"beds":3,"baths":2,"sqft":1693,"lot":8621,"year":1964,"kind":"Single family","dom":29,"feats":["Ranch style","Single-story","Covered patio","RV parking","Fruit trees"],"office":"Realty ONE Group Complete","roots":"https://www.roots.homes/listings/3394-margaret-drive-loomis-ca-95650_rhid-cmur73j384zih64b09qirrsbj"},{"id":"226132709","street":"5028 Charter Rd","city":"Rocklin","zip":"95765","price":590000,"type":"VA","rate":2.74,"balance":301209,"years":24,"pi":1415,"rootsTI":597,"hoa":0,"beds":3,"baths":2,"sqft":1497,"lot":6843,"year":1993,"kind":"Single family","dom":2,"feats":["Single-story","3-car garage"],"office":"RE/MAX Gold","roots":"https://www.roots.homes/listings/5028-charter-road-rocklin-ca-95765_rhid-cmvtvgbycgnt1tnj4l8xwkju7"},{"id":"226104383","street":"1530 Vista Creek Dr","city":"Roseville","zip":"95661","price":639000,"type":"VA","rate":3.16,"balance":274470,"years":24,"pi":1371,"rootsTI":416,"hoa":0,"beds":4,"baths":2,"sqft":1963,"lot":7723,"year":1983,"kind":"Single family","dom":73,"feats":["Single-story","RV parking","2-car garage"],"office":"Vendley Properties and Loans","roots":"https://www.roots.homes/listings/1530-vista-creek-drive-roseville-ca-95661_rhid-cmszrcppo0it7137dr7imndkc"},{"id":"226101316","street":"1431 Penhurst Way","city":"Roseville","zip":"95747","price":694950,"type":"VA","rate":2.89,"balance":295848,"years":24,"pi":1426,"rootsTI":691,"hoa":0,"beds":4,"baths":3,"sqft":2125,"lot":6294,"year":1991,"kind":"Single family","dom":80,"feats":["Basement","2-car garage","Solar"],"office":"Coldwell Banker Realty","roots":"https://www.roots.homes/listings/1431-penhurst-way-roseville-ca-95747_rhid-cmsqs4i779in950knh7i7wl9h"},{"id":"226086321","street":"1040 Dog Bar Rd","city":"Colfax","zip":"95713","price":799500,"type":"VA","rate":2.68,"balance":322908,"years":24,"pi":1510,"rootsTI":680,"hoa":0,"beds":2,"baths":3,"sqft":2927,"lot":121968,"year":1940,"kind":"Single family","dom":64,"feats":["2.8 acres","Workshop","RV parking","Owned solar","Deck"],"office":"eXp Realty of California Inc.","roots":"https://www.roots.homes/listings/1040-dog-bar-road-colfax-ca-95713_rhid-cmtdn1rlrz0pf1528jnsa2j3y"},{"id":"226126028","street":"1609 Hummingbird Way","city":"Roseville","zip":"95747","price":825000,"type":"VA","rate":2.31,"balance":339581,"years":24,"pi":1529,"rootsTI":821,"hoa":0,"beds":4,"baths":3,"sqft":2730,"lot":7183,"year":2002,"kind":"Single family","dom":16,"feats":["3-car garage","Deck"],"office":"GUIDE Real Estate","roots":"https://www.roots.homes/listings/1609-hummingbird-way-roseville-ca-95747_rhid-cmvaebs1idszihhpvu3ueamcw"},{"id":"226104069","street":"2184 Mt Errigal Ln","city":"Lincoln","zip":"95648","price":899950,"type":"VA","rate":2.2,"verified":true,"nonvet":true,"balance":361343,"years":24,"pi":1616,"rootsTI":201,"hoa":0,"beds":5,"baths":4,"sqft":3464,"lot":8529,"year":2005,"kind":"Single family","dom":72,"feats":["3-car garage","RV parking","Covered patio","2 fireplaces"],"office":"Foundation Real Estate","roots":"https://www.roots.homes/listings/2184-mt-errigal-ln-lincoln-ca-95648_rhid-cmt16snphjp9r137d60lpfamw"},{"id":"226103518","street":"5945 Virginiatown Rd","city":"Newcastle","zip":"95658","price":1500000,"type":"VA","rate":2.81,"balance":380400,"years":25,"pi":1792,"rootsTI":572,"hoa":0,"beds":3,"baths":4,"sqft":2400,"lot":108900,"year":1974,"kind":"Single family","dom":16,"feats":["2.5 acres","Equestrian","Pool","Panoramic view","Owned solar"],"office":"GUIDE Real Estate","roots":"https://www.roots.homes/listings/5945-virginiatown-road-newcastle-ca-95658_rhid-cmva1u0gc3pc7hhpvbyx4ovwb"}]}</script>
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
+  };
+  const DATA = JSON.parse($('homes-data').textContent);
+  const HOMES = DATA.homes;
+  const TAX = 0.011, INS = 0.0035, MIP = 0.0055;
+  const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const short = (n) => n >= 1e6 ? '$' + (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' : '$' + Math.round(n / 1e3) + 'k';
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const parseMoney = (s) => {
+    let t = String(s == null ? '' : s).trim().toLowerCase().replace(/[$,\s]/g, '');
+    if (!t) return NaN;
+    let m = 1;
+    if (t.endsWith('k')) { m = 1e3; t = t.slice(0, -1); } else if (t.endsWith('m')) { m = 1e6; t = t.slice(0, -1); }
+    const v = parseFloat(t);
+    return isFinite(v) ? v * m : NaN;
+  };
+  const parseNum = (s) => { const v = parseFloat(String(s == null ? '' : s).replace(/[%,\s]/g, '')); return isFinite(v) ? v : NaN; };
+  const pmt = (P, ratePct, months) => {
+    if (!(P > 0) || !(months > 0)) return 0;
+    const r = ratePct / 100 / 12;
+    if (!(r > 0)) return P / months;
+    return P * r / (1 - Math.pow(1 + r, -months));
+  };
+
+  /* State */
+  const S = Object.assign({ budget: 2500, cash: null, r2: 9.5, town: 'all', band: 'all', sort: 'pay' }, store.get('pla-state', {}) || {});
+  const saved = new Set((store.get('pla-saved', []) || []).filter((id) => HOMES.some((h) => h.id === id)));
+  const save = () => store.set('pla-state', S);
+
+  function figure(h) {
+    const ti = Math.max(h.price * (TAX + INS) / 12, h.rootsTI || 0);
+    const mip = h.type === 'FHA' ? h.balance * MIP / 12 : 0;
+    const gap = h.price - h.balance;
+    let cash = gap, second = 0, p2 = 0;
+    if (S.cash != null && S.cash < gap) { cash = Math.max(S.cash, 0); second = gap - cash; p2 = pmt(second, S.r2, 360); }
+    const total = h.pi + ti + mip + (h.hoa || 0) + p2;
+    return { ti, mip, gap, cash, second, p2, total };
+  }
+
+  /* Header stats at the default $2,500 with the full gap in cash */
+  (function headerStats() {
+    const keep = { cash: S.cash };
+    S.cash = null;
+    const base = HOMES.map((h) => ({ h, f: figure(h) })).filter((x) => x.f.total <= 2500);
+    S.cash = keep.cash;
+    $('s-count').textContent = base.length;
+    const low = base.slice().sort((a, b) => a.h.price - b.h.price)[0];
+    if (low) $('s-price').textContent = money(low.h.price);
+    const loomis = base.filter((x) => x.h.city === 'Loomis').sort((a, b) => a.f.total - b.f.total)[0];
+    if (loomis) { $('s-loomis').textContent = money(loomis.f.total) + '/mo'; $('s-loomis-k').textContent = 'Lowest payment in Loomis, at ' + loomis.h.street; }
+  })();
+  $('foot').textContent = 'Homes checked ' + DATA.checked + ' from MetroList listings shown on Roots.homes, courtesy of the listing brokerages named on each home. Loan rates, balances and years left are Roots.homes estimates from public records unless marked verified; confirm them with the listing agent before writing an offer.';
+
+  /* Filters */
+  const TOWNS = ['all', ...Array.from(new Set(HOMES.map((h) => h.city))).sort()];
+  const BANDS = [
+    { k: 'all', t: 'Any', lo: 0, hi: Infinity },
+    { k: 'u400', t: 'Under $400k', lo: 0, hi: 400000 },
+    { k: '400', t: '$400k–$600k', lo: 400000, hi: 600000 },
+    { k: '600', t: '$600k–$800k', lo: 600000, hi: 800000 },
+    { k: '800', t: '$800k+', lo: 800000, hi: Infinity }
+  ];
+  TOWNS.forEach((t) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.dataset.town = t;
+    b.append(t === 'all' ? 'All Placer' : t, Object.assign(document.createElement('span'), { className: 'n' }));
+    $('town-chips').appendChild(b);
+  });
+  BANDS.forEach((x) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.dataset.band = x.k;
+    b.append(x.t, Object.assign(document.createElement('span'), { className: 'n' }));
+    $('price-chips').appendChild(b);
+  });
+  $('town-chips').addEventListener('click', (e) => { const b = e.target.closest('[data-town]'); if (b) { S.town = b.dataset.town; save(); render(); } });
+  $('price-chips').addEventListener('click', (e) => { const b = e.target.closest('[data-band]'); if (b) { S.band = b.dataset.band; save(); render(); } });
+  $('sort').addEventListener('change', (e) => { S.sort = e.target.value; save(); render(); });
+  $('b-budget').value = Math.round(S.budget).toLocaleString('en-US');
+  $('b-cash').value = S.cash != null ? Math.round(S.cash).toLocaleString('en-US') : '';
+  $('b-r2').value = S.r2;
+  $('sort').value = S.sort;
+  $('b-budget').addEventListener('input', () => { const v = parseMoney($('b-budget').value); if (v > 0) { S.budget = v; save(); render(); } });
+  $('b-cash').addEventListener('input', () => { const v = parseMoney($('b-cash').value); S.cash = isNaN(v) ? null : Math.max(v, 0); save(); render(); });
+  $('b-r2').addEventListener('input', () => { const v = parseNum($('b-r2').value); if (v >= 0) { S.r2 = v; save(); render(); } });
+  ['b-budget', 'b-cash'].forEach((id) => $(id).addEventListener('blur', () => { const v = parseMoney($(id).value); if (!isNaN(v)) $(id).value = Math.round(v).toLocaleString('en-US'); }));
+
+  /* Cards */
+  const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.8 4.3 7.3C19.5 16.4 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+  const zillow = (h) => 'https://www.zillow.com/homes/' + encodeURIComponent((h.street + ', ' + h.city + ', CA ' + h.zip).replace(/#/g, '')).replace(/%20/g, '-') + '_rb/';
+  const mapUrl = (h) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(h.street.replace(/#.*$/, '') + ', ' + h.city + ', CA ' + h.zip);
+  const lotText = (sf) => !sf ? '' : sf >= 21780 ? (Math.round(sf / 43560 * 10) / 10) + ' acres' : sf.toLocaleString('en-US') + ' sq ft lot';
+  function card(h, f) {
+    const fits = f.total <= S.budget;
+    const isSaved = saved.has(h.id);
+    const facts = [h.beds + ' bd', h.baths + ' ba', h.sqft.toLocaleString('en-US') + ' sq ft', h.kind === 'Single family' ? lotText(h.lot) : h.kind, 'Built ' + h.year].filter(Boolean).join(' · ');
+    const cashCell = f.second > 0
+      ? '<b>' + money(f.cash) + '</b><small>+ ' + short(f.second) + ' 2nd loan</small>'
+      : '<b>' + money(f.gap) + '</b><small>Price minus loan</small>';
+    const tags = [];
+    if (h.dom <= 7) tags.push('<span class="tag new">New this week</span>');
+    if (h.verified) tags.push('<span class="tag ok">Rate verified</span>');
+    if (h.nonvet) tags.push('<span class="tag va">Non-veterans can assume</span>');
+    if (h.note) tags.push('<span class="tag warn">' + esc(h.note) + '</span>');
+    (h.feats || []).slice(0, 4).forEach((t) => tags.push('<span class="tag">' + esc(t) + '</span>'));
+    const rows = [
+      ['Seller\'s loan payment', h.pi],
+      ['Property tax and insurance', f.ti],
+      h.type === 'FHA' ? ['FHA mortgage insurance', f.mip] : null,
+      h.hoa ? ['HOA', h.hoa] : null,
+      f.p2 ? ['2nd loan (' + short(f.second) + ' at ' + S.r2 + '%)', f.p2] : null
+    ].filter(Boolean).map(([k, v]) => '<li><span>' + esc(k) + '</span><span>' + money(v) + '</span></li>').join('') +
+      '<li class="strong"><span>Total each month</span><span>' + money(f.total) + '</span></li>';
+    return '<article class="hcard' + (fits ? '' : ' over') + '">' +
+      '<div class="hc-top">' +
+        '<div class="rate r-' + esc(h.type) + '"><b class="num">' + h.rate + '%</b><span>' + esc(h.type) + ' loan</span></div>' +
+        '<div><h4>' + esc(h.street) + '</h4><div class="sub">' + esc(h.city) + ' ' + esc(h.zip) + '</div><div class="price num">' + money(h.price) + '</div></div>' +
+        '<button type="button" class="heart" data-save="' + esc(h.id) + '" aria-pressed="' + isSaved + '" aria-label="Save ' + esc(h.street) + '">' + HEART + '<span>' + (isSaved ? 'Saved' : 'Save') + '</span></button>' +
+      '</div>' +
+      '<div class="facts">' + esc(facts) + '</div>' +
+      '<div class="astats">' +
+        '<div><span>Est. monthly</span><b class="' + (fits ? 'fit' : 'nofit') + '">' + money(f.total) + '</b><small>' + (fits ? money(S.budget - f.total) + ' under budget' : money(f.total - S.budget) + ' over') + '</small></div>' +
+        '<div><span>Cash needed</span>' + cashCell + '</div>' +
+        '<div><span>Seller\'s loan</span><b>' + short(h.balance) + '</b><small>' + h.years + ' years left</small></div>' +
+      '</div>' +
+      (tags.length ? '<div class="tags">' + tags.join('') + '</div>' : '') +
+      '<details class="more"><summary>Monthly payment breakdown</summary><ul class="break">' + rows + '</ul></details>' +
+      '<div class="actions">' +
+        '<a class="btn btn-accent btn-sm" href="' + esc(h.roots) + '" target="_blank" rel="noopener">Photos and loan details</a>' +
+        '<button type="button" class="btn btn-line btn-sm" data-ask="' + esc(h.id) + '">Ask Darien about it</button>' +
+        '<a class="btn btn-line btn-sm" href="' + esc(zillow(h)) + '" target="_blank" rel="noopener">Zillow</a>' +
+        '<a class="btn btn-line btn-sm" href="' + esc(mapUrl(h)) + '" target="_blank" rel="noopener">Map</a>' +
+      '</div>' +
+      '<div class="srcline">Listing by ' + esc(h.office) + ' · MLS# ' + esc(h.id) + ' · ' + h.dom + ' day' + (h.dom === 1 ? '' : 's') + ' on market</div>' +
+    '</article>';
+  }
+
+  function inScope(h) {
+    const band = BANDS.find((b) => b.k === S.band) || BANDS[0];
+    return (S.town === 'all' || h.city === S.town) && h.price >= band.lo && h.price < band.hi;
+  }
+  const SORTS = {
+    pay: (a, b) => a.f.total - b.f.total,
+    price: (a, b) => a.h.price - b.h.price,
+    cash: (a, b) => a.f.cash - b.f.cash,
+    rate: (a, b) => a.h.rate - b.h.rate
+  };
+
+  function render() {
+    const all = HOMES.map((h) => ({ h, f: figure(h) }));
+    const bandOf = (k) => BANDS.find((b) => b.k === k) || BANDS[0];
+    const fitsIn = (x, town, band) => x.f.total <= S.budget && (town === 'all' || x.h.city === town) && x.h.price >= band.lo && x.h.price < band.hi;
+    document.querySelectorAll('[data-town]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.town === S.town));
+      b.querySelector('.n').textContent = all.filter((x) => fitsIn(x, b.dataset.town, bandOf(S.band))).length;
+    });
+    document.querySelectorAll('[data-band]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.band === S.band));
+      b.querySelector('.n').textContent = all.filter((x) => fitsIn(x, S.town, bandOf(b.dataset.band))).length;
+    });
+    const scoped = all.filter((x) => inScope(x.h)).sort(SORTS[S.sort] || SORTS.pay);
+    const fit = scoped.filter((x) => x.f.total <= S.budget);
+    const over = scoped.filter((x) => x.f.total > S.budget);
+    const where = S.town === 'all' ? 'Placer County' : S.town;
+    $('count').innerHTML = fit.length + ' home' + (fit.length === 1 ? '' : 's') + ' fit ' + money(S.budget) + ' a month <span class="sub">in ' + esc(where) + (S.cash != null ? ' with ' + money(S.cash) + ' cash' : ' paying the gap in cash') + '</span>';
+    $('fit-h').textContent = 'Homes that fit ' + money(S.budget) + ' a month';
+    $('fit-p').textContent = fit.length ? 'Cheapest monthly payment first.' : '';
+    $('fit').innerHTML = fit.length ? fit.map((x) => card(x.h, x.f)).join('') :
+      '<div class="empty"><h4>No homes here fit ' + esc(money(S.budget)) + ' right now</h4><p>Try a higher budget, more cash, or All Placer. The live searches below also show homes listed since this page was checked.</p></div>';
+    $('over').innerHTML = over.map((x) => card(x.h, x.f)).join('');
+    $('over-wrap').hidden = !over.length;
+    renderRanges(all.filter((x) => (S.town === 'all' || x.h.city === S.town)));
+    renderTiles();
+  }
+
+  function renderRanges(list) {
+    const rows = BANDS.filter((b) => b.k !== 'all').map((b) => {
+      const inBand = list.filter((x) => x.h.price >= b.lo && x.h.price < b.hi && x.f.total <= S.budget);
+      if (!inBand.length) return '<tr><td>' + esc(b.t) + '</td><td class="none" colspan="4">None fit right now</td></tr>';
+      const r = (arr) => { const lo = Math.min(...arr), hi = Math.max(...arr); return lo === hi ? money(lo) : money(lo) + ' – ' + money(hi); };
+      return '<tr><td>' + esc(b.t) + '</td><td>' + inBand.length + '</td><td>' + r(inBand.map((x) => x.h.price)) + '</td><td>' + r(inBand.map((x) => x.f.total)) + '/mo</td><td>' + r(inBand.map((x) => x.f.cash)) + '</td></tr>';
+    }).join('');
+    $('ranges-table').innerHTML = '<thead><tr><th>Price range</th><th>Homes</th><th>Prices</th><th>Monthly</th><th>Cash needed</th></tr></thead><tbody>' + rows + '</tbody>';
+    $('ranges-p').textContent = 'At ' + money(S.budget) + ' a month' + (S.cash != null ? ' with ' + money(S.cash) + ' in cash' : '') + ', here is what fits by price. Homes at higher prices fit too when the seller\'s loan is small; the difference is how much cash it takes to cover the gap.';
+  }
+
+  /* Live searches on Roots with the budget applied */
+  const PLACES = [
+    ['All of west Placer', 'Placer County', 38.84, -121.2, 10.5, 'Roseville, Rocklin, Lincoln, Loomis, Auburn'],
+    ['Loomis', 'Loomis', 38.8213, -121.193, 13, 'Loomis and Penryn'],
+    ['Rocklin', 'Rocklin', 38.7907, -121.2358, 12, 'Whitney Ranch, Stanford Ranch'],
+    ['Roseville', 'Roseville', 38.7521, -121.288, 11.5, 'West Roseville, Sierra Vista, Blue Oaks'],
+    ['Lincoln', 'Lincoln', 38.8916, -121.293, 12, 'Twelve Bridges, Lincoln Hills'],
+    ['Granite Bay', 'Granite Bay', 38.7632, -121.1638, 12.5, 'Larger lots and estates'],
+    ['Auburn', 'Auburn', 38.8966, -121.0769, 12, 'Auburn and North Auburn'],
+    ['Colfax and foothills', 'Colfax', 39.05, -120.98, 11.5, 'Colfax, Meadow Vista, Weimar']
+  ];
+  function renderTiles() {
+    const box = $('tiles');
+    box.innerHTML = '';
+    PLACES.forEach(([n, place, lat, lng, z, sub]) => {
+      const p = new URLSearchParams({ lat, lng, zoom: z, place: place + ', CA', isAssumable: 'true', view: 'list', monthlyPaymentMax: Math.round(S.budget) });
+      const a = document.createElement('a');
+      a.className = 'tile'; a.target = '_blank'; a.rel = 'noopener';
+      a.href = 'https://www.roots.homes/listings?' + p.toString();
+      const b = document.createElement('b'); b.textContent = n + ' under ' + money(S.budget) + '/mo';
+      const s = document.createElement('small'); s.textContent = sub;
+      const i = document.createElement('i'); i.textContent = '↗'; i.setAttribute('aria-hidden', 'true');
+      a.append(b, s, i);
+      box.appendChild(a);
+    });
+  }
+
+  /* Saving homes */
+  function syncSaved() {
+    store.set('pla-saved', [...saved]);
+    const list = [...saved].map((id) => HOMES.find((h) => h.id === id)).filter(Boolean);
+    $('f-saved').innerHTML = list.length
+      ? list.map((h) => '<span>' + esc(h.street) + ', ' + esc(h.city) + ' <button type="button" data-unsave="' + esc(h.id) + '" aria-label="Remove ' + esc(h.street) + '">×</button></span>').join('')
+      : '<small class="fine">None yet. Tap Save on any home above.</small>';
+    const nav = $('nav-saved');
+    nav.hidden = !list.length;
+    nav.textContent = list.length + ' saved · send to Darien';
+    buildMessage();
+  }
+  document.addEventListener('click', (e) => {
+    const s = e.target.closest('[data-save]');
+    if (s) {
+      const id = s.dataset.save;
+      if (saved.has(id)) saved.delete(id); else saved.add(id);
+      s.setAttribute('aria-pressed', String(saved.has(id)));
+      s.querySelector('span').textContent = saved.has(id) ? 'Saved' : 'Save';
+      syncSaved();
+      return;
+    }
+    const a = e.target.closest('[data-ask]');
+    if (a) {
+      const id = a.dataset.ask;
+      const h = HOMES.find((x) => x.id === id);
+      saved.add(id);
+      document.querySelectorAll('[data-save="' + id + '"]').forEach((b) => { b.setAttribute('aria-pressed', 'true'); b.querySelector('span').textContent = 'Saved'; });
+      syncSaved();
+      const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      $('signup').scrollIntoView({ behavior: calm ? 'auto' : 'smooth' });
+      const name = $('f-name').value.trim(), email = $('f-email').value.trim();
+      (!name ? $('f-name') : !email ? $('f-email') : $('f-notes')).focus({ preventScroll: true });
+      toast(name && email ? 'Added ' + h.street + '. Send your request below when you\'re ready.' : 'Added ' + h.street + ' to your list. Add your name and email, then send it to Darien.');
+      return;
+    }
+    const u = e.target.closest('[data-unsave]');
+    if (u) { saved.delete(u.dataset.unsave); syncSaved(); render(); }
+  });
+
+  /* Sign-up request */
+  const TOWN_OPTS = ['Loomis', 'Rocklin', 'Roseville', 'Lincoln', 'Granite Bay', 'Auburn', 'Penryn', 'Newcastle', 'Colfax', 'Meadow Vista'];
+  const form = store.get('pla-form', {}) || {};
+  TOWN_OPTS.forEach((t) => {
+    const l = document.createElement('label');
+    const c = document.createElement('input');
+    c.type = 'checkbox'; c.value = t; c.checked = Array.isArray(form.towns) ? form.towns.includes(t) : (t === 'Loomis' || t === 'Rocklin' || t === 'Roseville');
+    l.append(c, document.createTextNode(' ' + t));
+    $('f-towns').appendChild(l);
+  });
+  const FIELDS = ['f-name', 'f-email', 'f-phone', 'f-va', 'f-budget', 'f-cash', 'f-beds', 'f-when', 'f-notes'];
+  FIELDS.forEach((id) => { if (form[id] != null) $(id).value = form[id]; });
+  const towns = () => [...$('f-towns').querySelectorAll('input:checked')].map((c) => c.value);
+  function buildMessage() {
+    const v = (id) => $(id).value.trim();
+    const lines = ['Hi Darien, please send me assumable homes in Placer County that fit my budget.', ''];
+    lines.push('Name: ' + (v('f-name') || '[your name]'));
+    lines.push('Email: ' + (v('f-email') || '[your email]'));
+    if (v('f-phone')) lines.push('Phone: ' + v('f-phone'));
+    const b = parseMoney(v('f-budget'));
+    lines.push('Max monthly payment: ' + (b > 0 ? money(b) : '$2,500'));
+    const c = parseMoney(v('f-cash'));
+    if (c >= 0) lines.push('Cash for the gap and closing: ' + money(c));
+    lines.push('Towns: ' + (towns().join(', ') || 'Anywhere in Placer County'));
+    lines.push('Bedrooms: ' + v('f-beds') + ' · VA eligible: ' + v('f-va'));
+    lines.push('Timeline: ' + v('f-when'));
+    const list = [...saved].map((id) => HOMES.find((h) => h.id === id)).filter(Boolean);
+    if (list.length) {
+      lines.push('', 'Homes I want to know more about:');
+      list.forEach((h) => lines.push('- ' + h.street + ', ' + h.city + ' (' + money(h.price) + ', MLS# ' + h.id + ')'));
+    }
+    if (v('f-notes')) lines.push('', 'Notes: ' + v('f-notes'));
+    lines.push('', 'Please set me up with daily email alerts for homes like these.');
+    const msg = lines.join('\n');
+    $('f-msg').value = msg;
+    const subject = 'Placer assumable homes: please set up my alerts';
+    $('send-email').href = 'mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(msg);
+    $('send-text').href = 'sms:+12098826469?&body=' + encodeURIComponent(msg);
+    return msg;
+  }
+  function saveForm() {
+    const f = {};
+    FIELDS.forEach((id) => { f[id] = $(id).value; });
+    f.towns = towns();
+    store.set('pla-form', f);
+  }
+  function toast(t, err) { $('toast').textContent = t; $('toast').classList.toggle('err', !!err); }
+  function ready() {
+    const name = $('f-name').value.trim(), email = $('f-email').value.trim();
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      toast('Add your name and a valid email first, so Darien can send you the homes.', true);
+      (!name ? $('f-name') : $('f-email')).focus();
+      return false;
+    }
+    return true;
+  }
+  $('form').addEventListener('input', () => { saveForm(); buildMessage(); toast(''); });
+  $('form').addEventListener('change', () => { saveForm(); buildMessage(); });
+  ['f-budget', 'f-cash'].forEach((id) => $(id).addEventListener('blur', () => { const v = parseMoney($(id).value); if (!isNaN(v)) { $(id).value = Math.round(v).toLocaleString('en-US'); buildMessage(); } }));
+  $('send-email').addEventListener('click', (e) => { buildMessage(); if (!ready()) { e.preventDefault(); return; } toast('Your email app should open with this filled in. If it doesn\'t, tap Copy and email it to darienphillips45@gmail.com.'); });
+  $('send-text').addEventListener('click', (e) => { buildMessage(); if (!ready()) { e.preventDefault(); return; } toast('Your texting app should open with this filled in. If it doesn\'t, tap Copy and text it to 209.882.6469.'); });
+  $('form').addEventListener('submit', (e) => e.preventDefault());
+  $('copy-msg').addEventListener('click', async () => {
+    const msg = buildMessage();
+    if (!ready()) return;
+    try { await navigator.clipboard.writeText(msg); toast('Copied. Paste it into an email to darienphillips45@gmail.com or a text to 209.882.6469.'); }
+    catch (err) { const t = $('f-msg'); t.focus(); t.select(); toast('Copy is blocked here. The text is selected, so press Ctrl+C or Cmd+C.', true); }
+  });
+
+  render();
+  syncSaved();
+})();
+</script>
