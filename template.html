@@ -34,6 +34,7 @@
   --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
   --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-serif: Georgia, "Times New Roman", serif;
   --r: 14px;
 }
 @media (prefers-color-scheme: dark) {
@@ -628,30 +629,54 @@ footer a { color: var(--brand-ink); }
 /* Homepage backdrop: the photo fills the whole hero, edge to edge, with the
    name, title, search and buttons centered over it. The photo key lives in
    HOME_BACKDROP_KEY in js/2b-photos.js. These rules sit last so they win
-   over the split-hero rules above, which show the photo on the right only. */
+   over the split-hero rules above, which show the photo on the right only.
+   Luxury-homepage style: no dark overlay, the photo shows as shot, with
+   only a very light gradient at the bottom so the white type stays readable.
+   The serif stack (--f-serif) is used here and on the full-bleed toured
+   cards only, nowhere else on the site. */
 :root[data-page="home"] .hero { min-height: min(92svh, 860px); align-items: center; }
 :root[data-page="home"] .hero .scene { left: 0; width: 100%; -webkit-mask-image: none; mask-image: none; }
 :root[data-page="home"] .hero .scene .photo { object-position: 50% 42%; }
 :root[data-page="home"] .hero::after {
-  background:
-    linear-gradient(180deg, rgba(6, 12, 20, 0.58) 0%, rgba(6, 12, 20, 0.34) 42%, rgba(6, 12, 20, 0.68) 100%),
-    linear-gradient(0deg, rgba(6, 12, 20, 0.35) 0%, rgba(6, 12, 20, 0) 45%);
+  background: linear-gradient(0deg, rgba(6, 12, 20, 0.30) 0%, rgba(6, 12, 20, 0) 42%);
 }
-:root[data-page="home"] .hero-in { padding-block: 72px 56px; text-align: center; }
-:root[data-page="home"] .hero h1 { margin-inline: auto; max-width: 20ch; }
-:root[data-page="home"] .hero .sub { margin-inline: auto; }
-:root[data-page="home"] .hero .ctas { justify-content: center; }
-:root[data-page="home"] .hero-search { margin-inline: auto; }
-:root[data-page="home"] .hero-chips { justify-content: center; }
+:root[data-page="home"] .hero-text::before { background: none; }
+:root[data-page="home"] .hero-in { padding-block: 72px 72px; text-align: center; }
+:root[data-page="home"] .hero h1 { margin-inline: auto; max-width: 22ch; font-family: var(--f-serif); font-weight: 500; font-stretch: normal; letter-spacing: 0; }
+:root[data-page="home"] .hero h1 .t2 { font-family: var(--f-serif); font-style: italic; font-weight: 400; color: #FFFFFF; }
+:root[data-page="home"] .hero .sub { margin-inline: auto; max-width: 56ch; }
+:root[data-page="home"] .hero .ctas { justify-content: center; align-items: center; }
+.hero-quiet { background: none; border: 0; color: #FFFFFF; font: 600 0.98rem var(--f-body); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 10px 8px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+.hero-scroll { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 2; background: none; border: 0; color: rgba(255, 255, 255, 0.92); font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; cursor: pointer; padding: 6px 10px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+.hero-scroll span { display: block; font-size: 1rem; line-height: 1; margin-top: 2px; }
 .hero-note { margin-top: 28px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.78); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
 @media (max-width: 720px) {
   :root[data-page="home"] .hero { min-height: min(88svh, 720px); }
   :root[data-page="home"] .hero .scene { bottom: 0; height: 100%; }
-  :root[data-page="home"] .hero-in { padding-block: 118px 40px; }
+  :root[data-page="home"] .hero-in { padding-block: 118px 56px; }
   :root[data-page="home"] .hero::after {
-    background: linear-gradient(180deg, rgba(6, 12, 20, 0.62) 0%, rgba(6, 12, 20, 0.42) 45%, rgba(6, 12, 20, 0.72) 100%);
+    background: linear-gradient(0deg, rgba(6, 12, 20, 0.34) 0%, rgba(6, 12, 20, 0) 46%);
   }
 }
+
+/* Full-bleed "Homes I toured" cards: one big photo per home, edge to edge,
+   with a white serif title and price overlaid at the bottom. The buttons sit
+   in a row below the photo, never on top of it. A home with no real photo of
+   its own gets a warm solid panel, never a stock photo passed off as the home. */
+.lux-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 18px; margin-top: 14px; }
+.lux-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px var(--shade); display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.lux-photo { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--soft); text-decoration: none; }
+.lux-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lux-panel { width: 100%; height: 100%; background: linear-gradient(155deg, #6E4527 0%, #96703F 52%, #B98D55 100%); }
+.lux-pill { position: absolute; top: 12px; left: 12px; z-index: 2; display: flex; gap: 6px; flex-wrap: wrap; }
+.lux-pill .pill { background: rgba(255, 255, 255, 0.92); color: #14212B; }
+.lux-cap { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 44px 16px 14px; background: linear-gradient(0deg, rgba(6, 12, 20, 0.66) 0%, rgba(6, 12, 20, 0) 100%); color: #FFFFFF; }
+.lux-cap .lux-title { display: block; font-family: var(--f-serif); font-weight: 500; font-size: 1.5rem; line-height: 1.15; }
+.lux-cap .lux-price { display: block; font-family: var(--f-serif); font-weight: 500; font-size: 1.35rem; margin-top: 4px; }
+.lux-body { padding: 12px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.lux-body .facts { color: var(--muted); font-size: 0.92rem; }
+.lux-body .note { color: var(--muted); font-size: 0.95rem; }
+.lux-body .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 
 /* Find Your Home guided flow: one question at a time, with Back, Skip and Reset */
 .guide-panel { display: grid; gap: 14px; }

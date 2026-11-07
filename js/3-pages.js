@@ -57,13 +57,13 @@ const TILE_TEXT = {
 const POPULAR = ['Loomis', 'Roseville', 'Rocklin', 'Lincoln', 'Auburn', 'Sacramento', 'Elk Grove', 'Folsom', 'Stockton', 'Lodi', 'Manteca', 'Lathrop', 'Tracy', 'Modesto', 'Salida', 'Turlock'];
 def('home', {
   nav: 'Home', scene: 'home', kicker: 'Darien Phillips · REALTOR®',
-  title: 'Looking for the right home?',
-  title2: 'You\'re in the right place.',
-  sub: 'Every home for sale in Placer, Sacramento, San Joaquin and Stanislaus, with real monthly costs and local help.',
-  heroSearch: true,
+  title: 'Come on in.',
+  title2: 'The right home is waiting.',
+  sub: 'Homes for sale in Placer, Sacramento, San Joaquin and Stanislaus, with real monthly costs and a local realtor who will walk you through them.',
+  heroSearch: false,
   photoKey: () => HOME_BACKDROP_KEY,
   heroNote: () => HOME_BACKDROP_NOTE,
-  ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="btn btn-ghost" data-go="search">Search every home</button><a class="btn btn-ghost" href="sms:+12098826469">Text Darien</a><a class="btn btn-ghost" href="tel:+12098826469">Call Darien</a><a class="btn btn-ghost" href="mailto:darienphillips45@gmail.com">Email Darien</a>',
+  ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
     return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + justListedHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
@@ -116,20 +116,27 @@ const TOURED_CUSTOM = [
 function touredPropCard(p, cartKey) {
   const info = { h: propTitle(p, true), p: propPrice(p), b: propFacts(p), l: p.hook, city: p.city, z: p.addr && p.city ? zillowFor(p.addr, p.city, p.zip) : '', m: p.addr ? mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') : '' };
   const tour = (typeof toursFor === 'function' && toursFor(commOf(p)).length) ? '<span class="pill ok">▶ Video tour</span>' : '';
-  return '<article class="card"><div class="head"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</div>' +
-    '<h3>' + esc(propTitle(p, false)) + '</h3><div class="price num">' + esc(propPrice(p)) + '</div>' +
-    (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') + (p.hook ? '<p class="note">' + esc(p.hook) + '</p>' : '') +
-    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></article>';
+  // The home's own photo when the sheet has one; otherwise a warm solid
+  // panel, never a stock photo passed off as the home.
+  const photo = (p.img && ON_WEB) ? photoImg('home', false, p.img) : '';
+  const media = photo || '<div class="lux-panel" aria-hidden="true"></div>';
+  return '<article class="lux-card"><a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + media +
+    '<span class="lux-pill"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
+    '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span><span class="lux-price num">' + esc(propPrice(p)) + '</span></span></a>' +
+    '<div class="lux-body">' + (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') + (p.hook ? '<p class="note">' + esc(p.hook) + '</p>' : '') +
+    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></div></article>';
 }
 function touredCustomCard(t) {
   const info = { h: t.addr, p: t.price, b: t.facts, l: t.hook, city: t.city, z: t.z || '', m: mapFor(t.addr + ', CA') };
-  const see = t.z
-    ? '<a class="btn btn-line btn-sm" href="' + esc(track(t.z, { h: info.h, s: 'Zillow', p: info.p })) + '" target="_blank" rel="noopener">See photos on Zillow</a>'
-    : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
-  return '<article class="card"><div class="head"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></div>' +
-    '<h3>' + esc(t.title) + '</h3><div class="price num">' + esc(t.price) + '</div>' +
-    '<div class="facts">' + esc(t.facts) + '</div><p class="note">' + esc(t.hook) + '</p>' +
-    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></article>';
+  const seeHref = t.z ? track(t.z, { h: info.h, s: 'Zillow', p: info.p }) : '#p/' + t.page;
+  const seeAttrs = t.z ? ' target="_blank" rel="noopener"' : '';
+  const seeLabel = t.z ? 'See photos on Zillow' : t.pageLabel;
+  const see = '<a class="btn btn-line btn-sm" href="' + esc(seeHref) + '"' + seeAttrs + '>' + esc(seeLabel) + '</a>';
+  return '<article class="lux-card"><a class="lux-photo" href="' + esc(seeHref) + '"' + seeAttrs + ' aria-label="' + esc(t.addr) + '"><div class="lux-panel" aria-hidden="true"></div>' +
+    '<span class="lux-pill"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
+    '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span><span class="lux-price num">' + esc(t.price) + '</span></span></a>' +
+    '<div class="lux-body"><div class="facts">' + esc(t.facts) + '</div><p class="note">' + esc(t.hook) + '</p>' +
+    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div></article>';
 }
 function touredHtml() {
   if (typeof PROPS === 'undefined') return '';
@@ -148,7 +155,7 @@ function touredHtml() {
   if (!items.length) return '';
   items.sort((a, b) => a.price - b.price);
   return '<section class="blk" id="toured"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
-    '<div class="cards">' + items.map((x) => x.html).join('') + '</div></div></section>';
+    '<div class="lux-list">' + items.map((x) => x.html).join('') + '</div></div></section>';
 }
 
 /* ===== Assumable homes ===== */

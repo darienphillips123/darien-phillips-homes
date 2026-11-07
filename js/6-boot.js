@@ -211,6 +211,13 @@ function render(page, keep) {
   const photoKey = P.photoKey ? P.photoKey() : page;
   $('hero').innerHTML = '<div class="scene">' + scene(P.scene) + photoImg(photoKey, false, P.photoUrl ? P.photoUrl() : '') + '</div><div class="wrap hero-in' + (portrait ? ' hero-split' : '') + '"><div class="hero-text"><p class="kicker">' + esc(V('kicker')) + (clientName() ? '<span class="forwho">Picked for ' + esc(clientName()) + '</span>' : '') + '</p>' +
     '<h1 id="page-title" tabindex="-1">' + esc(V('title')) + (V('title2') ? '<span class="t2">' + esc(V('title2')) + '</span>' : '') + '</h1><p class="sub">' + esc(V('sub')) + '</p>' + (P.heroSearch ? searchBox('q2') + '<div class="hero-chips">' + [['Pool', { opts: ['pool'] }], ['Single story', { opts: ['1story'] }], ['Under $600k', { max: 600000 }], ['New builds', { opts: ['newconstruction'] }], ['1+ acre', { acres: 1 }], ['55+', { opts: ['adult'] }]].map(([t, f]) => '<button type="button" class="chip" data-chip=\'' + esc(JSON.stringify(f)) + '\'>' + esc(t) + '</button>').join('') + '</div>' : '') + '<div class="ctas">' + ctas + '</div>' + (P.heroNote ? '<p class="hero-note">' + esc(P.heroNote()) + '</p>' : '') + '</div>' + portrait + '</div>';
+  if (page === 'home') {
+    const sc = document.createElement('button');
+    sc.type = 'button'; sc.className = 'hero-scroll';
+    sc.innerHTML = 'SCROLL<span aria-hidden="true">↓</span>';
+    sc.addEventListener('click', () => { const t = document.getElementById('toured'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    $('hero').appendChild(sc);
+  }
   const pimg = $('hero').querySelector('.hero-portrait img');
   if (pimg) pimg.addEventListener('error', () => { pimg.closest('figure').remove(); $('hero').querySelector('.hero-in').classList.remove('hero-split'); }, { once: true });
   $('view').innerHTML = (page === 'home' || page === 'search' ? picksHtml() : '') + P.html();
