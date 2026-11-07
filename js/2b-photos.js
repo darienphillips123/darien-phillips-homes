@@ -1,12 +1,13 @@
-/* ===== Homepage backdrop: swap this one line once Deklan's site is seen =====
-   HOME_BACKDROP_KEY is the photo key in PHOTOS below. No real photo of a home
-   Darien toured (Hazel at SHAWOOD Folsom, Carlsberg at Ridgeline at Bickford)
-   exists in img/, so the backdrop is a stock photo for now, labeled honestly
-   in HOME_BACKDROP_NOTE and in the footer credit. To use a real tour-home
-   photo later, add it to img/ as <key>-1920.jpg, <key>-960.jpg and
-   <key>-tile.jpg, add a PHOTOS entry for it, and point this key at it. */
-const HOME_BACKDROP_KEY = 'payment';
-const HOME_BACKDROP_NOTE = 'Backdrop photo: a home at dusk, by Michael Brown on Unsplash. This is a stock photo, not a home Darien toured.';
+/* ===== Homepage backdrop =====
+   HOME_BACKDROP_KEY is the photo key in PHOTOS below. The front photo is
+   now the AI-generated keys image Darien supplied (Handing_Keys_AI.jpeg),
+   labeled honestly in HOME_BACKDROP_NOTE and in the footer credit. It is
+   NOT a photo of a real closing, and no couple, home or closing date is
+   named for it. To use a real tour-home photo later, add it to img/ as
+   <key>-1920.jpg, <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry
+   for it, and point this key at it. */
+const HOME_BACKDROP_KEY = 'keys';
+const HOME_BACKDROP_NOTE = 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', ai: true },
@@ -23,7 +24,8 @@ const PHOTOS = {
   about: { pos: '50% 62%', by: 'Get Lost Mike', id: '6267516', site: 'pexels', src: 'https://images.pexels.com/photos/6267516/pexels-photo-6267516.jpeg?auto=compress&cs=tinysrgb' },
   alerts: { pos: '50% 50%', by: 'Roger Starnes Sr', id: 'LUdiEvMAyQ8' },
   adu: { pos: '50% 50%' },
-  cart: { pos: '50% 50%' }
+  cart: { pos: '50% 50%' },
+  keys: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' }
 };
 function photoImg(key, tile, url) {
   // A listing's own photo (an https link from Darien's sheet) on the public site
@@ -50,6 +52,7 @@ function wirePhotos(root) {
 function photoCredit(key) {
   const p = PHOTOS[key];
   if (!p) return '';
+  if (p.aiNote) return p.aiNote;
   if (p.ai) return 'Photo of Darien edited with AI.';
   if (!p.by) return '';
   return p.site === 'pexels' ? 'Backdrop photo by <a href="https://www.pexels.com/photo/' + p.id + '/" target="_blank" rel="noopener">' + esc(p.by) + '</a> on Pexels.'

@@ -636,11 +636,15 @@ footer a { color: var(--brand-ink); }
    cards only, nowhere else on the site. */
 :root[data-page="home"] .hero { min-height: min(92svh, 860px); align-items: center; }
 :root[data-page="home"] .hero .scene { left: 0; width: 100%; -webkit-mask-image: none; mask-image: none; }
-:root[data-page="home"] .hero .scene .photo { object-position: 50% 42%; }
+:root[data-page="home"] .hero .scene .photo { object-position: 45% 25%; }
+/* Light interior photo: a soft scrim behind the centered text only, so the
+   white serif headline stays readable without a heavy dark overlay hiding
+   Darien and the couple. The photo itself is not darkened across the frame. */
 :root[data-page="home"] .hero::after {
-  background: linear-gradient(0deg, rgba(6, 12, 20, 0.30) 0%, rgba(6, 12, 20, 0) 42%);
+  background: linear-gradient(0deg, rgba(6, 12, 20, 0.52) 0%, rgba(6, 12, 20, 0.22) 52%, rgba(6, 12, 20, 0.10) 100%);
 }
-:root[data-page="home"] .hero-text::before { background: none; }
+:root[data-page="home"] .hero-text::before { background: radial-gradient(ellipse at 50% 50%, rgba(6, 12, 20, 0.42), rgba(6, 12, 20, 0) 70%); }
+:root[data-page="home"] .hero h1, :root[data-page="home"] .hero .sub, :root[data-page="home"] .hero .kicker { text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65), 0 1px 4px rgba(0, 0, 0, 0.6); }
 :root[data-page="home"] .hero-in { padding-block: 72px 72px; text-align: center; }
 :root[data-page="home"] .hero h1 { margin-inline: auto; max-width: 22ch; font-family: var(--f-serif); font-weight: 500; font-stretch: normal; letter-spacing: 0; }
 :root[data-page="home"] .hero h1 .t2 { font-family: var(--f-serif); font-style: italic; font-weight: 400; color: #FFFFFF; }
@@ -655,7 +659,7 @@ footer a { color: var(--brand-ink); }
   :root[data-page="home"] .hero .scene { bottom: 0; height: 100%; }
   :root[data-page="home"] .hero-in { padding-block: 118px 56px; }
   :root[data-page="home"] .hero::after {
-    background: linear-gradient(0deg, rgba(6, 12, 20, 0.34) 0%, rgba(6, 12, 20, 0) 46%);
+    background: linear-gradient(0deg, rgba(6, 12, 20, 0.55) 0%, rgba(6, 12, 20, 0.24) 52%, rgba(6, 12, 20, 0.10) 100%);
   }
 }
 
@@ -685,6 +689,8 @@ footer a { color: var(--brand-ink); }
 .gz-steps .done { color: var(--good); }
 .gz-q { font-family: var(--f-display); font-stretch: 106%; font-size: 1.25rem; font-weight: 800; margin: 0; }
 .gz-sub { color: var(--muted); margin-top: 4px; }
+.gz-help { color: var(--muted); margin-top: 4px; }
+.fd-intro { font-size: 1.05rem; margin: 0 0 14px; max-width: 62ch; }
 .gz-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 10px; margin-top: 12px; }
 .gz-opt { text-align: left; background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; color: var(--ink); display: grid; gap: 2px; }
 .gz-opt:hover { border-color: var(--pa); }

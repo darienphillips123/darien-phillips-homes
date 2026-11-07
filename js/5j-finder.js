@@ -78,11 +78,12 @@ def('finder', {
   nav: 'Find your home', scene: 'home', kicker: 'Find exactly what you are looking for', tileTitle: 'Find exactly what you are looking for',
   title: 'Find exactly what you are looking for',
   sub: 'Filter every home on this site at once: assumable loans, Placer homes, new builds and Stockton $0-down homes. Every filter uses only information published on this site.',
-  photoKey: () => 'search',
+  photoKey: () => 'keys',
   html() {
     const F = sub('finder', FINDER_DEFAULTS);
     const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
     return '<section class="blk"><div class="wrap">' +
+      '<p class="fd-intro">Answer four quick questions and see the homes that match. Change any answer, skip a step, or use Show all filters instead. You can look around without signing up.</p>' +
       '<div class="panel accent guide-panel" id="fd-guide">' +
         '<div class="bar"><div><p class="mono eyebrow">Find your home</p><h2>Answer four questions, see your homes</h2></div><button type="button" class="btn btn-line btn-sm" id="fd-startover">Start over</button></div>' +
         '<div class="gz-steps" id="fd-steps" aria-label="Progress"></div>' +
@@ -218,7 +219,7 @@ def('finder', {
       if (!stepEl) return;
       stepsEl.innerHTML = GZ_STEPS.map((t, i) => '<span class="gz-step' + (i + 1 === F.gstep ? ' here' : (i + 1 < F.gstep ? ' done' : '')) + '">' + (i + 1) + '. ' + esc(t) + '</span>').join('');
       if (F.gstep === 1) {
-        stepEl.innerHTML = '<p class="gz-q">What kind of home are you looking for?</p><div class="gz-opts">' +
+        stepEl.innerHTML = '<p class="gz-q">What kind of home are you looking for?</p><p class="gz-help">Pick how you want to buy. Not sure yet? Pick Any home and narrow it down later.</p><div class="gz-opts">' +
           GZ_KINDS.map(([v, t, d]) => '<button type="button" class="gz-opt" data-gz-kind="' + v + '" aria-pressed="' + (F.kind === v) + '"><b>' + esc(t) + '</b><span>' + esc(d) + '</span></button>').join('') + '</div>';
         navEl.innerHTML = '<span class="sp"></span><button type="button" class="btn btn-line" data-gz-nav="2">Skip</button>';
       } else if (F.gstep === 2) {
@@ -245,7 +246,7 @@ def('finder', {
         draw();
       } else {
         const picked = GZ_MUST.filter((m) => hasPhrase(m));
-        stepEl.innerHTML = '<p class="gz-q">Your homes are ready</p><ul class="gz-sum">' +
+        stepEl.innerHTML = '<p class="gz-q">Your homes are ready</p><p class="gz-help">This is what you picked. Tap See the homes to look through them, or Change answers to start again.</p><ul class="gz-sum">' +
           '<li><span>Home type</span><b>' + esc(kindLabel(F.kind)) + '</b></li>' +
           '<li><span>City or area</span><b>' + esc(F.city || 'Anywhere') + '</b></li>' +
           '<li><span>Rooms</span><b>' + esc((F.beds ? F.beds + '+ beds' : 'Any beds') + ' · ' + (F.baths ? F.baths + '+ baths' : 'Any baths')) + '</b></li>' +
