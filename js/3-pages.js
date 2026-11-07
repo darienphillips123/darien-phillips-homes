@@ -113,17 +113,47 @@ const TOURED_CUSTOM = [
   { key: 't:carlsberg-835-ridgeline-dr', title: 'Carlsberg home in Lincoln', addr: '835 Ridgeline Dr, Lincoln', price: '$1,345,000', facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in December.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' },
   { key: 't:carlsberg-670-ridgeline-ct', title: 'Carlsberg home in Lincoln', addr: '670 Ridgeline Ct, Lincoln', price: '$1,506,000', facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in November.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' }
 ];
+/* ===== Toured cards: real photo + Darien's tour video, side by side =====
+   Only homes where BOTH were verified get a photo and video. Photos were
+   visually checked in the workspace on Nov 7, 2026. RIO was rejected: its
+   candidate photo shows only a garage/barn, not the house. Ridge Park was
+   rejected: its candidate photo shows only the pool and grounds, no house.
+   Cornwall has no verifiable photo URL at all. Those three keep the gold
+   panel. Oak Rock's photo is an aerial from the prior listing of the same
+   house, pre-remodel, and is labelled as such. Builder photos are labelled
+   as builder photos. Videos are Darien's own reels, verified Nov 7, 2026.
+   The Carlsberg video is one plan-level tour; its December move-in line
+   points to 835 Ridgeline Dr, so 670 Ridgeline Ct is labelled plan tour. */
+const TOURED_MEDIA = {
+  'ser': { photo: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/09/21/16a81d77-1658-4c22-b2b9-2c013064d826.jpg', credit: 'Listing photo via MetroList', video: 'https://www.instagram.com/reel/DfSUUIJyqGq/embed/', watch: 'https://www.instagram.com/reel/DfSUUIJyqGq/', plat: 'Instagram' },
+  'palm': { photo: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/10/15/65fe65dd-29aa-41f2-ae83-a54e37dbf999.jpg', credit: 'Aerial listing photo via MetroList', video: 'https://www.instagram.com/reel/DfQIcvGyUNP/embed/', watch: 'https://www.instagram.com/reel/DfQIcvGyUNP/', plat: 'Instagram' },
+  'haven': { photo: 'https://bluemountaincommunities.com/wp-content/uploads/2024/02/BMC_Oakhaven_-Plan2_B_CS_07-1600x1120.jpg', credit: 'Builder photo, Blue Mountain Communities', video: 'https://www.instagram.com/reel/DfQzh2jyHQo/embed/', watch: 'https://www.instagram.com/reel/DfQzh2jyHQo/', plat: 'Instagram' },
+  '10732-stevie-dr': { photo: 'https://www.centurycommunities.com/globalassets/century/assets/elevations--amenities/ccs/ccs--ca/nor-cal/heritage/updated-elevations/plan-7-b-55x100-plan-7-8-9-elev-b-craftsman-22.jpg?width=1155&height=650&mode=crop&format=webp&v=409', credit: 'Builder photo, Century Communities', video: 'https://www.instagram.com/reel/DfYhGrmyWOC/embed/', watch: 'https://www.instagram.com/reel/DfYhGrmyWOC/', plat: 'Instagram' },
+  't:oak-rock-folsom': { photo: 'https://pi.movoto.com/p/102/226095956_0_mu6iZv_p.webp', credit: 'Aerial photo from the prior listing of this home', video: 'https://www.instagram.com/reel/DfKiQROyqLb/embed/', watch: 'https://www.instagram.com/reel/DfKiQROyqLb/', plat: 'Instagram' },
+  'q:shawood-at-folsom-4681-dehone-circle': { photo: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', credit: 'Builder photo, SHAWOOD', video: 'https://www.tiktok.com/embed/v2/7705246029641157902', watch: 'https://www.tiktok.com/@realtordarien/video/7705246029641157902', plat: 'TikTok' },
+  't:carlsberg-835-ridgeline-dr': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_MODF_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Modern Farmhouse elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok' },
+  't:carlsberg-670-ridgeline-ct': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_CCON_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Contemporary Craftsman elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok, Carlsberg plan tour' }
+};
+function touredDuo(m, photoHtml) {
+  return '<div class="lux-duo">' + photoHtml +
+    '<div class="lux-video"><iframe src="' + esc(m.video) + '" title="Darien\'s video tour" loading="lazy" allowfullscreen allow="autoplay; encrypted-media; fullscreen; picture-in-picture"></iframe><span class="lux-vid-tag">▶ Darien\'s tour, ' + esc(m.plat) + '</span></div></div>';
+}
+function touredCredit(m) { return '<p class="note">' + esc(m.credit) + '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>.</p>'; }
+
 function touredPropCard(p, cartKey) {
   const info = { h: propTitle(p, true), p: propPrice(p), b: propFacts(p), l: p.hook, city: p.city, z: p.addr && p.city ? zillowFor(p.addr, p.city, p.zip) : '', m: p.addr ? mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') : '' };
   const tour = (typeof toursFor === 'function' && toursFor(commOf(p)).length) ? '<span class="pill ok">▶ Video tour</span>' : '';
   // The home's own photo when the sheet has one; otherwise a warm solid
   // panel, never a stock photo passed off as the home.
   const photo = (p.img && ON_WEB) ? photoImg('home', false, p.img) : '';
-  const media = photo || '<div class="lux-panel" aria-hidden="true"></div>';
-  return '<article class="lux-card"><a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + media +
+  const m = TOURED_MEDIA[p.key];
+  const media = photo || (m ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>');
+  const photoLink = '<a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + media +
     '<span class="lux-pill"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
-    '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span></span></a>' +
-    '<div class="lux-body">' +
+    '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span></span></a>';
+  const mediaHtml = (m && !photo) ? touredDuo(m, photoLink) : photoLink;
+  return '<article class="lux-card">' + mediaHtml +
+    '<div class="lux-body">' + (m && !photo ? touredCredit(m) : '') +
     '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
     '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></div></article>';
 }
@@ -136,10 +166,13 @@ function touredCustomCard(t) {
   const see = t.z ? '' : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
   const seeHref = t.z ? track(t.z, { h: info.h, s: 'Zillow', p: info.p }) : '#p/' + t.page;
   const seeAttrs = t.z ? ' target="_blank" rel="noopener"' : '';
-  return '<article class="lux-card"><a class="lux-photo" href="' + esc(seeHref) + '"' + seeAttrs + ' aria-label="' + esc(t.addr) + '"><div class="lux-panel" aria-hidden="true"></div>' +
+  const m = TOURED_MEDIA[t.key];
+  const photoLink = '<a class="lux-photo" href="' + esc(seeHref) + '"' + seeAttrs + ' aria-label="' + esc(t.addr) + '">' + (m ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>') +
     '<span class="lux-pill"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
-    '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span></span></a>' +
-    '<div class="lux-body"><p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
+    '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span></span></a>';
+  const mediaHtml = m ? touredDuo(m, photoLink) : photoLink;
+  return '<article class="lux-card">' + mediaHtml +
+    '<div class="lux-body">' + (m ? touredCredit(m) : '') + '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
     '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div></article>';
 }
 function touredHtml() {
@@ -158,7 +191,7 @@ function touredHtml() {
   TOURED_CUSTOM.forEach((t) => items.push({ price: Number(String(t.price).replace(/[^0-9]/g, '')) || 0, html: touredCustomCard(t) }));
   if (!items.length) return '';
   items.sort((a, b) => a.price - b.price);
-  return '<section class="blk" id="toured"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
+  return '<style>.lux-duo{display:grid;grid-template-columns:1fr 1fr;}.lux-duo .lux-photo{aspect-ratio:4/3;}.lux-video{position:relative;aspect-ratio:4/3;overflow:hidden;background:#000;}.lux-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.lux-vid-tag{position:absolute;left:8px;bottom:8px;z-index:2;background:rgba(0,0,0,.65);color:#fff;font-size:.78rem;padding:3px 8px;border-radius:999px;pointer-events:none;}@media(max-width:640px){.lux-duo{grid-template-columns:1fr;}.lux-duo .lux-photo,.lux-video{aspect-ratio:16/10;}}</style><section class="blk" id="toured"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
     '<div class="lux-list">' + items.map((x) => x.html).join('') + '</div></div></section>';
 }
 
