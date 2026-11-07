@@ -74,6 +74,32 @@ if (typeof DEALS !== 'undefined' && typeof CARD_PROP !== 'undefined') {
   });
 }
 const FINDER_DEFAULTS = { kind: 'all', stories: 'any', min: 0, max: 0, beds: 0, baths: 0, sqMin: 0, sqMax: 0, lot: 0, city: '', q: '', sort: 'price', gstep: 1, showFull: false };
+/* ===== Finder to Custom Portal: carry the visitor's picks over, then
+   jump straight to the Custom Portal tab. Must-have phrases move to the
+   portal's must-haves; any other search words, plus filters the portal
+   has no field for (min price, home size, lot size), go into the
+   portal's "Anything else?" box so nothing the visitor picked is lost. */
+function finderToPortal() {
+  const F = sub('finder', FINDER_DEFAULTS);
+  const P = sub('portal', PORTAL_DEFAULTS);
+  const words = (F.q || '').toLowerCase().split(/\s+/).filter(Boolean);
+  const must = [];
+  let rest = words.slice();
+  PORTAL_MUST.forEach((m) => {
+    const mw = m.toLowerCase().split(/\s+/);
+    if (mw.every((w) => rest.includes(w))) { must.push(m); rest = rest.filter((w) => !mw.includes(w)); }
+  });
+  const extraBits = [];
+  if (rest.length) extraBits.push(rest.join(' '));
+  if (F.min) extraBits.push('Min price ' + money(F.min) + '.');
+  if (F.sqMin) extraBits.push('At least ' + comma(F.sqMin) + ' sq ft.');
+  if (F.sqMax) extraBits.push('Up to ' + comma(F.sqMax) + ' sq ft.');
+  if (F.lot) extraBits.push('Lot at least ' + comma(F.lot) + ' sq ft.');
+  if (F.stories === '1' && !must.includes('single story')) extraBits.push('Single story.');
+  Object.assign(P, { kind: F.kind, city: F.city, beds: F.beds, baths: F.baths, max: F.max, pay: 0, must, extra: extraBits.join(' ') });
+  save();
+  go('portal', true);
+}
 def('finder', {
   nav: 'Find your home', scene: 'home', kicker: 'Find exactly what you are looking for', tileTitle: 'Find exactly what you are looking for',
   title: 'Find exactly what you are looking for',
@@ -84,7 +110,7 @@ def('finder', {
     const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
     return '<section class="blk"><div class="wrap">' +
       '<p class="fd-intro">Answer four quick questions and see the homes that match. Change any answer, skip a step, or use Show all filters instead. You can look around without signing up.</p>' +
-      '<p class="note">Want Darien to turn these filters into your own custom MLS portal, emailed to you? <button type="button" class="btn btn-line btn-sm" data-go="portal">Build my portal</button></p>' +
+      '<p class="note">Want Darien to turn these filters into your own custom MLS portal, emailed to you? <button type="button" class="btn btn-line btn-sm" data-go="portal">Custom Portal</button></p>' +
       '<div class="panel accent guide-panel" id="fd-guide">' +
         '<div class="bar"><div><p class="mono eyebrow">Find your home</p><h2>Answer four questions, see your homes</h2></div><button type="button" class="btn btn-line btn-sm" id="fd-startover">Start over</button></div>' +
         '<div class="gz-steps" id="fd-steps" aria-label="Progress"></div>' +
@@ -109,6 +135,7 @@ def('finder', {
       '<p class="count" id="fd-count" aria-live="polite"></p>' +
       '<div class="ctas" style="margin:0"><button type="button" class="btn btn-line btn-sm" id="fd-reset">Reset all filters</button>' +
       '<button type="button" class="btn btn-line btn-sm" data-go="search">Search every home on the map instead</button></div>' +
+      '<p style="margin-top:10px"><label class="check"><input type="checkbox" id="fd-portal"> Build me a custom portal for this search</label></p>' +
       '</div>' +
       '<div class="cards" id="fd-list" style="margin-top:22px"></div><div class="more-row"><button type="button" class="btn btn-line" id="fd-more" hidden></button></div>' +
       '</div></section>';
@@ -187,6 +214,7 @@ def('finder', {
     bindMoney('fd-min', (v) => { F.min = isNaN(v) ? 0 : v; change(); });
     bindMoney('fd-max', (v) => { F.max = isNaN(v) ? 0 : v; change(); });
     $('fd-q').addEventListener('input', () => { F.q = $('fd-q').value.trim(); st.shown = 12; save(); draw(); paintStep(); });
+    $('fd-portal').addEventListener('change', () => { if ($('fd-portal').checked) finderToPortal(); });
     $('fd-more').addEventListener('click', () => { st.shown += 12; draw(); });
     $('fd-reset').addEventListener('click', () => {
       const keepFull = F.showFull;
@@ -254,6 +282,7 @@ def('finder', {
           '<li><span>Top price</span><b>' + esc(F.max ? 'Up to ' + money(F.max) : 'Any price') + '</b></li>' +
           '<li><span>Must-haves</span><b>' + esc(picked.length ? picked.join(', ') : 'None') + '</b></li></ul>' +
           '<p class="count" id="fd-gz-count" aria-live="polite"></p>' +
+          '<p style="margin-top:10px"><label class="check"><input type="checkbox" id="fd-gz-portal"> Build me a custom portal for this search</label></p>' +
           '<div class="gz-nav" style="margin-top:10px"><button type="button" class="btn btn-pa" data-gz-see>See the homes</button><button type="button" class="btn btn-line" data-gz-nav="1">Change answers</button></div>';
         navEl.innerHTML = '';
         draw();
@@ -280,6 +309,7 @@ def('finder', {
       if (s) { const l = $('fd-list'); if (l) l.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
     $('fd-guide').addEventListener('change', (e) => {
+      if (e.target.id === 'fd-gz-portal' && e.target.checked) { finderToPortal(); return; }
       if (e.target.id === 'gz-city-sel') { F.city = e.target.value; st.shown = 12; save(); draw(); goStep(3); }
     });
     draw();

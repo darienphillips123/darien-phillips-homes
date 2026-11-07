@@ -1,4 +1,4 @@
-/* ===== Build my portal: a self-serve custom MLS portal request =====
+/* ===== Custom Portal: a self-serve custom MLS portal request =====
    Same home-type options, city list and must-have words as the Finder,
    and the match count reuses the Finder items and the Finder's own
    matching rules, so the number shown here is the number the Finder
@@ -10,7 +10,7 @@
    the Wants and Notes fields. */
 const PORTAL_KINDS = [['all', 'Any'], ['newbuild', 'New build'], ['assumable', 'Assumable'], ['zerodown', '$0 down']];
 const PORTAL_MUST = ['open floor plan', 'large backyard', 'pool', 'ADU', 'single story'];
-const PORTAL_DEFAULTS = { email: '', kind: 'all', city: '', beds: 0, baths: 0, max: 0, pay: 0, must: [] };
+const PORTAL_DEFAULTS = { email: '', kind: 'all', city: '', beds: 0, baths: 0, max: 0, pay: 0, must: [], extra: '' };
 const portalKindLabel = (k) => (PORTAL_KINDS.find(([v]) => v === k) || PORTAL_KINDS[0])[1];
 function portalMatches(B) {
   let cap = B.max || 0, payCap = 0;
@@ -43,8 +43,8 @@ function portalCriteriaLine(B) {
     'Must-haves: ' + ((B.must || []).length ? B.must.join(', ') : 'None')].join(' · ');
 }
 def('portal', {
-  nav: 'Build my portal', scene: 'alerts', kicker: 'Your own custom portal', tileTitle: 'Build my portal',
-  title: 'Build my portal',
+  nav: 'Custom Portal', scene: 'alerts', kicker: 'Your own custom portal', tileTitle: 'Custom Portal',
+  title: 'Custom Portal',
   sub: 'Tell Darien what you want once. He builds your own custom MLS portal with matching homes and emails it to you.',
   photoKey: () => 'keys',
   html() {
@@ -63,11 +63,12 @@ def('portal', {
         moneyField('pb-max', 'Top price', B.max, '', 'No max') + moneyField('pb-pay', 'Monthly payment cap', B.pay, 'Everything: loan, tax, insurance and HOA', 'No cap') +
       '</div>' +
       '<fieldset><legend class="lbl">Must-haves</legend><div class="checks">' + PORTAL_MUST.map((m) => '<label><input type="checkbox" name="pb-must" value="' + esc(m) + '"' + (B.must.includes(m) ? ' checked' : '') + '> ' + esc(m) + '</label>').join('') + '</div></fieldset>' +
+      '<div class="field"><label for="pb-extra">Anything else?</label><textarea id="pb-extra" rows="3" placeholder="Anything else you are looking for? A school, a commute, a view, a floor plan you liked...">' + esc(B.extra || '') + '</textarea></div>' +
       '<p class="note">Must-haves search the words in the listings, not a verified feature list, so a home only shows up if the listing mentions it.</p>' +
       '<p class="count" id="pb-count" aria-live="polite"></p>' +
-      '<div class="actions"><button type="submit" class="btn btn-pa" id="pb-send">Build my portal</button></div>' +
+      '<div class="actions"><button type="submit" class="btn btn-pa" id="pb-send">Build my custom portal</button></div>' +
       '<p class="toast err" id="pb-err" role="alert"></p>' +
-      '<p class="fine">By tapping Build my portal, you agree that Darien Phillips may email, call or text you about homes. Unsubscribe anytime. Consent is not required to buy a home.</p>' +
+      '<p class="fine">By tapping Build my custom portal, you agree that Darien Phillips may email, call or text you about homes. Unsubscribe anytime. Consent is not required to buy a home.</p>' +
       '</div></form>' +
       '<div id="pb-summary" hidden></div>' +
       '<p class="note" style="margin-top:14px">Want to browse first? <button type="button" class="btn btn-line btn-sm" data-go="finder">Open the Finder</button></p>' +
@@ -80,6 +81,7 @@ def('portal', {
       B.kind = $('pb-kind').value; B.city = $('pb-city').value;
       B.beds = parseFloat($('pb-beds').value) || 0; B.baths = parseFloat($('pb-baths').value) || 0;
       B.must = [...root.querySelectorAll('input[name="pb-must"]:checked')].map((c) => c.value);
+      B.extra = $('pb-extra').value.trim();
       save();
     };
     const drawCount = () => {
@@ -108,6 +110,7 @@ def('portal', {
         '<li><span>Top price</span><b>' + esc(B.max ? 'Up to ' + money(B.max) : 'Any price') + '</b></li>' +
         '<li><span>Monthly payment cap</span><b>' + esc(B.pay ? money(B.pay) + ' a month' : 'No monthly cap') + '</b></li>' +
         '<li><span>Must-haves</span><b>' + esc((B.must || []).length ? B.must.join(', ') : 'None') + '</b></li>' +
+        (B.extra ? '<li><span>Anything else</span><b>' + esc(B.extra) + '</b></li>' : '') +
         '<li><span>Homes that match right now</span><b>' + esc(plural(r.items.length, 'home or community', 'homes and communities') + ' match your criteria on this site') + '</b></li></ul>' +
         '<p class="note">This count is from the homes on this site right now. Your portal will also include matching homes from the MLS.</p>' +
         '<div class="ctas" style="margin:0"><button type="button" class="btn btn-pa" id="pb-see">See the matching homes</button>' +
@@ -135,7 +138,7 @@ def('portal', {
       }
       $('pb-err').textContent = '';
       const r = portalMatches(B);
-      const data = { name: '', email: B.email, phone: '', notes: 'Build my portal request: ' + portalCriteriaLine(B) + '. ' + plural(r.items.length, 'home or community', 'homes and communities') + ' match on the site right now.',
+      const data = { name: '', email: B.email, phone: '', notes: 'Custom Portal request: ' + portalCriteriaLine(B) + (B.extra ? ' Anything else: ' + B.extra : '') + '. ' + plural(r.items.length, 'home or community', 'homes and communities') + ' match on the site right now.',
         wants: portalKindLabel(B.kind) + ((B.must || []).length ? ', must-haves: ' + B.must.join(', ') : ''), areas: B.city || 'Anywhere Darien works',
         price: B.max ? money(B.max) : '', pay: B.pay ? money(B.pay) : '', beds: B.beds ? B.beds + '+' : 'Any', baths: B.baths ? B.baths + '+' : 'Any',
         size: 'Any', lot: 'Any', when: '', mls: 'yes', saved: '', hasAgent: 'no', agentName: '', agentBrokerage: '', agentContact: '' };
@@ -145,10 +148,10 @@ def('portal', {
       try {
         await post('signup', data);
         trackEvent('Signed up for a custom portal', 'Info request');
-        logStep('Asked Darien to build a custom portal: ' + portalCriteriaLine(B));
+        logStep('Asked Darien to build a custom portal: ' + portalCriteriaLine(B) + (B.extra ? ' Anything else: ' + B.extra : ''));
         showSummary(r);
       } catch (x) {
-        btn.disabled = false; btn.textContent = 'Build my portal';
+        btn.disabled = false; btn.textContent = 'Build my custom portal';
         $('pb-err').textContent = 'That did not go through. Please try again, or text Darien at 209.882.6469.';
       }
     });
