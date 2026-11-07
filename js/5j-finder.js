@@ -84,6 +84,7 @@ def('finder', {
     const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
     return '<section class="blk"><div class="wrap">' +
       '<p class="fd-intro">Answer four quick questions and see the homes that match. Change any answer, skip a step, or use Show all filters instead. You can look around without signing up.</p>' +
+      '<p class="note">Want Darien to turn these filters into your own custom MLS portal, emailed to you? <button type="button" class="btn btn-line btn-sm" data-go="portal">Build my portal</button></p>' +
       '<div class="panel accent guide-panel" id="fd-guide">' +
         '<div class="bar"><div><p class="mono eyebrow">Find your home</p><h2>Answer four questions, see your homes</h2></div><button type="button" class="btn btn-line btn-sm" id="fd-startover">Start over</button></div>' +
         '<div class="gz-steps" id="fd-steps" aria-label="Progress"></div>' +

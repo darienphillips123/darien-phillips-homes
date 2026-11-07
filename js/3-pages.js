@@ -42,6 +42,7 @@ function pager(listId, moreId, items, cardFn, state) {
 /* ===== Home ===== */
 const TILE_TEXT = {
   finder: 'Filter every home on this site by price, size, lot, stories and the words in the listings, all in one place.',
+  portal: 'Tell Darien what you want once, and he builds your own custom MLS portal and emails it to you.',
   guide: 'New to buying? Every step from pre-approval to keys, plus every real estate word explained.',
   assumable: 'Take over a seller\'s low-rate FHA or VA loan. Learn how, then browse homes.',
   'zero-down': 'VA, FHA with California\'s MyHome loan, USDA and builder help in every county.',

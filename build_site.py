@@ -31,6 +31,7 @@ THEMES = {
     "alerts": ("#8A5A3C", "#FFFFFF", "#8A5A3C", "#EFE8E4", "#B2927E", "#281F1C"),
     "cart": ("#0F2E44", "#FFFFFF", "#0F2E44", "#E4E9EC", "#7FA3B8", "#101E28"),
     "finder": ("#0E7490", "#FFFFFF", "#0E7490", "#E2EFF3", "#5AA9C4", "#0F2A33"),
+    "portal": ("#1D7A5F", "#FFFFFF", "#14604F", "#E0F0EB", "#4FA88F", "#10261F"),
 }
 
 

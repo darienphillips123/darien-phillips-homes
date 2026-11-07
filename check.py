@@ -5,7 +5,7 @@ html = open(src, encoding="utf-8").read()
 wrapped = ('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
            '<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style></head><body>' + html + '</body></html>')
 path = os.path.abspath(out + '-page.html'); open(path, 'w', encoding='utf-8').write(wrapped)
-ROUTES = ['home', 'assumable', 'zero-down', 'payment', 'new-builds', 'placer', 'stockton', 'refinance', 'build', 'about', 'alerts', 'finder', 'cart']
+ROUTES = ['home', 'assumable', 'zero-down', 'payment', 'new-builds', 'placer', 'stockton', 'refinance', 'build', 'about', 'alerts', 'finder', 'portal', 'cart']
 with sync_playwright() as p:
     b = p.chromium.launch()
     ctx = b.new_context(viewport={"width": 1280, "height": 900}, reduced_motion="reduce")
