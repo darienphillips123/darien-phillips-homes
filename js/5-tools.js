@@ -370,6 +370,11 @@ def('alerts', {
     };
     $('al-form').addEventListener('input', () => { read(); draw(); });
     $('al-form').addEventListener('change', () => { read(); draw(); });
+    // Details first: what they signed up for, and where to browse homes,
+    // then the agent question at the end.
+    const signupDetailsHtml = () => '<p class="note">Here are the details first. You asked for: ' + esc(A.wants.join(', ') || 'homes') + ' in ' + esc(areasText()) + (A.price ? ', up to ' + esc(A.price) : '') + ', ' + esc(A.beds) + ' bed, ' + esc(A.baths) + ' bath.</p>' +
+      (saved.size ? '<p class="note">Homes you saved: ' + esc(savedText()) + '</p>' : '') +
+      '<div class="optlist"><a class="btn btn-line" href="https://darienphillips.exprealty.com" target="_blank" rel="noopener">See the details: darienphillips.exprealty.com</a></div>';
     const doSignup = async (agent) => {
       if (agent) { A.agentName = agent.name; A.agentBrokerage = agent.brokerage; A.agentContact = agent.contact; A.agentPhone = agent.phone || ''; A.agentEmail = agent.email || ''; save(); }
       const btn = $('al-send');
@@ -388,7 +393,7 @@ def('alerts', {
       if (!TRACKER) return;
       read();
       if (!ready()) return;
-      openRealtorCheck({ home: 'homes by email', onNo: () => doSignup(null), onYes: (agent) => doSignup(agent) });
+      openRealtorCheck({ home: 'homes by email', detailsHtml: signupDetailsHtml(), onNo: () => doSignup(null), onYes: (agent) => doSignup(agent) });
     });
     root.addEventListener('click', (e) => { const u = e.target.closest('[data-unsave]'); if (u) { saved.delete(u.dataset.unsave); persistSaved(); draw(); } });
     if (!TRACKER) {
@@ -397,6 +402,7 @@ def('alerts', {
         if (!ready()) return;
         openRealtorCheck({
           home: 'homes by email',
+          detailsHtml: signupDetailsHtml(),
           onNo: () => after(null),
           onYes: (agent) => { A.agentName = agent.name; A.agentBrokerage = agent.brokerage; A.agentContact = agent.contact; A.agentPhone = agent.phone || ''; A.agentEmail = agent.email || ''; save(); draw(); $('al-toast').textContent = REALTOR_MSG; after(agent); }
         });

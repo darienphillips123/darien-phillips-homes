@@ -77,11 +77,16 @@ homes, people, or Darien. Use only the real photos from the live source.
   Brokerage is eXp Nor Cal. Never use the old Rachel Adams Lee Group /
   Keller Williams names.
 - Never use em dashes in copy or captions. Use commas, colons, or periods.
-- Home-info requests ask "Are you working with a realtor?" first, before any
-  home info or link goes out. If yes, collect agent name, brokerage, and
-  agent phone or email, and say Darien will be in contact soon to send all
-  home info to their agent to share with them. If no, give the info.
-  Direct Text, Call, and Email links to Darien himself are not gated.
+- Home-info requests show the details and link FIRST, then ask "Are you
+  working with an agent?" at the end (RIO ManyChat style, Nov 7, 2026).
+  If yes, collect agent name, brokerage, and agent phone or email, and say
+  Darien will be in contact soon to send all home info to their agent to
+  share with them. If no, they already have the details, just confirm and
+  offer Text/Call/Email Darien. On the Yes path the visitor has already
+  seen the preview details and links, but the full address, payment and
+  loan figures behind a property-page sign-in still go to the agent, not
+  the visitor. Direct Text, Call, and Email links to Darien himself are
+  not gated.
 - The cart is a rotating circle at the top (front home largest, pause on
   hover or button, static with prefers-reduced-motion). No backdrop image on
   the cart page, and never reuse the New builds image there.

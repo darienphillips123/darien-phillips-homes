@@ -63,10 +63,16 @@
     addMsg('<a href="' + smsHref + '">Text this to Darien</a> · <a href="' + mailHref + '">Email this to Darien</a>', 'bot', true);
     showChips([['Talk to Darien', 'talk'], ['Ask something else', 'home']]);
   }
+  // Details first, agent question at the end, RIO ManyChat style.
+  // The visitor gets the details and link first, then is asked if they
+  // are working with an agent. Yes collects the agent's info, No just
+  // confirms, they already have the details.
   function startRealtor(home) {
     mode = 'realtor'; chatHome = home || '';
-    addMsg('Are you working with a realtor? Darien does not want to step on anyones toes, so he checks first.');
-    showChips([['Yes, I have a realtor', 'realtor-yes'], ['No, I do not', 'realtor-no']]);
+    var link = ' Here are the details: darienphillips.exprealty.com. You can also search for it on this site.';
+    addMsg('Thanks for asking! Here are the details' + (chatHome ? ' on ' + chatHome : '') + '.' + link);
+    addMsg('Are you working with an agent?');
+    showChips([['Yes, I have an agent', 'realtor-yes'], ['No, I do not', 'realtor-no']]);
   }
   function startAgentInfo() {
     mode = 'agent-name'; chatAgent = {};
@@ -74,9 +80,15 @@
     showChips([]);
   }
   function noRealtor() {
-    mode = 'home-name';
     if (typeof setRealtorPass === 'function') setRealtorPass(false, null);
-    addMsg('No problem. Which home would you like info on? Type the street or town, and I will point you to it.');
+    if (chatHome) {
+      mode = null;
+      addMsg('No problem, you already have the details. Text, call or email Darien any time and he will help with ' + chatHome + '.');
+      showChips([['Talk to Darien', 'talk'], ['Ask something else', 'home']]);
+      return;
+    }
+    mode = 'home-name';
+    addMsg('No problem, you already have the details at darienphillips.exprealty.com. Which home would you like info on? Type the street or town, and I will point you to it.');
     showChips([['Talk to Darien', 'talk']]);
   }
   function finishAgentInfo() {
@@ -93,7 +105,12 @@
     var nComm = (typeof DATA !== 'undefined' && DATA.communities) ? DATA.communities.length : 456;
     var rate = (typeof RATES !== 'undefined' && RATES.conv) ? RATES.conv : '7.24';
     if (/(human|person|real person|talk to darien|call darien|text darien|email darien|contact)/.test(s)) { askDarien('Here is Darien, any time:'); return; }
-    if (/(full details|more info|more information|home information|details on|tell me about this home|info on a home|info about a home)/.test(s)) { startRealtor(q); return; }
+    if (/(full details|more info|more information|home information|details on|tell me about this home|info on a home|info about a home)/.test(s)) {
+      var foundHome = null;
+      try { foundHome = (typeof propSearch === 'function') ? propSearch(q, 1)[0] : null; } catch (e) { foundHome = null; }
+      startRealtor(foundHome ? (typeof propTitle === 'function' ? propTitle(foundHome, true) : foundHome.addr) : q);
+      return;
+    }
     if (/(zero|0 down|no down|no money down|down payment)/.test(s)) {
       addMsg('Yes, $0 down is possible here with VA, USDA, or FHA plus California\'s MyHome loan, and some builders help too. The $0 down tab walks through each one and lets you search by city. Want Darien to run your exact numbers? ' + contactHtml(), 'bot', true);
       showChips([['See the $0 down tab', 'go:zero-down'], ['Talk to Darien', 'talk']]);

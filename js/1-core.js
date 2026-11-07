@@ -16,7 +16,8 @@ const store = {
 // This visit only (cleared when the tab closes): where the visitor came from and what they did
 const sess = {
   get(k, d) { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
+  set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+  del(k) { try { sessionStorage.removeItem(k); } catch (e) { /* storage unavailable */ } }
 };
 
 /* ===== Arriving from a post or DM: darienphillips.com/p/<home>?from=instagram =====
@@ -306,14 +307,20 @@ function closeModal() {
 $('modal').addEventListener('click', (e) => { if (e.target === $('modal') || e.target.closest('.x')) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('modal').hidden) closeModal(); });
 
-/* ===== Realtor check: before any home information is sent =====
-   Darien does not want to step on another agent's toes. When a visitor
-   asks for home information, ask first if they are working with a
-   realtor. No: the normal flow continues. Yes: collect the agent's
-   info, send the request to Darien for the agent, and do not hand the
-   home details to the visitor directly. */
+/* ===== Agent question: details first, agent question at the end =====
+   RIO ManyChat style, Nov 7, 2026. This replaces the old realtor-first
+   order (ask first, then info). When a visitor asks for home
+   information, show the home details and link FIRST, then at the end
+   ask "Are you working with an agent?" No: they already have the
+   details, so just confirm and offer Text/Call/Email Darien, no extra
+   gate. Yes: collect the agent's info, send the request to Darien for
+   the agent, and show the thanks message. Note: on the Yes path the
+   visitor has already seen the details shown in the first step, which
+   is the change Darien approved. The full address, payment and loan
+   figures behind a property-page sign-in are still not shown to a
+   Yes visitor, they go to the agent instead. */
 const REALTOR_MSG = 'Thanks, Darien will be in contact with you soon to send all home info to your agent to share with you.';
-const REALTOR_QUESTION = 'Are you working with a realtor?';
+const REALTOR_QUESTION = 'Are you working with an agent?';
 function agentLines(a) {
   return ['Agent: ' + a.name, 'Brokerage: ' + (a.brokerage || 'Not given'), 'Agent contact: ' + a.contact];
 }
@@ -330,46 +337,56 @@ function realtorPass() {
 function realtorAgentText(a, homeLabel) {
   return 'I am working with a realtor.\n\n' + agentLines(a).join('\n') + (homeLabel ? '\n\nHome: ' + homeLabel : '') + '\n\nPlease send all home info to my agent to share with me.';
 }
+function openAgentForm(onYes) {
+  $('dialog').innerHTML = '<button type="button" class="x" aria-label="Close">×</button>' +
+    '<p class="mono eyebrow">Your agent</p><h2 id="modal-title">Your agent\'s info</h2>' +
+    '<p class="note">Please put your agent\'s info in, so Darien can send all home info to your agent to share with you.</p>' +
+    '<form id="rt-form" class="fields" novalidate>' +
+      '<div class="field wide"><label for="rt-name">Agent name</label><input id="rt-name" autocomplete="name"></div>' +
+      '<div class="field wide"><label for="rt-brokerage">Brokerage (if you know it)</label><input id="rt-brokerage"></div>' +
+      '<div class="field"><label for="rt-phone">Agent phone</label><input id="rt-phone" type="tel" inputmode="tel" autocomplete="tel"></div>' +
+      '<div class="field"><label for="rt-email">Agent email</label><input id="rt-email" type="email" autocomplete="email"></div>' +
+      '<p class="fine field wide">Your agent\'s name and one way to reach them, phone or email, is all Darien needs.</p>' +
+      '<div class="field wide"><button class="btn btn-pa" type="submit">Send to my agent</button><p class="toast err" id="rt-err" role="alert"></p></div>' +
+    '</form>';
+  $('dialog').querySelector('#rt-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const a = { name: $('rt-name').value.trim(), brokerage: $('rt-brokerage').value.trim(), phone: $('rt-phone').value.trim(), email: $('rt-email').value.trim() };
+    const err = (t, el) => { $('rt-err').textContent = t; el.focus(); };
+    if (!a.name) return err('Please add your agent\'s name.', $('rt-name'));
+    const phoneOk = a.phone.replace(/\D/g, '').length >= 10;
+    const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.email);
+    if (!phoneOk && !emailOk) return err('Please add your agent\'s phone or email, so Darien can reach them.', a.phone ? $('rt-phone') : $('rt-email'));
+    a.contact = phoneOk ? a.phone : a.email;
+    onYes(a);
+  });
+  const f = $('dialog').querySelector('#rt-name');
+  if (f) f.focus();
+}
+// Details first, agent question at the end. opts: { home, detailsHtml,
+// onNo, onYes }. detailsHtml is shown first in the modal, then the
+// question. If the visitor already answered in the chatbot, the pass
+// is used once and the question is skipped, the details were already
+// shown to them in chat.
 function openRealtorCheck(opts) {
   const pass = realtorPass();
   if (pass) { if (pass.hasAgent) opts.onYes(pass.agent); else opts.onNo(); return; }
   const homeLabel = opts.home || 'this home';
+  const details = opts.detailsHtml || '';
   openModal(
-    '<p class="mono eyebrow">Before we send the details</p><h2 id="modal-title">' + esc(REALTOR_QUESTION) + '</h2>' +
-    '<p class="note">Darien does not want to step on anyones toes, so he checks first. Your answer decides where the home information goes.</p>' +
-    '<div class="optlist"><button type="button" class="btn btn-pa" id="rt-yes">Yes, I have a realtor</button><button type="button" class="btn btn-line" id="rt-no">No, I do not</button></div>',
+    '<p class="mono eyebrow">Here are the details</p><h2 id="modal-title">' + esc(homeLabel) + '</h2>' +
+    details +
+    '<p class="note" style="margin-top:14px"><b>' + esc(REALTOR_QUESTION) + '</b></p>' +
+    '<p class="note">Darien does not want to step on anyones toes, so he asks at the end, after you have seen the details.</p>' +
+    '<div class="optlist"><button type="button" class="btn btn-pa" id="rt-yes">Yes, I have an agent</button><button type="button" class="btn btn-line" id="rt-no">No, I do not</button></div>',
     (d) => {
       d.querySelector('#rt-no').addEventListener('click', () => { opts.onNo(); });
-      d.querySelector('#rt-yes').addEventListener('click', () => {
-        $('dialog').innerHTML = '<button type="button" class="x" aria-label="Close">×</button>' +
-          '<p class="mono eyebrow">Your realtor</p><h2 id="modal-title">Your agent\'s info</h2>' +
-          '<p class="note">Please put your agent\'s info in, so Darien can send all home info to your agent to share with you.</p>' +
-          '<form id="rt-form" class="fields" novalidate>' +
-            '<div class="field wide"><label for="rt-name">Agent name</label><input id="rt-name" autocomplete="name"></div>' +
-            '<div class="field wide"><label for="rt-brokerage">Brokerage (if you know it)</label><input id="rt-brokerage"></div>' +
-            '<div class="field"><label for="rt-phone">Agent phone</label><input id="rt-phone" type="tel" inputmode="tel" autocomplete="tel"></div>' +
-            '<div class="field"><label for="rt-email">Agent email</label><input id="rt-email" type="email" autocomplete="email"></div>' +
-            '<p class="fine field wide">Your agent\'s name and one way to reach them, phone or email, is all Darien needs.</p>' +
-            '<div class="field wide"><button class="btn btn-pa" type="submit">Send to my agent</button><p class="toast err" id="rt-err" role="alert"></p></div>' +
-          '</form>';
-        $('dialog').querySelector('#rt-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const a = { name: $('rt-name').value.trim(), brokerage: $('rt-brokerage').value.trim(), phone: $('rt-phone').value.trim(), email: $('rt-email').value.trim() };
-          const err = (t, el) => { $('rt-err').textContent = t; el.focus(); };
-          if (!a.name) return err('Please add your agent\'s name.', $('rt-name'));
-          const phoneOk = a.phone.replace(/\D/g, '').length >= 10;
-          const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.email);
-          if (!phoneOk && !emailOk) return err('Please add your agent\'s phone or email, so Darien can reach them.', a.phone ? $('rt-phone') : $('rt-email'));
-          a.contact = phoneOk ? a.phone : a.email;
-          opts.onYes(a);
-        });
-        const f = $('dialog').querySelector('#rt-name');
-        if (f) f.focus();
-      });
+      d.querySelector('#rt-yes').addEventListener('click', () => { openAgentForm((a) => opts.onYes(a)); });
     });
 }
-// The message the visitor sees when they have a realtor, plus the agent
-// summary. No home details are shown with it.
+// The message the visitor sees when they have an agent, plus the agent
+// summary. The home details were already shown to them in the first
+// step, before they answered.
 function realtorThanksHtml(agent, homeLabel) {
   return '<p class="mono eyebrow">Home details</p><h2 id="modal-title">Thanks</h2>' +
     '<p class="toast">' + esc(REALTOR_MSG) + '</p>' +
@@ -377,31 +394,49 @@ function realtorThanksHtml(agent, homeLabel) {
     (homeLabel ? '<p class="note">Home: ' + esc(homeLabel) + '</p>' : '');
 }
 
-/* "Get full details": name, phone and email first. With the tracker on, the request goes straight to Darien;
-   without it, the visitor sends it by email or text. Either way they then get every option for the home. */
-function openGate(info) {
-  const mine = me();
+/* "Get full details": details and link FIRST, agent question at the end.
+   RIO ManyChat style. The visitor sees the home details and every link
+   before they answer anything. No: confirm and offer Text/Call/Email,
+   no extra gate, no name form. Yes: collect the agent's info and send
+   the request to Darien for the agent. */
+function gateLinksHtml(info) {
   const opts = [
     info.z ? ['See photos and details on Zillow', info.z, 'Zillow', 'btn-pa'] : null,
     info.x ? [info.xs || 'More details', info.x, info.xs || 'Website', 'btn-line'] : null,
     info.m ? ['Map', info.m, 'Google Maps', 'btn-line'] : null
   ].filter(Boolean);
+  return opts.map(([label, url, site, cls]) => '<a class="btn ' + cls + '" href="' + esc(track(url, { h: info.h, s: site, p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">' + esc(label) + '</a>').join('') +
+    '<a class="btn btn-line" href="https://darienphillips.exprealty.com" target="_blank" rel="noopener">See the details: darienphillips.exprealty.com</a>';
+}
+function gateDetailsHtml(info) {
+  return '<p class="note">' + esc([info.p, info.b, info.l].filter(Boolean).join(' · ')) + '</p>' +
+    '<div class="optlist">' + gateLinksHtml(info) + '</div>';
+}
+function openGate(info) {
   // Admin view: Darien sees every option for a property directly, without signing in.
   if (ADMIN) {
-    const direct = opts.map(([label, url, site, cls]) => '<a class="btn ' + cls + '" href="' + esc(track(url, { h: info.h, s: site, p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">' + esc(label) + '</a>').join('');
     openModal('<p class="mono eyebrow">Admin view · only you see this</p><h2 id="modal-title">' + esc(info.h) + '</h2>' +
       '<p class="note">' + esc([info.p, info.b, info.l].filter(Boolean).join(' · ')) + '</p>' +
       '<p class="toast">You are signed in as admin, so no name, phone or email is needed to see this home.</p>' +
-      '<div class="optlist">' + direct +
+      '<div class="optlist">' + gateLinksHtml(info) +
       '<a class="btn btn-line" href="sms:+12098826469">Text Darien</a><a class="btn btn-line" href="tel:+12098826469">Call Darien</a></div>');
     return;
   }
   openRealtorCheck({
     home: info.h,
-    onNo: () => showGateForm(info),
+    detailsHtml: gateDetailsHtml(info),
+    onNo: () => showGateDetails(info),
     onYes: (agent) => submitGateAgent(info, agent)
   });
   return;
+}
+// No path: the visitor already has the details and link, so just confirm
+// and offer Text/Call/Email Darien. No extra gate, no name form.
+function showGateDetails(info) {
+  openModal('<p class="mono eyebrow">Here are the details</p><h2 id="modal-title">' + esc(info.h) + '</h2>' +
+    gateDetailsHtml(info) +
+    '<p class="toast" style="margin-top:14px">You have the details. Questions, or want a tour? Text, call or email Darien.</p>' +
+    '<div class="optlist"><a class="btn btn-pa" href="sms:+12098826469">Text Darien</a><a class="btn btn-line" href="tel:+12098826469">Call Darien</a><a class="btn btn-line" href="mailto:darienphillips45@gmail.com">Email Darien</a></div>');
 }
 async function submitGateAgent(info, agent) {
   let sent = false;
@@ -419,62 +454,6 @@ async function submitGateAgent(info, agent) {
         '<a class="btn btn-line" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent(body)) + '">Text this to Darien</a>') + '</div>' +
     (sent ? '' : '<p class="fine">Darien gets your agent\'s info when you tap Email or Text. Nothing you type here is stored by the website.'));
 }
-function showGateForm(info) {
-  const mine = me();
-  const opts = [
-    info.z ? ['See photos and details on Zillow', info.z, 'Zillow', 'btn-pa'] : null,
-    info.x ? [info.xs || 'More details', info.x, info.xs || 'Website', 'btn-line'] : null,
-    info.m ? ['Map', info.m, 'Google Maps', 'btn-line'] : null
-  ].filter(Boolean);
-  openModal(
-    '<p class="mono eyebrow">Home details</p><h2 id="modal-title">' + esc(info.h) + '</h2>' +
-    '<p class="note">' + esc([info.p, info.b, info.l].filter(Boolean).join(' · ')) + '</p>' +
-    '<form id="gate-form" class="fields" novalidate>' +
-      '<div class="field wide"><label for="g-name">Your name</label><input id="g-name" autocomplete="name" value="' + esc(mine.name || '') + '"></div>' +
-      '<div class="field"><label for="g-phone">Mobile number</label><input id="g-phone" type="tel" inputmode="tel" autocomplete="tel" value="' + esc(mine.phone || '') + '"></div>' +
-      '<div class="field"><label for="g-email">Email</label><input id="g-email" type="email" autocomplete="email" value="' + esc(mine.email || '') + '"></div>' +
-      '<div class="field wide"><label for="g-note">Questions or a good time to tour (optional)</label><textarea id="g-note" rows="2"></textarea></div>' +
-      '<p class="fine field wide">By tapping Get the details, you agree that Darien Phillips may contact you by phone, text or email about homes. Consent isn\'t required to buy a home. Message and data rates may apply.</p>' +
-      '<div class="field wide"><button class="btn btn-pa" type="submit">Get the details</button><p class="toast err" id="g-err" role="alert"></p></div>' +
-    '</form>' +
-    '<div id="gate-done" hidden><p class="toast" id="g-thanks"></p><div class="optlist" id="g-opts"></div><p class="fine" id="g-fine"></p></div>',
-    (d) => {
-      d.querySelector('#gate-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const v = { name: $('g-name').value.trim(), phone: $('g-phone').value.trim(), email: $('g-email').value.trim(), note: $('g-note').value.trim() };
-        const err = (t, el) => { $('g-err').textContent = t; el.focus(); };
-        if (!v.name) return err('Please add your name.', $('g-name'));
-        if (v.phone.replace(/\D/g, '').length < 10) return err('Please add a mobile number with area code.', $('g-phone'));
-        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.email)) return err('Please add a valid email.', $('g-email'));
-        store.set('dp-me', { name: v.name, phone: v.phone, email: v.email });
-        const msg = 'Hi Darien, I\'d like the full details on ' + info.h + (info.p ? ' (' + info.p + ')' : '') + '.\n\nName: ' + v.name + '\nPhone: ' + v.phone + '\nEmail: ' + v.email + (v.note ? '\n\n' + v.note : '');
-        let sent = false;
-        if (TRACKER) {
-          const btn = d.querySelector('#gate-form button[type="submit"]');
-          btn.disabled = true; btn.textContent = 'Sending...'; $('g-err').textContent = '';
-          try { await post('lead', Object.assign({}, info, v)); sent = true; } catch (x) { sent = false; }
-          btn.disabled = false; btn.textContent = 'Get the details';
-        }
-        const first = v.name.split(' ')[0];
-        const direct = opts.map(([label, url, site, cls]) => '<a class="btn ' + cls + '" href="' + esc(track(url, { h: info.h, s: site, p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">' + esc(label) + '</a>').join('');
-        const reach = sent
-          ? '<a class="btn btn-line" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, it\'s ' + v.name + '. I just asked about ' + info.h + '.')) + '">Text Darien</a><a class="btn btn-line" href="tel:+12098826469">Call Darien</a>'
-          : '<a class="btn btn-line" href="' + esc('mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent('Details on ' + info.h) + '&body=' + encodeURIComponent(msg)) + '">Email my request to Darien</a>' +
-            '<a class="btn btn-line" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent(msg)) + '">Text my request to Darien</a>' +
-            '<button class="btn btn-line" type="button" id="g-copy">Copy my request</button>';
-        $('gate-form').hidden = true;
-        $('gate-done').hidden = false;
-        $('g-thanks').textContent = sent ? 'Thanks, ' + first + '. Darien got your request and will follow up soon. Here is everything for this home.' : 'Thanks, ' + first + '. Here is everything for this home.';
-        $('g-opts').innerHTML = direct + reach;
-        $('g-fine').textContent = sent ? 'Darien will reach out by text or email. Questions now? Call or text 209.882.6469.' : 'Darien gets your request when you tap Email or Text. Nothing you type here is stored by the website.';
-        if ($('g-copy')) $('g-copy').addEventListener('click', async () => {
-          try { await navigator.clipboard.writeText(msg); $('g-thanks').textContent = 'Copied. Paste it into a text to 209.882.6469 or an email to darienphillips45@gmail.com.'; }
-          catch (x) { $('g-thanks').textContent = 'Copy is blocked here. Text 209.882.6469 or email darienphillips45@gmail.com.'; }
-        });
-      });
-    });
-}
-
 /* ===== Global clicks ===== */
 document.addEventListener('click', (e) => {
   const g = e.target.closest('[data-go]');
@@ -511,6 +490,7 @@ document.addEventListener('click', (e) => {
     const homes = cartText();
     openRealtorCheck({
       home: 'your cart (' + cart.size + (cart.size === 1 ? ' home' : ' homes') + ')',
+      detailsHtml: '<p class="note">Here are the homes in your cart:</p><ul class="unlock-list">' + [...cart.values()].map((x) => '<li>' + esc(x.t + (x.p ? ' (' + x.p + ')' : '')) + '</li>').join('') + '</ul><p class="note">See them at darienphillips.exprealty.com, or tap Text or Email below and the list goes to Darien filled in.</p>',
       onNo: () => {
         const body = cartMsg(null);
         closeModal();

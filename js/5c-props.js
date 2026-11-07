@@ -239,7 +239,7 @@ def('property', {
     if (f) f.addEventListener('submit', async (e) => {
       e.preventDefault();
       const err = (t, el) => { $('pf-err').textContent = t; if (el && el.focus) el.focus(); };
-      if (!pfRealtor) return err('Please answer the realtor question first.', $('pf-go'));
+      if (!pfRealtor) return err('Please answer the agent question above first, it is at the end of the details.', $('pf-go'));
       if (pfRealtor === 'yes') {
         const a = { name: $('pf-aname').value.trim(), brokerage: $('pf-abrokerage').value.trim(), phone: $('pf-aphone').value.trim(), email: $('pf-aemail').value.trim() };
         if (!a.name) return err('Please add your agent\'s name.', $('pf-aname'));
@@ -285,20 +285,26 @@ function cartKeyForPage(p) {
 }
 function lockedHtml(p) {
   const m = me();
+  const { info } = propInfo(p);
+  const links = [
+    info.z ? '<a class="btn btn-line btn-sm" href="' + esc(track(info.z, { h: info.h, s: 'Zillow', p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">See photos and details on Zillow</a>' : '',
+    info.m ? '<a class="btn btn-line btn-sm" href="' + esc(track(info.m, { h: info.h, s: 'Google Maps', p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">Map</a>' : '',
+    '<a class="btn btn-line btn-sm" href="https://darienphillips.exprealty.com" target="_blank" rel="noopener">See the details: darienphillips.exprealty.com</a>'
+  ].filter(Boolean).join('');
   const what = p.kind === 'community' || p.kind === 'stockton' ? 'Your $0-down payment, builder offers and floor plans'
     : p.kind === 'listing' ? 'Price, payment and loan options' : 'The seller\'s loan, your cash to close and monthly payment';
   return '<div class="prop-grid">' +
     '<div class="panel prop-lock"><p class="mono eyebrow">Preview</p><h2>' + esc(propTitle(p, false)) + '</h2>' +
       '<div class="price num">' + esc(propPrice(p)) + '</div>' + (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') +
       (p.hook ? '<p class="hook">' + esc(p.hook) + '</p>' : '') +
+      '<div class="ctas" style="margin:12px 0 0">' + links + '</div>' +
       '<div class="ctas" style="margin:12px 0 0">' + cartBtn(cartKeyForPage(p), propTitle(p, true), propPrice(p)) + '</div>' +
-      '<div class="veil" aria-hidden="true"><div><span>Address</span><b>0000 Sample Street</b></div><div><span>Monthly payment</span><b>$0,000</b></div><div><span>Loan details</span><b>0.00% · $000,000</b></div></div>' +
       '<p class="mono eyebrow">You\'ll see</p><ul class="unlock-list"><li>' + (p.open ? 'The address and map' : 'The exact address and map') + '</li><li>Photos and the full listing</li><li>' + esc(what) + '</li><li>A quick way to text or call Darien for a tour</li></ul>' +
       '<button type="button" class="linkbtn" data-jump="similar">Or see similar homes nearby ↓</button>' +
     '</div>' +
     '<form class="panel prop-form" id="pf-form" novalidate><h3>See the full details</h3>' +
-      '<div id="pf-realtor"><p class="note"><b>' + esc(REALTOR_QUESTION) + '</b></p><p class="note">Darien does not want to step on anyones toes, so he checks first.</p>' +
-      '<div class="ctas" style="margin:0"><button type="button" class="btn btn-line" data-pf-realtor="no">No</button><button type="button" class="btn btn-line" data-pf-realtor="yes">Yes, I have a realtor</button></div></div>' +
+      '<div id="pf-realtor"><p class="note">Here are the details first, links are above. One last question at the end:</p><p class="note"><b>' + esc(REALTOR_QUESTION) + '</b></p>' +
+      '<div class="ctas" style="margin:0"><button type="button" class="btn btn-line" data-pf-realtor="no">No</button><button type="button" class="btn btn-line" data-pf-realtor="yes">Yes, I have an agent</button></div></div>' +
       '<div id="pf-agent-fields" hidden><p class="note">Please put your agent\'s info in, so Darien can send all home info to your agent to share with you.</p><div class="fields">' +
         '<div class="field wide"><label for="pf-aname">Agent name</label><input id="pf-aname" autocomplete="name"></div>' +
         '<div class="field wide"><label for="pf-abrokerage">Brokerage (if you know it)</label><input id="pf-abrokerage"></div>' +
@@ -312,7 +318,7 @@ function lockedHtml(p) {
         '<div class="field"><label for="pf-email">Email</label><input id="pf-email" type="email" autocomplete="email" value="' + esc(m.email || '') + '"></div>' +
       '</div></div>' +
       '<p class="fine" id="pf-fine">By tapping See the home, you agree that Darien Phillips may contact you by phone, text or email about homes. Consent isn\'t required to buy a home. Message and data rates may apply.</p>' +
-      '<div><button class="btn btn-pa" type="submit" id="pf-go" disabled>See the home</button></div><p class="toast err" id="pf-err" role="alert"></p>' +
+      '<div><button class="btn btn-pa" type="submit" id="pf-go">See the home</button></div><p class="toast err" id="pf-err" role="alert"></p>' +
     '</form></div>';
 }
 function unlockedHtml(p) {
