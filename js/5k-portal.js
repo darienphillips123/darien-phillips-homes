@@ -7,7 +7,52 @@
    with $0 down through CalHFA MyHome, and the lower of the two caps
    wins when both are given. No agent question on this form: the
    request goes straight to Darien as a sign-up, with the criteria in
-   the Wants and Notes fields. */
+   the Wants and Notes fields.
+   10-home rule: every custom portal needs at least 10 homes. Under 10
+   matches the visitor sees the count plainly, gets one-tap widen
+   suggestions that actually apply and re-count, and cannot submit until
+   they widen to 10 or explicitly check "Send it anyway with X homes".
+   A send-anyway is logged as such in the tracker notes. */
+const PORTAL_MIN = 10;
+const PORTAL_PRICE_TIERS = [400000, 500000, 600000, 700000, 800000, 1000000, 1250000, 1500000, 2000000, 2500000, 3000000];
+function portalClone(B, patch) {
+  const c = Object.assign({}, B, patch || {});
+  c.must = ((patch && patch.must !== undefined ? patch.must : B.must) || []).slice();
+  return c;
+}
+/* One-tap widenings: each one loosens a single criterion and reports how
+   many homes it would match. Only widenings that add homes are offered,
+   best first, at most three. */
+function portalWidenOptions(B) {
+  const cur = portalMatches(B).items.length;
+  const opts = [];
+  const tryOpt = (label, patch) => {
+    const n = portalMatches(portalClone(B, patch)).items.length;
+    if (n > cur) opts.push({ label: label + ' (' + plural(n, 'home', 'homes') + ')', patch, n });
+  };
+  if (B.max) {
+    const next = PORTAL_PRICE_TIERS.find((t) => t > B.max) || Math.ceil(B.max * 1.25 / 50000) * 50000;
+    tryOpt('Raise your top price to ' + money(next), { max: next });
+  }
+  if (B.pay) {
+    tryOpt('Raise your monthly cap to ' + money(B.pay + 500) + ' a month', { pay: B.pay + 500 });
+    tryOpt('Drop the monthly payment cap', { pay: 0 });
+  }
+  if (B.city) tryOpt('Search every city or area, not just ' + B.city, { city: '' });
+  (B.must || []).forEach((m) => tryOpt('Drop the must-have ' + m, { must: (B.must || []).filter((x) => x !== m) }));
+  if (B.beds) {
+    if (B.beds - 1 < 2) tryOpt('Try any bedrooms instead of ' + B.beds + '+', { beds: 0 });
+    else tryOpt('Try ' + (B.beds - 1) + '+ bedrooms instead of ' + B.beds + '+', { beds: B.beds - 1 });
+  }
+  if (B.baths) {
+    const lower = BATH_OPTS.map(([v]) => v).filter((v) => v < B.baths).pop();
+    if (lower) tryOpt('Try ' + lower + '+ bathrooms instead of ' + B.baths + '+', { baths: lower });
+    else tryOpt('Try any bathrooms instead of ' + B.baths + '+', { baths: 0 });
+  }
+  if (B.kind !== 'all') tryOpt('Search every home type, not just ' + portalKindLabel(B.kind), { kind: 'all' });
+  opts.sort((a, b) => b.n - a.n);
+  return opts.slice(0, 3);
+}
 const PORTAL_KINDS = [['all', 'Any'], ['newbuild', 'New build'], ['assumable', 'Assumable'], ['zerodown', '$0 down']];
 const PORTAL_MUST = ['open floor plan', 'large backyard', 'pool', 'ADU', 'single story'];
 const PORTAL_DEFAULTS = { email: '', kind: 'all', city: '', beds: 0, baths: 0, max: 0, pay: 0, must: [], extra: '' };
@@ -66,6 +111,8 @@ def('portal', {
       '<div class="field"><label for="pb-extra">Anything else?</label><textarea id="pb-extra" rows="3" placeholder="Anything else you are looking for? A school, a commute, a view, a floor plan you liked...">' + esc(B.extra || '') + '</textarea></div>' +
       '<p class="note">Must-haves search the words in the listings, not a verified feature list, so a home only shows up if the listing mentions it.</p>' +
       '<p class="count" id="pb-count" aria-live="polite"></p>' +
+      '<div id="pb-widen" hidden></div>' +
+      '<p id="pb-anyway-wrap" hidden><label class="check"><input type="checkbox" id="pb-anyway"> <span id="pb-anyway-label"></span></label></p>' +
       '<div class="actions"><button type="submit" class="btn btn-pa" id="pb-send">Build my custom portal</button></div>' +
       '<p class="toast err" id="pb-err" role="alert"></p>' +
       '<p class="fine">By tapping Build my custom portal, you agree that Darien Phillips may email, call or text you about homes. Unsubscribe anytime. Consent is not required to buy a home.</p>' +
@@ -84,24 +131,59 @@ def('portal', {
       B.extra = $('pb-extra').value.trim();
       save();
     };
+    /* Keep the form fields showing the same criteria as B, so a one-tap
+       widening updates what the visitor sees as well as the count. */
+    const syncForm = () => {
+      $('pb-kind').value = B.kind; $('pb-city').value = B.city;
+      $('pb-beds').value = String(B.beds); $('pb-baths').value = String(B.baths);
+      $('pb-max').value = B.max ? comma(B.max) : '';
+      $('pb-pay').value = B.pay ? comma(B.pay) : '';
+      root.querySelectorAll('input[name="pb-must"]').forEach((c) => { c.checked = (B.must || []).includes(c.value); });
+    };
+    let widenOpts = [];
+    let lastCount = -1;
     const drawCount = () => {
       const r = portalMatches(B);
+      const n = r.items.length;
       const el = $('pb-count');
+      const widenEl = $('pb-widen');
+      const anywayWrap = $('pb-anyway-wrap');
       if (!el) return;
+      /* The count changed, so an earlier "send it anyway" no longer
+         stands for these criteria. */
+      if (n !== lastCount) { lastCount = n; const aw = $('pb-anyway'); if (aw) aw.checked = false; }
       if (B.pay && !r.payCap) {
-        el.textContent = 'No home on this site fits that monthly payment yet. Raise the cap, or leave it blank and set a top price instead.';
-        return;
+        el.textContent = 'No home on this site fits that monthly payment yet. A custom portal needs at least 10 homes, so try widening your search below.';
+      } else if (n < PORTAL_MIN) {
+        el.textContent = 'Only ' + plural(n, 'home', 'homes') + ' match right now. A custom portal needs at least 10 homes, so try widening your search below.';
+      } else {
+        el.textContent = plural(n, 'home or community', 'homes and communities') + ' match your criteria on this site right now' +
+          (r.payCap ? ' (up to ' + money(r.payCap) + ' by your monthly cap, on an FHA loan with $0 down through CalHFA MyHome)' : '');
       }
-      el.textContent = plural(r.items.length, 'home or community', 'homes and communities') + ' match your criteria on this site right now' +
-        (r.payCap ? ' (up to ' + money(r.payCap) + ' by your monthly cap, on an FHA loan with $0 down through CalHFA MyHome)' : '');
+      if (n < PORTAL_MIN || (B.pay && !r.payCap)) {
+        widenOpts = portalWidenOptions(B);
+        widenEl.hidden = false;
+        if (widenOpts.length) {
+          widenEl.innerHTML = '<p class="note">Widen your search, one tap:</p><div class="ctas" style="margin:0">' +
+            widenOpts.map((o, i) => '<button type="button" class="btn btn-line btn-sm" data-widen="' + i + '">' + esc(o.label) + '</button>').join('') + '</div>';
+        } else {
+          widenEl.innerHTML = '<p class="note">Widening did not add homes on this site yet. Darien can still search the whole MLS for you, so you can send this request anyway below.</p>';
+        }
+        anywayWrap.hidden = false;
+        $('pb-anyway-label').textContent = 'Send it anyway with ' + n + ' ' + (n === 1 ? 'home' : 'homes');
+      } else {
+        widenEl.hidden = true; widenEl.innerHTML = '';
+        anywayWrap.hidden = true;
+      }
     };
-    const showSummary = (r) => {
+    const showSummary = (r, sentAnyway) => {
       $('pb-form').hidden = true;
       const s = $('pb-summary');
       s.hidden = false;
       s.innerHTML = '<div class="panel accent" style="display:grid;gap:12px">' +
         '<p class="mono eyebrow">Your portal request</p><h2>Your custom portal request is ready</h2>' +
         '<p class="toast">Darien will build your custom MLS portal and email it to you.</p>' +
+        (sentAnyway ? '<p class="note">Sent with ' + esc(plural(r.items.length, 'home', 'homes')) + ' at your request, below the usual 10-home minimum. Darien will still search the whole MLS for more.</p>' : '') +
         '<ul class="gz-sum">' +
         '<li><span>Email</span><b>' + esc(B.email) + '</b></li>' +
         '<li><span>Home type</span><b>' + esc(portalKindLabel(B.kind)) + '</b></li>' +
@@ -128,6 +210,15 @@ def('portal', {
     $('pb-form').addEventListener('change', () => { read(); drawCount(); });
     bindMoney('pb-max', (v) => { B.max = isNaN(v) ? 0 : v; save(); drawCount(); });
     bindMoney('pb-pay', (v) => { B.pay = isNaN(v) ? 0 : v; save(); drawCount(); });
+    $('pb-widen').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-widen]');
+      if (!b) return;
+      const o = widenOpts[+b.dataset.widen];
+      if (!o) return;
+      Object.assign(B, o.patch);
+      if (o.patch.must !== undefined) B.must = o.patch.must.slice();
+      save(); syncForm(); drawCount();
+    });
     $('pb-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       read();
@@ -138,18 +229,27 @@ def('portal', {
       }
       $('pb-err').textContent = '';
       const r = portalMatches(B);
-      const data = { name: '', email: B.email, phone: '', notes: 'Custom Portal request: ' + portalCriteriaLine(B) + (B.extra ? ' Anything else: ' + B.extra : '') + '. ' + plural(r.items.length, 'home or community', 'homes and communities') + ' match on the site right now.',
+      const n = r.items.length;
+      const sentAnyway = n < PORTAL_MIN && !!($('pb-anyway') && $('pb-anyway').checked);
+      if (n < PORTAL_MIN && !sentAnyway) {
+        $('pb-err').textContent = 'Only ' + plural(n, 'home', 'homes') + ' match right now, and a custom portal needs at least 10 homes. Widen your search above, or check "Send it anyway with ' + n + ' ' + (n === 1 ? 'home' : 'homes') + '" to send it anyway.';
+        const aw = $('pb-anyway');
+        if (aw) aw.focus();
+        return;
+      }
+      const anywayNote = sentAnyway ? ' Sent anyway with ' + n + ' ' + (n === 1 ? 'home' : 'homes') + ' (below the 10-home minimum, visitor confirmed).' : '';
+      const data = { name: '', email: B.email, phone: '', notes: 'Custom Portal request: ' + portalCriteriaLine(B) + (B.extra ? ' Anything else: ' + B.extra : '') + '. ' + plural(n, 'home or community', 'homes and communities') + ' match on the site right now.' + anywayNote,
         wants: portalKindLabel(B.kind) + ((B.must || []).length ? ', must-haves: ' + B.must.join(', ') : ''), areas: B.city || 'Anywhere Darien works',
         price: B.max ? money(B.max) : '', pay: B.pay ? money(B.pay) : '', beds: B.beds ? B.beds + '+' : 'Any', baths: B.baths ? B.baths + '+' : 'Any',
         size: 'Any', lot: 'Any', when: '', mls: 'yes', saved: '', hasAgent: 'no', agentName: '', agentBrokerage: '', agentContact: '' };
-      if (!TRACKER) { showSummary(r); return; }
+      if (!TRACKER) { showSummary(r, sentAnyway); return; }
       const btn = $('pb-send');
       btn.disabled = true; btn.textContent = 'Building your portal...';
       try {
         await post('signup', data);
-        trackEvent('Signed up for a custom portal', 'Info request');
-        logStep('Asked Darien to build a custom portal: ' + portalCriteriaLine(B) + (B.extra ? ' Anything else: ' + B.extra : ''));
-        showSummary(r);
+        trackEvent('Signed up for a custom portal' + (sentAnyway ? ' (sent anyway with ' + n + ' homes)' : ''), 'Info request');
+        logStep('Asked Darien to build a custom portal: ' + portalCriteriaLine(B) + (B.extra ? ' Anything else: ' + B.extra : '') + anywayNote);
+        showSummary(r, sentAnyway);
       } catch (x) {
         btn.disabled = false; btn.textContent = 'Build my custom portal';
         $('pb-err').textContent = 'That did not go through. Please try again, or text Darien at 209.882.6469.';
