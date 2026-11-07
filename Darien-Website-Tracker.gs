@@ -74,6 +74,11 @@ function setup() {
   ensureSheet_(book, 'Leads', ['When', 'Name', 'Phone', 'Email', 'Home', 'Price', 'Size', 'MLS# or plan', 'Note', 'Client code', 'From page', 'Link', 'Visitor id', 'Source', 'How', 'Keyword', 'What they did first']);
   ensureSheet_(book, 'Sign-ups', ['When', 'Name', 'Phone', 'Email', 'Wants', 'Areas', 'Max price', 'Max monthly', 'Beds', 'Baths', 'Size', 'Lot', 'Custom MLS page', 'Timeline', 'Saved homes', 'Notes', 'Client code']);
   ensureSheet_(book, 'Goals', ['When', 'Name', 'Phone', 'Email', "What's holding them back", 'Their goal', 'Client code', 'From page']);
+  // Optional future home for a generic 'event' type (see logEvent_ below).
+  // Only created by setup() and only used after Darien redeploys this
+  // script as a new version. The website does not send 'event' yet and
+  // does not depend on this sheet; its gap events use beacon('click').
+  ensureSheet_(book, 'Events', ['When', 'Client', 'Event', 'Source', 'Home', 'Price', 'Size', 'MLS# or plan', 'From page', 'Visitor id']);
   setupListings_(book);
   if (SETTINGS.visitSummaries && !ScriptApp.getProjectTriggers().some((t) => t.getHandlerFunction() === 'sendVisitSummaries')) {
     ScriptApp.newTrigger('sendVisitSummaries').timeBased().everyMinutes(10).create();
@@ -326,6 +331,10 @@ function doPost(e) {
     else if (type === 'signup') out = { ok: submitSignup(d) };
     else if (type === 'goal') out = { ok: submitGoal(d) };
     else if (type === 'stats') out = stats_(d);
+    // Optional future type: only takes effect after Darien redeploys this
+    // script as a new version (Deploy > Manage deployments > New version).
+    // The website does not send 'event' yet; its gap events use 'click'.
+    else if (type === 'event') out = logEvent_(d);
     else out = { ok: false, error: 'unknown request' };
   } catch (err) {
     out = { ok: false, error: String((err && err.message) || err).slice(0, 120) };
@@ -341,6 +350,17 @@ function json_(v) {
 function who_(d) { return clip_(d && d.n, 80) || clip_(d && d.c, 60) || ('Visitor ' + (clip_(d && d.v, 12) || '?')); }
 
 /** A page view on the website. Emails you when a named client opens the site (once per half hour). */
+function logEvent_(d) {
+  // Optional future type, Nov 2026. Writes one row to the Events sheet
+  // (created by setup()). No email. Only live after a redeploy as a new
+  // version; the website currently sends these events as 'click' instead.
+  try {
+    const s = sheet_('Events');
+    if (s) s.appendRow([new Date(), who_(d), clip_(d.e || d.h, 140), clip_(d.s, 40), clip_(d.h, 140), clip_(d.p, 24), clip_(d.b, 48), clip_(d.r, 40), clip_(d.pg, 90), clip_(d.v, 12)]);
+  } catch (err) { console.error(err); }
+  return { ok: true };
+}
+
 function logVisit_(d) {
   const v = { who: who_(d), page: clip_(d.pg, 90), id: clip_(d.v, 12), client: clip_(d.c, 60), dev: clip_(d.dev, 12) };
   const ref = hostOf_(String(d.ref || '').replace(/^http:/i, 'https:')).replace(/^www\./, '');
