@@ -85,7 +85,7 @@ _pv = _h.md5(b"".join(p.read_bytes() for p in sorted((here / "img").glob("*.jpg"
 source = ("(() => {\n'use strict';\n" + "\n".join(parts) + "\n})();").replace("__PHOTO_V__", _pv)
 
 photo_keys = [k for k, rest in re.findall(r"^\s*'?([a-z-]+)'?: \{ pos: '(.*)$", open(here / "js" / "2b-photos.js", encoding="utf-8").read(), re.M) if "src:" not in rest and "optional:" not in rest]  # hotlinked or not-yet-added photos are skipped
-need = [k + s for k in photo_keys for s in ("-1920.jpg", "-960.jpg", "-tile.jpg")] + ["darien-card.jpg"]
+need = [k + s for k in photo_keys for s in ("-1920.jpg", "-960.jpg", "-tile.jpg")] + ["darien-card.jpg", "ask-darien.jpg", "ask-darien-wave.jpg"]
 missing = [n for n in need if not (here / "img" / n).is_file()]
 if not photo_keys or missing:
     sys.exit("photos missing: " + (", ".join(missing) or "no photo keys found"))
