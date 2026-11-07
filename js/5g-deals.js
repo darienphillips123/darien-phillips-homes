@@ -36,10 +36,14 @@ function qmiFits(h, N) {
 function dealCard(c) {
   const deals = liveDeals(c).slice(0, 3);
   const cityTxt = c.city + (c.county && c.county !== c.city ? ' · ' + c.county + ' County' : '');
+  // Same home as the community card when this deal matches a community on the site, so the cart keeps one entry for it
+  const cmatch = DATA.communities.find((x) => x.name === c.name);
+  const cartKey = cmatch ? 'c:' + cmatch.id : 'd:' + c.id;
   return '<article class="card deal"><div class="head"><span class="pill pa">' + esc(cityTxt) + '</span>' + ((c.qmi || []).length ? '<span class="pill ok">' + plural(c.qmi.length, 'move-in ready home') + '</span>' : '') + '</div>' +
     '<div><h3>' + esc(c.name) + '</h3><div class="sub">' + esc(c.builder + (c.price_min ? ' · from ' + money(c.price_min) : '') + (c.sqft_min ? ' · ' + comma(c.sqft_min) + (c.sqft_max ? '–' + comma(c.sqft_max) : '+') + ' sq ft' : '')) + '</div></div>' +
     '<ul class="deal-list">' + deals.map((i) => { const e = endsText(i); return '<li><b>' + esc(i.title) + '</b>' + (i.detail ? '<span>' + esc(i.detail) + '</span>' : '') + (i.conditions ? '<span class="fine">' + esc(i.conditions) + '</span>' : '') + '<span class="ends' + (e.soon ? ' soon' : '') + '">' + esc(e.t) + '</span></li>'; }).join('') + '</ul>' +
     '<div class="optlist"><a class="btn btn-pa btn-sm" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, I saw the deal at ' + c.name + ' by ' + c.builder + ' in ' + c.city + ' on your website. Can you tell me more?')) + '">Ask Darien about this deal</a>' +
+      cartBtn(cartKey, c.name + ', ' + c.city, c.price_min ? 'From ' + money(c.price_min) : '') +
       (c.url ? '<a class="btn btn-line btn-sm" target="_blank" rel="noopener" href="' + esc(track(c.url, { h: c.name + ' (' + c.builder + ')', s: c.builder })) + '">Builder page ↗</a>' : '') + '</div></article>';
 }
 function qmiCard(h, c) {
@@ -49,7 +53,7 @@ function qmiCard(h, c) {
     '<div><h3>' + esc(h.plan ? h.plan + ' at ' + c.name : c.name) + '</h3><div class="sub">' + esc((h.addr ? h.addr + ' · ' : '') + c.builder) + '</div></div>' +
     (h.price ? '<div class="price num">' + money(h.price) + '</div>' : '') + (facts ? '<div class="facts">' + esc(facts) + '</div>' : '') +
     (h.deal ? '<div class="sub"><b>' + esc(h.deal) + '</b></div>' : '') + (deal ? '<div class="sub">Plus: ' + esc(deal.title) + ' · ' + esc(endsText(deal).t) + '</div>' : '') +
-    '<div class="optlist"><a class="btn btn-line btn-sm" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, I\'d like to see the move-in ready ' + (h.plan || 'home') + (h.addr ? ' at ' + h.addr : '') + ' in ' + c.name + ', ' + c.city + '.')) + '">Text Darien to see it</a></div></article>';
+    '<div class="optlist">' + cartBtn('q:' + slug(c.name + ' ' + (h.addr || h.plan || '')), (h.plan ? h.plan + ' at ' + c.name : c.name), h.price ? money(h.price) : '') + '<a class="btn btn-line btn-sm" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, I\'d like to see the move-in ready ' + (h.plan || 'home') + (h.addr ? ' at ' + h.addr : '') + ' in ' + c.name + ', ' + c.city + '.')) + '">Text Darien to see it</a></div></article>';
 }
 function dealsSection(N, shown) {
   const list = DEALS.communities.filter((c) => dealFits(c, N) && liveDeals(c).length).sort((a, b) => dealRank(b) - dealRank(a));

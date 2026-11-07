@@ -1,7 +1,7 @@
 /* ===== Page colors (match the theme tokens) ===== */
-const COLORS = { home: '#F06A3B', about: '#D93A4E', 'new-builds': '#D9901A', build: '#7E8F1F', payment: '#2E9E5B', assumable: '#0E9C90', search: '#1C8DC9', 'zero-down': '#3B5BDB', guide: '#7B5CD6', refinance: '#C2367A', alerts: '#8A5A3C', adu: '#4F6D7A', placer: '#E9A23B', stockton: '#F2A33A', cart: '#0F2E44' };
+const COLORS = { home: '#F06A3B', about: '#D93A4E', 'new-builds': '#D9901A', build: '#7E8F1F', payment: '#2E9E5B', assumable: '#0E9C90', search: '#1C8DC9', 'zero-down': '#3B5BDB', guide: '#7B5CD6', refinance: '#C2367A', alerts: '#8A5A3C', adu: '#4F6D7A', placer: '#E9A23B', stockton: '#F2A33A', cart: '#0F2E44', finder: '#0E7490' };
 Object.keys(COLORS).forEach((k) => { PAGES[k].color = COLORS[k]; });
-const NAV_ORDER = ['home', 'guide', 'search', 'assumable', 'zero-down', 'payment', 'new-builds', 'adu', 'refinance', 'build', 'about', 'alerts'];
+const NAV_ORDER = ['home', 'guide', 'search', 'finder', 'assumable', 'zero-down', 'payment', 'new-builds', 'adu', 'refinance', 'build', 'about', 'alerts'];
 
 /* ===== Keyword bar at the top ===== */
 $('kw').innerHTML = NAV_ORDER.map((k) => '<button type="button" data-go="' + k + '">' + navThumb(k) + '' + esc(PAGES[k].nav) + (k === 'alerts' ? '<span class="n"></span>' : '') + '</button>').join('') ;
@@ -12,6 +12,7 @@ const WORDS = {
   home: ['home', 'start', 'main page'],
   guide: ['guide', 'beginner', 'first time', 'how to buy', 'steps', 'glossary', 'definition', 'what is', 'emd', 'earnest', 'escrow', 'closing costs', 'pre-approval', 'preapproval', 'pre-qualification', 'prequal', 'contingency', 'appraisal', 'inspection', 'terms', 'words'],
   search: ['map', 'map search', 'search', 'all homes', 'every home', 'homes for sale', 'mls', 'pool', 'bedrooms', 'bathrooms', 'beds', 'baths', 'listings'],
+  finder: ['find', 'finder', 'find exactly', 'filter', 'filters', 'lot size', 'backyard', 'open floor plan', 'what you are looking for', 'exact'],
   assumable: ['assumable', 'assume', 'assumption', 'take over', 'takeover', 'low rate', 'low-rate', 'existing loan', 'roots', 'fha loan', 'va loan'],
   placer: ['placer', 'loomis', '2500', '2,500', 'under 2500', 'granite bay', 'auburn', 'rocklin', 'roseville', 'lincoln'],
   payment: ['payment', 'monthly', 'budget', 'afford', 'affordability', 'how much', 'calculator', 'price range', 'mortgage'],

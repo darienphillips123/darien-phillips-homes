@@ -35,8 +35,8 @@ def('adu', {
     // Homes that already have an ADU-style suite, from the site's own data only.
     // The only ones in the data right now are the two Next Gen suites in Stockton.
     const aduHomes = (DATA.stockton.homes || []).filter((h) => /next gen|adu|guest house|in-law|casita/i.test((h.note || '') + ' ' + (h.plan || '')));
-    const aduComm = (DATA.stockton.communities || []).find((c) => String(c.id || '').toLowerCase() === 'lakeside' || String(c.name || '').toLowerCase().includes('lakeside'));
-    const aduHomesHtml = aduHomes.length && aduComm ? aduHomes.map((h) => stocktonCard(h, aduComm)).join('') :
+    const aduK = sub('stk', STK_DEFAULTS);
+    const aduHomesHtml = aduHomes.length ? aduHomes.map((h) => stocktonCard(h, stkFig(h, aduK), aduK)).join('') :
       '<div class="empty"><h3>No homes with an ADU listed on the site right now</h3><p>Most homes that already have an ADU or guest house only show it in the MLS remarks, so Darien searches those for you. Text him and he\'ll pull the latest ones.</p></div>';
     return '<section class="blk"><div class="wrap"><div class="panel accent" style="display:grid;gap:12px">' +
       '<h2 style="margin:0">ADU checker</h2>' +

@@ -30,6 +30,7 @@ THEMES = {
     "adu": ("#4F6D7A", "#FFFFFF", "#4F6D7A", "#E7ECEE", "#93AEBA", "#1C2529"),
     "alerts": ("#8A5A3C", "#FFFFFF", "#8A5A3C", "#EFE8E4", "#B2927E", "#281F1C"),
     "cart": ("#0F2E44", "#FFFFFF", "#0F2E44", "#E4E9EC", "#7FA3B8", "#101E28"),
+    "finder": ("#0E7490", "#FFFFFF", "#0E7490", "#E2EFF3", "#5AA9C4", "#0F2A33"),
 }
 
 

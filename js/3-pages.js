@@ -7,6 +7,8 @@ const sel = (id, opts, cur, label) => '<div class="field"><label for="' + id + '
 const moneyField = (id, label, val, hint, ph) => '<div class="field"><label for="' + id + '">' + esc(label) + '</label><span class="money"><i>$</i><input id="' + id + '" type="text" inputmode="numeric" value="' + (val ? esc(comma(val)) : '') + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : '') + '></span>' + (hint ? '<small>' + esc(hint) + '</small>' : '') + '</div>';
 const pctField = (id, label, val, hint) => '<div class="field"><label for="' + id + '">' + esc(label) + '</label><span class="money suf"><input id="' + id + '" type="text" inputmode="decimal" value="' + esc(val) + '"><i>%</i></span>' + (hint ? '<small>' + esc(hint) + '</small>' : '') + '</div>';
 const PRICE_OPTS = [[0, 'Any price'], [400000, 'Up to $400k'], [500000, 'Up to $500k'], [600000, 'Up to $600k'], [700000, 'Up to $700k'], [800000, 'Up to $800k'], [1000000, 'Up to $1M']];
+const LOT_OPTS = [[0, 'Any lot size'], [0.11, '5,000+ sq ft lot'], [0.25, '1/4 acre+'], [0.5, '1/2 acre+'], [1, '1 acre+'], [2, '2 acres+'], [5, '5 acres+']];
+const LOT_SQFT_OPTS = [[0, 'Any lot size'], [5000, '5,000+ sq ft lot'], [10890, '1/4 acre+'], [21780, '1/2 acre+'], [43560, '1 acre+'], [87120, '2 acres+']];
 const BED_OPTS = [[0, 'Any'], [2, '2+'], [3, '3+'], [4, '4+'], [5, '5+']];
 const BATH_OPTS = [[0, 'Any'], [2, '2+'], [2.5, '2.5+'], [3, '3+']];
 const SIZE_OPTS = [[0, 'Any'], [1200, '1,200+ sq ft'], [1500, '1,500+ sq ft'], [1800, '1,800+ sq ft'], [2000, '2,000+ sq ft'], [2500, '2,500+ sq ft'], [3000, '3,000+ sq ft']];
@@ -45,6 +47,7 @@ const TILE_TEXT = {
   payment: 'Tell us your monthly budget and see the prices and homes that fit it.',
   'new-builds': 'Over 450 new-home communities in every city MetroList covers, with builder deals and move-in ready homes.',
   search: 'Every home for sale on a map, with filters for pool, single story, acreage and more.',
+  finder: 'Filter every home on this site by price, size, lot, stories and the words in the listings, all in one place.',
   refinance: 'See your new payment, break-even point and the refinance options that fit your loan.',
   adu: 'Can a home add a backyard cottage or in-law suite? Your city\'s rules, free plans and homes with room.',
   build: 'Estimate what it costs to build on your own lot, from land to move-in.',
@@ -61,7 +64,7 @@ def('home', {
   ctas: () => '<button type="button" class="btn btn-pa" data-go="search">Search every home</button><a class="btn btn-ghost" href="sms:+12098826469">Text Darien</a><a class="btn btn-ghost" href="tel:+12098826469">Call Darien</a><a class="btn btn-ghost" href="mailto:darienphillips45@gmail.com">Email Darien</a>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
-    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + justListedHtml() + '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' +
+    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + justListedHtml() + journeyHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
       sellerHtml() + '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Popular places</h2><p>Pick a town to see assumable homes, new builds, $0-down options and homes by payment there.</p></div></div>' +
       '<div class="places">' + POPULAR.map((n) => '<button type="button" class="chip" data-place="' + esc(n) + '">' + esc(n) + '</button>').join('') + '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="statrow">' +
@@ -88,13 +91,89 @@ function justListedHtml() {
     '<div class="cards">' + list.map((p) => teaserCard(p)).join('') + '</div></div></section>';
 }
 
+/* ===== Home page journey: outside, then room by room =====
+   Photos are free-license Pexels images, hotlinked the same way the site
+   already hotlinks Pexels for its search and about photos. Each stop offers
+   new builds and a skip link that scrolls to the next stop. */
+const JOURNEY = [
+  { id: 'room-1', name: 'Outside', img: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Modern home exterior with clean lines and a front yard', line: 'Curb appeal is the first filter. If the outside does not feel right, the inside rarely saves it.', skip: 'room-2', skipLabel: 'Skip to the living room' },
+  { id: 'room-2', name: 'The living room', img: 'https://images.pexels.com/photos/9976124/pexels-photo-9976124.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Bright modern living room with tall windows', line: 'This is where the floor plan earns its keep. Open space, natural light, and room to actually live in.', skip: 'room-3', skipLabel: 'Skip to the kitchen' },
+  { id: 'room-3', name: 'The kitchen', img: 'https://images.pexels.com/photos/6969863/pexels-photo-6969863.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Modern kitchen with wood cabinets and island seating', line: 'Quartz counters, gas ranges, islands with seating. The kitchen decides more purchases than any other room.', skip: 'room-4', skipLabel: 'Skip to the primary bedroom' },
+  { id: 'room-4', name: 'The primary bedroom', img: 'https://images.pexels.com/photos/6920600/pexels-photo-6920600.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Calm modern primary bedroom with a tufted headboard', line: 'A quiet end of the house, a real closet, and a bath that does not feel like an afterthought.', skip: 'room-5', skipLabel: 'Skip to the bathroom' },
+  { id: 'room-5', name: 'The bathroom', img: 'https://images.pexels.com/photos/7512047/pexels-photo-7512047.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Modern bathroom with a glass shower', line: 'Walk-in showers, double vanities, and storage that keeps the counter clear.', skip: 'room-6', skipLabel: 'Skip to the backyard' },
+  { id: 'room-6', name: 'The backyard', img: 'https://images.pexels.com/photos/261410/pexels-photo-261410.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Backyard pool and patio on a sunny day', line: 'Pool, patio, or just room to breathe. In Northern California, the backyard is a second living room.', skip: 'tiles', skipLabel: 'See all options below' }
+];
+function journeyHtml() {
+  return '<section class="blk journey" id="journey"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Walk through it first</p><h2>Start outside. End up at home.</h2><p>Scroll through a home the way you would walk through one. Each room has a new-build option if you want more like it, and a skip link if you want to move on.</p></div><button type="button" class="btn btn-line btn-sm" data-skip-to="tiles">Skip the tour</button></div>' +
+    JOURNEY.map((r, i) => '<article class="room' + (i % 2 ? ' flip' : '') + '" id="' + r.id + '"><figure class="room-photo"><img src="' + r.img + '" alt="' + esc(r.alt) + '" loading="lazy"></figure><div class="room-body"><p class="mono eyebrow">Stop ' + (i + 1) + ' of ' + JOURNEY.length + '</p><h3>' + esc(r.name) + '</h3><p>' + esc(r.line) + '</p><div class="room-acts"><button type="button" class="btn btn-pa btn-sm" data-finder-kind="newbuild">See new builds</button><button type="button" class="btn btn-line btn-sm" data-skip-to="' + r.skip + '">' + esc(r.skipLabel) + '</button></div></div></article>').join('') +
+    '<p class="fine journey-credit">Room photos from Pexels.</p></div></section>';
+}
+
+/* ===== Homes I toured =====
+   Only homes verified still for sale on Nov 7, 2026. Sheet listings (RIO,
+   SER, PALM, HAVEN) and the site-data Plan 7 quick move-in render from their
+   real property records. The Hazel quick move-in, three resales and two
+   Carlsberg quick move-ins are custom cards with real facts verified live the
+   same day; the Hazel and Carlsberg homes have no property page of their own
+   on this site (only Stockton homes and communities do), so those cards link
+   to the community page, and the resales link to their photos on Zillow
+   instead of showing a photo that is not the home. Left out: Candlewood (in
+   contract), Black Oak (pending), Glacier (Estates sold out), Plan 3 / Plan 6
+   / Plan 4 (availability unverified), Aspen and El Dorado (model only), 1905
+   Ralston (tour not confirmed), 2773 Via Fiori (sold). */
+const TOURED_CUSTOM = [
+  { key: 't:ridge-park-loomis', title: '5-bedroom home in Loomis', addr: '5846 Ridge Park Dr, Loomis', price: '$2,980,000', facts: '5 bd · 4 ba · 3,877 sq ft · 5 acres', hook: 'Gated Sierra Ridge Estates on 5 acres with a pool.', city: 'Loomis, CA', z: 'https://www.zillow.com/homedetails/5846-Ridge-Park-Dr-Loomis-CA-95650/17676184_zpid/' },
+  { key: 't:cornwall-rocklin', title: '5-bedroom home in Rocklin', addr: '4022 Cornwall Ct, Rocklin', price: '$2,100,000', facts: '5 bd · 6 ba · 4,675 sq ft · 0.42 acre', hook: 'Frank Lloyd Wright Prairie style on an elevated lot, with a pool and putting green.', city: 'Rocklin, CA', z: 'https://www.zillow.com/homedetails/4022-Cornwall-Ct-Rocklin-CA-95677/188166793_zpid/' },
+  { key: 't:oak-rock-folsom', title: '4-bedroom home in Folsom', addr: '117 Oak Rock Cir, Folsom', price: '$1,040,000', facts: '4 bd · 2.5 ba · 2,657 sq ft · 0.39 acre', hook: 'Extensively remodeled single story in American River Canyon.', city: 'Folsom, CA', z: 'https://www.zillow.com/homedetails/117-Oak-Rock-Cir-Folsom-CA-95630/25988487_zpid/' },
+  { key: 'q:shawood-at-folsom-4681-dehone-circle', title: 'Hazel home in Folsom', addr: '4681 Dehone Circle, Folsom', price: '$1,797,888', facts: '5 bd · 5.5 ba · 4,346 sq ft', hook: 'SHAWOOD at Folsom, Homesite 52. Move-in ready, est. Nov 2026.', city: 'Folsom, CA', page: 'shawood-at-folsom', pageLabel: 'See SHAWOOD at Folsom' },
+  { key: 't:carlsberg-835-ridgeline-dr', title: 'Carlsberg home in Lincoln', addr: '835 Ridgeline Dr, Lincoln', price: '$1,345,000', facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in December.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' },
+  { key: 't:carlsberg-670-ridgeline-ct', title: 'Carlsberg home in Lincoln', addr: '670 Ridgeline Ct, Lincoln', price: '$1,506,000', facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in November.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' }
+];
+function touredPropCard(p, cartKey) {
+  const info = { h: propTitle(p, true), p: propPrice(p), b: propFacts(p), l: p.hook, city: p.city, z: p.addr && p.city ? zillowFor(p.addr, p.city, p.zip) : '', m: p.addr ? mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') : '' };
+  const tour = (typeof toursFor === 'function' && toursFor(commOf(p)).length) ? '<span class="pill ok">▶ Video tour</span>' : '';
+  return '<article class="card"><div class="head"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</div>' +
+    '<h3>' + esc(propTitle(p, false)) + '</h3><div class="price num">' + esc(propPrice(p)) + '</div>' +
+    (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') + (p.hook ? '<p class="note">' + esc(p.hook) + '</p>' : '') +
+    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></article>';
+}
+function touredCustomCard(t) {
+  const info = { h: t.addr, p: t.price, b: t.facts, l: t.hook, city: t.city, z: t.z || '', m: mapFor(t.addr + ', CA') };
+  const see = t.z
+    ? '<a class="btn btn-line btn-sm" href="' + esc(track(t.z, { h: info.h, s: 'Zillow', p: info.p })) + '" target="_blank" rel="noopener">See photos on Zillow</a>'
+    : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
+  return '<article class="card"><div class="head"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></div>' +
+    '<h3>' + esc(t.title) + '</h3><div class="price num">' + esc(t.price) + '</div>' +
+    '<div class="facts">' + esc(t.facts) + '</div><p class="note">' + esc(t.hook) + '</p>' +
+    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></article>';
+}
+function touredHtml() {
+  if (typeof PROPS === 'undefined') return '';
+  if (typeof CARD_PROP !== 'undefined') {
+    if (PROP_BY['ridgeline-at-bickford-ranch']) {
+      CARD_PROP['t:carlsberg-835-ridgeline-dr'] = 'ridgeline-at-bickford-ranch';
+      CARD_PROP['t:carlsberg-670-ridgeline-ct'] = 'ridgeline-at-bickford-ranch';
+    }
+    if (PROP_BY['shawood-at-folsom']) CARD_PROP['q:shawood-at-folsom-4681-dehone-circle'] = 'shawood-at-folsom';
+  }
+  const items = [];
+  ['rio', 'ser', 'palm', 'haven'].forEach((k) => { const p = PROP_BY[k]; if (p) items.push({ price: p.price || 0, html: touredPropCard(p, 'l:' + p.key) }); });
+  const plan7 = PROP_BY['10732-stevie-dr'];
+  if (plan7) items.push({ price: plan7.price || 0, html: touredPropCard(plan7, 's:h39') });
+  TOURED_CUSTOM.forEach((t) => items.push({ price: Number(String(t.price).replace(/[^0-9]/g, '')) || 0, html: touredCustomCard(t) }));
+  if (!items.length) return '';
+  items.sort((a, b) => a.price - b.price);
+  return '<section class="blk" id="toured"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
+    '<div class="cards">' + items.map((x) => x.html).join('') + '</div></div></section>';
+}
+
 /* ===== Assumable homes ===== */
 def('assumable', {
   nav: 'Assumable', scene: 'assumable', kicker: 'Assumable loans', tileTitle: 'Assumable homes',
   title: 'Take over a seller\'s low-rate loan',
   sub: 'Some FHA, VA and USDA loans can move to the next buyer, rate and all. Here is how to find them, and the homes that have them now.',
   html() {
-    const A = sub('assum', { type: 'all', max: 0, beds: 0, baths: 0, sqft: 0, sort: 'rate', text: '' });
+    const A = sub('assum', { type: 'all', max: 0, beds: 0, baths: 0, sqft: 0, lot: 0, sort: 'rate', text: '' });
     return '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">How it works</p><h2>How to find an assumable home</h2></div></div>' +
       '<ol class="steps">' +
         '<li><b>Look for FHA, VA or USDA loans</b><span>Most conventional loans can\'t be taken over. FHA, VA and USDA loans usually can, with the lender\'s approval.</span></li>' +
@@ -112,8 +191,10 @@ def('assumable', {
       '<div class="panel" style="display:grid;gap:12px">' + countyChips(true) +
         '<div class="chips" role="group" aria-label="Loan type"><span class="mono">Loan</span>' + [['all', 'All'], ['FHA', 'FHA'], ['VA', 'VA'], ['', 'Not listed']].map(([v, t]) => '<button type="button" class="chip" data-type="' + v + '" aria-pressed="' + (A.type === v) + '">' + t + '</button>').join('') + '</div>' +
         '<div class="fields">' + sel('as-max', PRICE_OPTS, A.max, 'Price') + sel('as-beds', BED_OPTS, A.beds, 'Bedrooms') + sel('as-baths', BATH_OPTS, A.baths, 'Bathrooms') + sel('as-sqft', SIZE_OPTS, A.sqft, 'Home size') +
+          sel('as-lot', LOT_OPTS, A.lot, 'Lot size') +
           sel('as-sort', [['rate', 'Lowest rate'], ['price', 'Lowest price'], ['gap', 'Least cash to take over'], ['new', 'Newest listing']], A.sort, 'Sort') + '</div>' +
-        (A.text ? '<div><span class="place-pill">Matching "' + esc(A.text) + '"<button type="button" id="as-clear" aria-label="Clear the search">×</button></span></div>' : '') +
+        '<div class="fields"><div class="field wide"><label for="as-q">Search the listing remarks</label><input id="as-q" type="search" autocomplete="off" value="' + esc(A.text) + '" placeholder="Try pool, open floor plan, single story, ADU"></div></div>' +
+        '<p class="note">The search above looks through the street, city and the remarks in each listing. Remarks are the short text from the MLS listing, so a feature only shows up if the listing mentions it. Want to search everything at once, including lot size and home size? <button type="button" class="linkbtn" data-go="finder">Find exactly what you are looking for</button></p>' +
         '<p class="count" id="as-count" aria-live="polite"></p></div>' +
       '<div class="cards" id="as-list"></div><div class="more-row"><button type="button" class="btn btn-line" id="as-more" hidden></button></div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Search live assumable listings</h2><p>These open Roots, which estimates each seller\'s rate and balance from public records, and include homes listed after Darien\'s last MLS check.</p></div></div><div class="tiles" id="as-live"></div></div></section>';
@@ -126,8 +207,8 @@ def('assumable', {
       const q = A.text.toLowerCase();
       const items = DATA.assumables.filter((h) => inPlace(h) &&
         (A.type === 'all' || h.type === A.type) && (!A.max || h.price <= A.max) && (!A.beds || (h.beds || 0) >= A.beds) &&
-        (!A.baths || (h.baths || 0) >= A.baths) && (!A.sqft || (h.sqft || 0) >= A.sqft) &&
-        (!q || (h.street + ' ' + h.city + ' ' + (h.zip || '')).toLowerCase().includes(q)));
+        (!A.baths || (h.baths || 0) >= A.baths) && (!A.sqft || (h.sqft || 0) >= A.sqft) && (!A.lot || (h.acres || 0) >= A.lot) &&
+        (!q || (h.street + ' ' + h.city + ' ' + (h.zip || '') + ' ' + (h.remarks || '') + ' ' + (h.tags || []).map((t) => t[1]).join(' ')).toLowerCase().includes(q)));
       const sorts = {
         rate: (a, b) => (a.rate || 99) - (b.rate || 99) || a.price - b.price,
         price: (a, b) => a.price - b.price,
@@ -135,7 +216,7 @@ def('assumable', {
         new: (a, b) => (a.dom || 999) - (b.dom || 999)
       };
       items.sort(sorts[A.sort] || sorts.rate);
-      $('as-count').innerHTML = plural(items.length, 'home') + ' <span class="sub">in ' + esc(placeLabel(S.place)) + ' · ' + items.filter((h) => h.rate).length + ' with the rate listed</span>';
+      $('as-count').innerHTML = plural(items.length, 'home') + ' <span class="sub">in ' + esc(placeLabel(S.place)) + ' · ' + items.filter((h) => h.rate).length + ' with the rate listed' + (A.lot ? ' · homes with no lot size listed are not shown' : '') + '</span>';
       pager('as-list', 'as-more', items, assumableCard, st);
       const towns = S.place && S.place.k === 'town' ? [S.place.n] : TOWNS.filter((t) => !S.place || t.c === S.place.n).filter((t) => MAIN_COUNTIES.includes(t.c)).slice(0, 8).map((t) => t.n);
       $('as-live').innerHTML = towns.map((n) => '<a class="tile" style="--tc:' + PAGES.assumable.color + ';grid-template-rows:auto" target="_blank" rel="noopener" href="' + esc(track(rootsFor(n), { h: 'Assumable search: ' + n, s: 'Roots' })) + '"><div class="body"><b>' + esc(n) + ' assumable homes</b><span>Live on Roots ↗</span></div></a>').join('');
@@ -143,9 +224,9 @@ def('assumable', {
     const change = () => { st.shown = 12; save(); draw(); };
     bindCounty(root, () => { render(CURRENT, true); });
     root.querySelectorAll('[data-type]').forEach((b) => b.addEventListener('click', () => { A.type = b.dataset.type; change(); }));
-    [['as-max', 'max'], ['as-beds', 'beds'], ['as-baths', 'baths'], ['as-sqft', 'sqft']].forEach(([id, k]) => $(id).addEventListener('change', () => { A[k] = parseFloat($(id).value) || 0; change(); }));
+    [['as-max', 'max'], ['as-beds', 'beds'], ['as-baths', 'baths'], ['as-sqft', 'sqft'], ['as-lot', 'lot']].forEach(([id, k]) => $(id).addEventListener('change', () => { A[k] = parseFloat($(id).value) || 0; change(); }));
     $('as-sort').addEventListener('change', () => { A.sort = $('as-sort').value; change(); });
-    if ($('as-clear')) $('as-clear').addEventListener('click', () => { A.text = ''; save(); render(CURRENT, true); });
+    $('as-q').addEventListener('input', () => { A.text = $('as-q').value.trim(); st.shown = 12; save(); draw(); });
     $('as-more').addEventListener('click', () => { st.shown += 12; draw(); });
     draw();
   }
@@ -171,7 +252,7 @@ function assumableCard(h) {
 
 /* ===== Placer and Loomis under $2,500 ===== */
 const PLACER = DATA.placer.homes;
-const PL_DEFAULTS = { budget: 2500, cash: null, r2: 9.5, town: 'all', band: 'all', sort: 'pay' };
+const PL_DEFAULTS = { budget: 2500, cash: null, r2: 9.5, town: 'all', band: 'all', beds: 0, lot: 0, sort: 'pay' };
 function placerFigure(h, P) {
   const ti = Math.max(h.price * 0.0145 / 12, h.rootsTI || 0);
   const mip = h.type === 'FHA' ? h.balance * 0.0055 / 12 : 0;
@@ -191,6 +272,7 @@ def('placer', {
       '<div class="fields">' + moneyField('pl-budget', 'Monthly budget', P.budget, 'Loan, taxes, insurance, mortgage insurance and HOA') +
         moneyField('pl-cash', 'Cash you can bring', P.cash, 'Blank means you pay the whole gap in cash', 'Optional') +
         pctField('pl-r2', '2nd loan rate', P.r2, 'Used when your cash doesn\'t cover the gap') +
+        sel('pl-beds', BED_OPTS, P.beds, 'Bedrooms') + sel('pl-lot', LOT_SQFT_OPTS, P.lot, 'Lot size') +
         sel('pl-sort', [['pay', 'Lowest monthly payment'], ['price', 'Lowest price'], ['cash', 'Least cash needed'], ['rate', 'Lowest rate']], P.sort, 'Sort') + '</div>' +
       '<div class="chips" role="group" aria-label="Town"><span class="mono">Town</span>' + towns.map((t) => '<button type="button" class="chip" data-pltown="' + esc(t) + '" aria-pressed="' + (P.town === t) + '">' + esc(t === 'all' ? 'All Placer' : t) + '<span class="n"></span></button>').join('') + '</div>' +
       '<p class="count" id="pl-count" aria-live="polite"></p></div>' +
@@ -208,7 +290,7 @@ def('placer', {
         b.querySelector('.n').textContent = all.filter((x) => (b.dataset.pltown === 'all' || x.h.city === b.dataset.pltown) && x.f.total <= P.budget).length;
       });
       const sorts = { pay: (a, b) => a.f.total - b.f.total, price: (a, b) => a.h.price - b.h.price, cash: (a, b) => a.f.cash - b.f.cash, rate: (a, b) => a.h.rate - b.h.rate };
-      const scoped = all.filter((x) => P.town === 'all' || x.h.city === P.town).sort(sorts[P.sort] || sorts.pay);
+      const scoped = all.filter((x) => (P.town === 'all' || x.h.city === P.town) && (!P.beds || (x.h.beds || 0) >= P.beds) && (!P.lot || (x.h.lot || 0) >= P.lot)).sort(sorts[P.sort] || sorts.pay);
       const fit = scoped.filter((x) => x.f.total <= P.budget), over = scoped.filter((x) => x.f.total > P.budget);
       $('pl-count').innerHTML = plural(fit.length, 'home') + ' fit ' + money(P.budget) + ' a month <span class="sub">in ' + esc(P.town === 'all' ? 'Placer County' : P.town) + (P.cash != null ? ' with ' + money(P.cash) + ' cash' : ' paying the gap in cash') + '</span>';
       $('pl-fit-h').textContent = 'Homes that fit ' + money(P.budget) + ' a month';
@@ -225,6 +307,7 @@ def('placer', {
     bindMoney('pl-cash', (v) => { P.cash = isNaN(v) ? null : Math.max(v, 0); save(); draw(); });
     $('pl-r2').addEventListener('input', () => { const v = parseNum($('pl-r2').value); if (v >= 0) { P.r2 = v; save(); draw(); } });
     $('pl-sort').addEventListener('change', () => { P.sort = $('pl-sort').value; save(); draw(); });
+    [['pl-beds', 'beds'], ['pl-lot', 'lot']].forEach(([id, k]) => $(id).addEventListener('change', () => { P[k] = parseFloat($(id).value) || 0; save(); draw(); }));
     root.querySelectorAll('[data-pltown]').forEach((b) => b.addEventListener('click', () => { P.town = b.dataset.pltown; save(); draw(); }));
     draw();
   }
@@ -305,7 +388,8 @@ def('payment', {
       }
       if (Y.county === 'San Joaquin') {
         const sk = STK.homes.filter((h) => h.price <= max);
-        groups.push(['Stockton new homes and plans', sk.length, '', () => { const K = sub('stk', {}); K.price = String(Math.floor(max / 50000) * 50000 || 'any'); }, 'new-builds']);
+        const K2 = { route: Y.loan === 'va' ? 'va' : 'myhome', rate: o.rate };
+        groups.push(['Stockton new homes and plans', sk.length, sk.slice(0, 6).map((h) => stocktonCard(h, stkFig(h, K2), K2)).join(''), () => { const K = sub('stk', {}); K.price = String(Math.floor(max / 50000) * 50000 || 'any'); }, 'stockton']);
       }
       $('py-groups').innerHTML = groups.map(([t, n, cards, , page], i) => '<div class="panel" style="margin-top:12px"><div class="bar"><div><b>' + esc(t) + '</b><p class="note">' + plural(n, 'match', 'matches') + '</p></div>' + (n ? '<button type="button" class="btn btn-line btn-sm" data-group="' + i + '">See all on the ' + esc(PAGES[page].nav) + ' page</button>' : '') + '</div>' + (cards ? '<div class="cards">' + cards + '</div>' : '') + '</div>').join('');
       $('py-groups').querySelectorAll('[data-group]').forEach((b) => b.addEventListener('click', () => { const g = groups[+b.dataset.group]; g[3](); save(); go(g[4]); }));

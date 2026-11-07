@@ -77,14 +77,17 @@ function modelsHtml(p) {
       : x.u ? '<a class="btn btn-line btn-sm" target="_blank" rel="noopener" href="' + esc(track(x.u, { h: x.n + ' floor plan at ' + name, s: hostLabel(x.u) })) + '">Builder floor plan ↗</a>' : '';
     return '<div class="card model' + (here ? ' here' : '') + '"><div class="head"><span class="pill pa">' + (here ? 'This plan' : 'Floor plan') + '</span>' + (t ? '<span class="pill ok">Video tour</span>' : '') + '</div>' +
       '<h3>' + esc(x.n) + '</h3><div class="price num">' + (x.p ? 'From ' + money(x.p) : 'Price: ask Darien') + '</div>' + (facts ? '<div class="facts">' + esc(facts) + '</div>' : '') +
-      (t ? tourTile(t, name) : '') + '<div class="ctas" style="margin:8px 0 0">' + link + '</div></div>';
+      (t ? tourTile(t, name) : '') + '<div class="ctas" style="margin:8px 0 0">' + link + cartBtn('m:' + slug(name + ' ' + x.n), x.n + ' at ' + name, x.p ? 'From ' + money(x.p) : '') + '</div></div>';
   }).join('');
   const extra = tours.filter((t) => !used.has(t.code)).map((t) => '<div class="card model"><div class="head"><span class="pill ok">Video tour</span></div><h3>' + esc(t.plan || 'Model home tour') + '</h3>' + tourTile(t, name) + '</div>').join('');
   const qmi = M && M.qmi && M.qmi.length ? '<div class="shead" style="margin-top:22px"><div><h3 style="font-size:1.15rem">Move-in-ready homes at ' + esc(name) + '</h3>' +
       (signedIn() ? '' : '<p class="note">Sign in above to see the addresses.</p>') + '</div></div><div class="cards">' +
-      M.qmi.map((q) => '<div class="card"><div class="head"><span class="pill fha">Quick move-in</span></div><h3>' + esc(signedIn() ? q.a : (q.n || 'Home') + ' · ready soon') + '</h3><div class="price num">' + (q.p ? money(q.p) : 'Ask Darien') + '</div>' +
+      M.qmi.map((q) => {
+        const qTitle = signedIn() ? q.a + ', ' + name : (q.n || 'Home') + ' at ' + name;
+        return '<div class="card"><div class="head"><span class="pill fha">Quick move-in</span></div><h3>' + esc(signedIn() ? q.a : (q.n || 'Home') + ' · ready soon') + '</h3><div class="price num">' + (q.p ? money(q.p) : 'Ask Darien') + '</div>' +
         '<div class="facts">' + esc([q.n, q.b ? q.b + ' bd' : '', q.ba ? q.ba + ' ba' : '', q.s ? comma(q.s) + ' sq ft' : ''].filter(Boolean).join(' · ')) + '</div>' +
-        (q.key && PROP_BY[q.key] ? '<div class="ctas" style="margin:8px 0 0"><a class="btn btn-line btn-sm" href="#p/' + esc(q.key) + '">See this home</a></div>' : '') + '</div>').join('') + '</div>' : '';
+        '<div class="ctas" style="margin:8px 0 0">' + (q.key && PROP_BY[q.key] ? '<a class="btn btn-line btn-sm" href="#p/' + esc(q.key) + '">See this home</a>' : '') + cartBtn('q:' + slug(name + ' ' + q.a), qTitle, q.p ? money(q.p) : '') + '</div></div>';
+      }).join('') + '</div>' : '';
   return '<section class="blk" id="models"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">' + (tours.length ? 'Models and video tours' : 'Models') + '</p>' +
       '<h2>' + (p.kind === 'community' ? 'Every model at ' : p.kind === 'listing' ? 'All the models at ' : 'Other models at ') + esc(name) + '</h2>' +
       '<p>' + (M ? M.plans.length + ' floor plans' : '') + (M && tours.length ? ', ' : '') + (tours.length ? tours.length + (tours.length === 1 ? ' video tour' : ' video tours') + ' Darien filmed here' : '') + '. Prices are the builder\'s starting prices' + (M && !M.stk ? ' (checked ' + MODELS_CHECKED + ')' : '') + ' and can change.</p></div></div>' +

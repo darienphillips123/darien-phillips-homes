@@ -2,7 +2,7 @@
 const STK = DATA.stockton;
 const STK_COMM = {};
 STK.communities.forEach((c) => { STK_COMM[c.key] = c; });
-const STK_DEFAULTS = { route: 'myhome', rate: 7.0, maxPay: null, price: 'any', beds: 0, baths: 0, sqMin: 0, sqMax: 0, stories: 'any', show: 'all', areas: [], fits: true, sort: 'price' };
+const STK_DEFAULTS = { route: 'myhome', rate: 7.0, maxPay: null, price: 'any', beds: 0, baths: 0, sqMin: 0, sqMax: 0, stories: 'any', show: 'all', areas: [], fits: true, sort: 'price', q: '', lot: 0 };
 // Monthly cost of a Stockton home or plan with $0 down, using the community's tax rate, HOA and special tax
 function stkFig(h, K) {
   const c = STK_COMM[h.comm];
@@ -129,7 +129,8 @@ def('new-builds', {
           pctField('nb-rate', 'Interest rate', N.rate || LOANS[N.loan].rate, 'Builder specials can be lower') + '</div>' +
         (N.text ? '<div><span class="place-pill">Matching "' + esc(N.text) + '"<button type="button" id="nb-clear" aria-label="Clear the search">×</button></span></div>' : '') +
         '<div class="ctas" style="margin:0"><button type="button" class="btn btn-line btn-sm" id="nb-map">See new builds with this lot size and home size on the map</button></div>' +
-        '<p class="note">Builders rarely post lot sizes, so the map searches every new-construction home on the MLS by lot size.</p></div>' +
+        '<p class="note">Builders rarely post lot sizes, so the map searches every new-construction home on the MLS by lot size.</p>' +
+        '<p class="note">Want to search new builds together with assumable homes and $0-down homes, by lot size and the words in the listings? <button type="button" class="linkbtn" data-go="finder">Find exactly what you are looking for</button></p></div>' +
       '<div class="shead" style="margin-top:26px"><div><p class="mono eyebrow">Map</p><h2>Every new-home community on the map</h2><p>Pins are colored by the monthly payment. Set your budget, add your work address to see drive times, and turn on flood zones.</p></div></div>' + nbMapHtml() +
       '<div class="shead" style="margin-top:26px"><div><p class="mono eyebrow">Best builder deals right now</p><h2>Incentives in each city</h2><p>Rate buydowns, closing-cost credits and price cuts from the builders, with the date each one ends. Checked ' + esc(niceDate(DEALS.asof)) + '. Builders change these often, so text Darien before you go.</p></div></div>' +
       '<div id="nb-deals"></div>' +
@@ -148,11 +149,11 @@ def('new-builds', {
       const items = DATA.communities.filter((c) => inPlace(c) &&
         (!N.max || (c.min && c.min <= N.max)) && (!N.beds || (c.bmax && c.bmax >= N.beds)) && (!N.sqft || (c.sqft && c.sqft >= N.sqft)) && (!N.sqftMax || !c.sqft || c.sqft <= N.sqftMax) &&
         (!N.builder || c.builder === N.builder) && (N.age === 'any' || (N.age === '55' ? c.tags.includes('55+') : !c.tags.includes('55+'))) &&
-        (!q || (c.name + ' ' + (c.builder || '') + ' ' + c.city + ' ' + c.zip).toLowerCase().includes(q)));
+        (!q || (c.name + ' ' + (c.builder || '') + ' ' + c.city + ' ' + c.zip + ' ' + (c.tags || []).join(' ')).toLowerCase().includes(q)));
       const sorts = { price: (a, b) => (a.min || 9e9) - (b.min || 9e9), high: (a, b) => (b.min || 0) - (a.min || 0), size: (a, b) => (b.sqft || 0) - (a.sqft || 0), name: (a, b) => a.name.localeCompare(b.name) };
       items.sort(sorts[N.sort] || sorts.price);
       const rate = parseNum(N.rate) || LOANS[N.loan].rate;
-      $('nb-count').innerHTML = plural(items.length, 'community', 'communities') + ' <span class="sub">in ' + esc(placeLabel(S.place)) + (items.length ? ' · from ' + money(Math.min.apply(null, items.filter((c) => c.min).map((c) => c.min).concat([9e9]))) : '') + '</span>';
+      $('nb-count').innerHTML = plural(items.length, 'community', 'communities') + ' <span class="sub">in ' + esc(placeLabel(S.place)) + (items.length ? ' · from ' + money(Math.min.apply(null, items.filter((c) => c.min).map((c) => c.min).concat([9e9]))) : '') + (N.lot ? ' · lot sizes are not published for new-build communities or their move-in ready homes, so this list is not filtered by lot. Use the map button above to search new construction by lot size.' : '') + '</span>';
       $('nb-deals').innerHTML = dealsSection(N, st.deals);
       $('nb-qmi').innerHTML = qmiSection(N, st.qmi);
       const dm = $('nbd-more'), qm = $('nbq-more');
@@ -193,7 +194,10 @@ def('stockton', {
           sel('sk-sqmin', [[0, 'Any'], [1200, '1,200 sq ft'], [1500, '1,500 sq ft'], [1800, '1,800 sq ft'], [2000, '2,000 sq ft'], [2500, '2,500 sq ft'], [3000, '3,000 sq ft']], K.sqMin, 'Size from') +
           sel('sk-sqmax', [[0, 'Any'], [1500, '1,500 sq ft'], [1800, '1,800 sq ft'], [2000, '2,000 sq ft'], [2500, '2,500 sq ft'], [3000, '3,000 sq ft']], K.sqMax, 'Size up to') +
           sel('sk-stories', [['any', 'Any'], ['one', 'Single-story'], ['two', 'Two-story']], K.stories, 'Stories') +
+          sel('sk-lot', LOT_SQFT_OPTS, K.lot, 'Lot size') +
           sel('sk-sort', [['price', 'Lowest price'], ['pay', 'Lowest monthly payment'], ['size', 'Biggest home'], ['beds', 'Most bedrooms']], K.sort, 'Sort') + '</div>' +
+        '<div class="fields"><div class="field wide"><label for="sk-q">Search the descriptions</label><input id="sk-q" type="search" autocomplete="off" value="' + esc(K.q) + '" placeholder="Try Next Gen, Cannery, KB Home, single story"></div></div>' +
+        '<p class="note">The search above looks through plan names, community names, builders and the notes on each home. Very few homes on this page list a lot size, so the lot filter only shows the ones that do. Want to search Stockton homes together with every other home on the site? <button type="button" class="linkbtn" data-go="finder">Find exactly what you are looking for</button></p>' +
         '<div class="chips" role="group" aria-label="Show"><span class="mono">Show</span>' + [['all', 'All'], ['ready', 'Ready now'], ['plan', 'Floor plans to build']].map(([v, t]) => '<button type="button" class="chip" data-show="' + v + '" aria-pressed="' + (K.show === v) + '">' + t + '<span class="n"></span></button>').join('') + '</div>' +
         '<div class="chips" role="group" aria-label="Part of town"><span class="mono">Area</span>' + areas.map((a) => '<button type="button" class="chip" data-sarea="' + esc(a) + '" aria-pressed="' + K.areas.includes(a) + '">' + esc(a) + '<span class="n"></span></button>').join('') + '</div>' +
         '<label class="check" id="sk-fits-wrap"><input type="checkbox" id="sk-fits"' + (K.fits ? ' checked' : '') + '> Only homes FHA can cover (up to about ' + short(LIMITS['San Joaquin'].fha / 0.965) + ')</label>' +
@@ -209,6 +213,11 @@ def('stockton', {
       o = Object.assign({ show: K.show, areas: K.areas }, o || {});
       const c = STK_COMM[h.comm];
       if (K.price !== 'any' && h.price > +K.price) return false;
+      if (K.lot && !(h.lot && h.lot >= K.lot)) return false;
+      if (K.q) {
+        const hay = (h.plan + ' ' + c.name + ' ' + c.builder + ' ' + c.area + ' ' + (h.note || '') + ' ' + (h.street || '') + ' ' + (c.perks || []).join(' ') + ' ' + (c.notes || []).join(' ')).toLowerCase();
+        if (!K.q.toLowerCase().split(/\s+/).every((w) => hay.includes(w))) return false;
+      }
       if (K.beds && h.bedsMax < K.beds) return false;
       if (K.baths && h.bathsMax < K.baths) return false;
       if (K.sqMin && h.sqft < K.sqMin) return false;
@@ -229,7 +238,7 @@ def('stockton', {
       root.querySelectorAll('[data-sarea]').forEach((b) => { b.setAttribute('aria-pressed', String(K.areas.includes(b.dataset.sarea))); b.querySelector('.n').textContent = all.filter((x) => match(x.h, x.f, { areas: [b.dataset.sarea] })).length; });
       const sorts = { price: (a, b) => a.h.price - b.h.price, pay: (a, b) => a.f.total - b.f.total, size: (a, b) => b.h.sqft - a.h.sqft || a.h.price - b.h.price, beds: (a, b) => b.h.bedsMax - a.h.bedsMax || a.h.price - b.h.price };
       const list = all.filter((x) => match(x.h, x.f)).sort(sorts[K.sort] || sorts.price);
-      $('sk-count').innerHTML = plural(list.length, 'home and plan', 'homes and plans') + ' match <span class="sub">· ' + list.filter((x) => x.h.kind === 'ready').length + ' ready now · $0 down with ' + (K.route === 'va' ? 'VA' : 'FHA + CalHFA MyHome') + '</span>';
+      $('sk-count').innerHTML = plural(list.length, 'home and plan', 'homes and plans') + ' match <span class="sub">· ' + list.filter((x) => x.h.kind === 'ready').length + ' ready now · $0 down with ' + (K.route === 'va' ? 'VA' : 'FHA + CalHFA MyHome') + (K.lot ? ' · only ' + STK.homes.filter((h) => h.lot).length + ' homes on this page list a lot size' : '') + '</span>';
       pager('sk-list', 'sk-more', list, (x) => stocktonCard(x.h, x.f, K), st);
     };
     const change = () => { st.shown = 12; save(); draw(); };
@@ -239,8 +248,9 @@ def('stockton', {
     $('sk-rate').addEventListener('input', () => { const v = parseNum($('sk-rate').value); if (v > 0 && v < 20) { K.rate = v; save(); draw(); } });
     bindMoney('sk-pay', (v) => { K.maxPay = v > 0 ? v : null; change(); });
     [['sk-price', 'price', 0], ['sk-stories', 'stories', 0], ['sk-sort', 'sort', 0]].forEach(([id, k]) => $(id).addEventListener('change', () => { K[k] = $(id).value; change(); }));
-    [['sk-beds', 'beds'], ['sk-baths', 'baths'], ['sk-sqmin', 'sqMin'], ['sk-sqmax', 'sqMax']].forEach(([id, k]) => $(id).addEventListener('change', () => { K[k] = parseFloat($(id).value) || 0; change(); }));
+    [['sk-beds', 'beds'], ['sk-baths', 'baths'], ['sk-sqmin', 'sqMin'], ['sk-sqmax', 'sqMax'], ['sk-lot', 'lot']].forEach(([id, k]) => $(id).addEventListener('change', () => { K[k] = parseFloat($(id).value) || 0; change(); }));
     $('sk-fits').addEventListener('change', () => { K.fits = $('sk-fits').checked; change(); });
+    $('sk-q').addEventListener('input', () => { K.q = $('sk-q').value.trim(); st.shown = 12; save(); draw(); });
     $('sk-more').addEventListener('click', () => { st.shown += 12; draw(); });
     $('sk-comms').innerHTML = '<thead><tr><th>Community</th><th class="r">Prices</th><th class="r">Ready now</th><th>Good to know</th><th>Link</th></tr></thead><tbody>' + STK.communities.map((c) => {
       const hs = STK.homes.filter((h) => h.comm === c.key);

@@ -63,6 +63,7 @@ def('search', {
         '<div class="ctas" style="margin:0"><button type="submit" class="btn btn-pa">Update the map</button>' +
           '<a class="btn btn-line" id="ms-full" target="_blank" rel="noopener" href="#">Open full screen ↗</a></div>' +
         '<p class="note">Even more filters (style, garage size, HOA and more) are under "More Filters" on the map. Tap the heart on a home to save it; Darien uses your likes to send you better matches.</p>' +
+        '<p class="note">Looking for something specific in the homes listed on this site, like a lot size or the words in a listing? <button type="button" class="linkbtn" data-go="finder">Find exactly what you are looking for</button></p>' +
       '</form>' +
       '<div class="ms-frame" style="margin-top:14px;border-radius:16px;overflow:hidden;border:1px solid var(--line, rgba(0,0,0,.12));background:var(--card, #fff)">' +
         '<iframe id="ms-iframe" title="Map of homes for sale" loading="lazy" style="display:block;width:100%;height:min(1100px,85vh);border:0" allow="geolocation; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>' +

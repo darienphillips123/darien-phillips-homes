@@ -538,6 +538,10 @@ document.addEventListener('click', (e) => {
   }
   const pl = e.target.closest('[data-place]');
   if (pl) { choosePlace(pl.dataset.place); return; }
+  const fk = e.target.closest('[data-finder-kind]');
+  if (fk) { Object.assign(sub('finder', FINDER_DEFAULTS), { kind: fk.dataset.finderKind }); go('finder', true); return; }
+  const sk = e.target.closest('[data-skip-to]');
+  if (sk) { const t = document.getElementById(sk.dataset.skipTo); if (t) t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); return; }
   const clr = e.target.closest('[data-clear-place]');
   if (clr) { setPlace(null); render(CURRENT, true); }
 });

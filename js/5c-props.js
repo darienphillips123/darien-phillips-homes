@@ -122,7 +122,7 @@ function listingCard(p) {
     '<div><h3>' + esc(p.addr) + '</h3><div class="sub">' + esc(p.city || '') + '</div></div>' +
     (p.price ? '<div class="price num">' + money(p.price) + '</div>' : '') + (facts ? '<div class="facts">' + esc(facts) + '</div>' : '') +
     (p.hook ? '<p><b>' + esc(p.hook) + '</b></p>' : '') + (p.about ? '<p class="note">' + esc(p.about) + '</p>' : '') +
-    '<div class="actions">' + details(info) + '</div><div class="src">Featured by Darien</div></article>';
+    '<div class="actions">' + details(info) + cartBtn('l:' + p.key, title, info.p) + '</div><div class="src">Featured by Darien</div></article>';
 }
 // The details behind a home's card (title, price, links), the same ones its "Get full details" button uses
 function propInfo(p) {
@@ -275,6 +275,12 @@ def('property', {
     if (sw) sw.addEventListener('click', () => { store.del('dp-me'); sess.set('dp-just', ''); render('property', true); });
   }
 });
+// The cart key for a home page: the same key its cards use, so adding it here and on a list page keeps one entry
+function cartKeyForPage(p) {
+  if (typeof cartKeyForProp !== 'function') return p.kind === 'listing' ? 'l:' + p.key : p.key;
+  const ck = cartKeyForProp(p);
+  return (ck === p.key && p.kind === 'listing') ? 'l:' + p.key : ck;
+}
 function lockedHtml(p) {
   const m = me();
   const what = p.kind === 'community' || p.kind === 'stockton' ? 'Your $0-down payment, builder offers and floor plans'
@@ -283,6 +289,7 @@ function lockedHtml(p) {
     '<div class="panel prop-lock"><p class="mono eyebrow">Preview</p><h2>' + esc(propTitle(p, false)) + '</h2>' +
       '<div class="price num">' + esc(propPrice(p)) + '</div>' + (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') +
       (p.hook ? '<p class="hook">' + esc(p.hook) + '</p>' : '') +
+      '<div class="ctas" style="margin:12px 0 0">' + cartBtn(cartKeyForPage(p), propTitle(p, true), propPrice(p)) + '</div>' +
       '<div class="veil" aria-hidden="true"><div><span>Address</span><b>0000 Sample Street</b></div><div><span>Monthly payment</span><b>$0,000</b></div><div><span>Loan details</span><b>0.00% · $000,000</b></div></div>' +
       '<p class="mono eyebrow">You\'ll see</p><ul class="unlock-list"><li>' + (p.open ? 'The address and map' : 'The exact address and map') + '</li><li>Photos and the full listing</li><li>' + esc(what) + '</li><li>A quick way to text or call Darien for a tour</li></ul>' +
       '<button type="button" class="linkbtn" data-jump="similar">Or see similar homes nearby ↓</button>' +
@@ -313,7 +320,7 @@ function unlockedHtml(p) {
   const note = 'Hi Darien, I\'m interested in ' + info.h + (info.p ? ' (' + info.p + ')' : '') + '.\n\nName: ' + m.name + '\nPhone: ' + m.phone + '\nEmail: ' + m.email;
   return '<div class="prop-grid"><div class="prop-card">' + html + '</div>' +
     '<div class="panel prop-side"><p class="toast">' + esc(just ? 'Thanks, ' + first + '.' + (TRACKER ? ' Darien got your info.' : '') + ' Here\'s everything on this home.' : 'Welcome back, ' + first + '. Here\'s everything on this home.') + '</p>' +
-      '<div class="optlist">' + homeOptions(info, m.name) + '<button type="button" class="btn btn-line" data-jump="similar">Find similar homes</button>' + (!TRACKER ? '<a class="btn btn-line" href="' + esc('mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent('About ' + info.h) + '&body=' + encodeURIComponent(note)) + '">Email Darien about this home</a>' : '') + '</div>' +
+      '<div class="optlist">' + homeOptions(info, m.name) + cartBtn(cartKeyForPage(p), propTitle(p, true), propPrice(p)) + '<button type="button" class="btn btn-line" data-jump="similar">Find similar homes</button>' + (!TRACKER ? '<a class="btn btn-line" href="' + esc('mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent('About ' + info.h) + '&body=' + encodeURIComponent(note)) + '">Email Darien about this home</a>' : '') + '</div>' +
       '<p class="fine">Not ' + esc(first) + '? <button type="button" class="linkbtn" id="pf-switch">Use different info</button></p></div></div>';
 }
 /* ===== Homes like this one: close in price, same town first, then the same county ===== */
