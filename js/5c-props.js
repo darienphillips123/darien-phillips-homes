@@ -88,8 +88,10 @@ function applyListings(rows) {
       return;
     }
     if (!L.address) return;
+    // PALM price override, Nov 7, 2026: the sheet still shows the old price for 10722 Rawles Rd, but the listing was cut on Nov 3 (MetroList, Weichert, Redfin). Use the new price here until the sheet price is fixed, then remove this override.
+    const palmPrice = (kw === 'PALM') ? 1250000 : null;
     const p = { key, alias: [], kind: 'listing', page: 'home', addr: String(L.address).slice(0, 120), city: String(L.city || '').slice(0, 60), zip: '',
-      county: countyOf(L.city) || '', price: parseMoney(L.price) || 0, beds: String(L.beds || '').slice(0, 8), baths: String(L.baths || '').slice(0, 8),
+      county: countyOf(L.city) || '', price: palmPrice || parseMoney(L.price) || 0, beds: String(L.beds || '').slice(0, 8), baths: String(L.baths || '').slice(0, 8),
       sqft: parseNum(L.sqft) || 0, hook: String(L.headline || '').slice(0, 140), about: String(L.about || '').slice(0, 1200),
       img: /^https:\/\/\S+$/i.test(L.photo || '') ? L.photo : '', link: /^https:\/\/\S+$/i.test(L.link || '') ? L.link : '', keywords: [kw] };
     p.card = () => listingCard(p);

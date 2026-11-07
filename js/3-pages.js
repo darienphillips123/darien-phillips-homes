@@ -41,13 +41,13 @@ function pager(listId, moreId, items, cardFn, state) {
 
 /* ===== Home ===== */
 const TILE_TEXT = {
+  finder: 'Filter every home on this site by price, size, lot, stories and the words in the listings, all in one place.',
   guide: 'New to buying? Every step from pre-approval to keys, plus every real estate word explained.',
   assumable: 'Take over a seller\'s low-rate FHA or VA loan. Learn how, then browse homes.',
   'zero-down': 'VA, FHA with California\'s MyHome loan, USDA and builder help in every county.',
   payment: 'Tell us your monthly budget and see the prices and homes that fit it.',
   'new-builds': 'Over 450 new-home communities in every city MetroList covers, with builder deals and move-in ready homes.',
   search: 'Every home for sale on a map, with filters for pool, single story, acreage and more.',
-  finder: 'Filter every home on this site by price, size, lot, stories and the words in the listings, all in one place.',
   refinance: 'See your new payment, break-even point and the refinance options that fit your loan.',
   adu: 'Can a home add a backyard cottage or in-law suite? Your city\'s rules, free plans and homes with room.',
   build: 'Estimate what it costs to build on your own lot, from land to move-in.',
@@ -61,10 +61,12 @@ def('home', {
   title2: 'You\'re in the right place.',
   sub: 'Every home for sale in Placer, Sacramento, San Joaquin and Stanislaus, with real monthly costs and local help.',
   heroSearch: true,
-  ctas: () => '<button type="button" class="btn btn-pa" data-go="search">Search every home</button><a class="btn btn-ghost" href="sms:+12098826469">Text Darien</a><a class="btn btn-ghost" href="tel:+12098826469">Call Darien</a><a class="btn btn-ghost" href="mailto:darienphillips45@gmail.com">Email Darien</a>',
+  photoKey: () => HOME_BACKDROP_KEY,
+  heroNote: () => HOME_BACKDROP_NOTE,
+  ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="btn btn-ghost" data-go="search">Search every home</button><a class="btn btn-ghost" href="sms:+12098826469">Text Darien</a><a class="btn btn-ghost" href="tel:+12098826469">Call Darien</a><a class="btn btn-ghost" href="mailto:darienphillips45@gmail.com">Email Darien</a>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
-    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + justListedHtml() + journeyHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
+    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + justListedHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
       sellerHtml() + '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Popular places</h2><p>Pick a town to see assumable homes, new builds, $0-down options and homes by payment there.</p></div></div>' +
       '<div class="places">' + POPULAR.map((n) => '<button type="button" class="chip" data-place="' + esc(n) + '">' + esc(n) + '</button>').join('') + '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="statrow">' +
@@ -89,24 +91,6 @@ function justListedHtml() {
   if (!list.length) return LISTINGS === 'loading' ? '<section class="blk" id="just-listed"></section>' : '';
   return '<section class="blk" id="just-listed"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Just posted</p><h2>New from Darien\'s Instagram</h2><p>The homes Darien toured and posted most recently. Tap one to see it.</p></div></div>' +
     '<div class="cards">' + list.map((p) => teaserCard(p)).join('') + '</div></div></section>';
-}
-
-/* ===== Home page journey: outside, then room by room =====
-   Photos are free-license Pexels images, hotlinked the same way the site
-   already hotlinks Pexels for its search and about photos. Each stop offers
-   new builds and a skip link that scrolls to the next stop. */
-const JOURNEY = [
-  { id: 'room-1', name: 'Outside', img: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Modern home exterior with clean lines and a front yard', line: 'Curb appeal is the first filter. If the outside does not feel right, the inside rarely saves it.', skip: 'room-2', skipLabel: 'Skip to the living room' },
-  { id: 'room-2', name: 'The living room', img: 'https://images.pexels.com/photos/9976124/pexels-photo-9976124.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Bright modern living room with tall windows', line: 'This is where the floor plan earns its keep. Open space, natural light, and room to actually live in.', skip: 'room-3', skipLabel: 'Skip to the kitchen' },
-  { id: 'room-3', name: 'The kitchen', img: 'https://images.pexels.com/photos/6969863/pexels-photo-6969863.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Modern kitchen with wood cabinets and island seating', line: 'Quartz counters, gas ranges, islands with seating. The kitchen decides more purchases than any other room.', skip: 'room-4', skipLabel: 'Skip to the primary bedroom' },
-  { id: 'room-4', name: 'The primary bedroom', img: 'https://images.pexels.com/photos/6920600/pexels-photo-6920600.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Calm modern primary bedroom with a tufted headboard', line: 'A quiet end of the house, a real closet, and a bath that does not feel like an afterthought.', skip: 'room-5', skipLabel: 'Skip to the bathroom' },
-  { id: 'room-5', name: 'The bathroom', img: 'https://images.pexels.com/photos/7512047/pexels-photo-7512047.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Modern bathroom with a glass shower', line: 'Walk-in showers, double vanities, and storage that keeps the counter clear.', skip: 'room-6', skipLabel: 'Skip to the backyard' },
-  { id: 'room-6', name: 'The backyard', img: 'https://images.pexels.com/photos/261410/pexels-photo-261410.jpeg?auto=compress&cs=tinysrgb&w=1600', alt: 'Backyard pool and patio on a sunny day', line: 'Pool, patio, or just room to breathe. In Northern California, the backyard is a second living room.', skip: 'tiles', skipLabel: 'See all options below' }
-];
-function journeyHtml() {
-  return '<section class="blk journey" id="journey"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Walk through it first</p><h2>Start outside. End up at home.</h2><p>Scroll through a home the way you would walk through one. Each room has a new-build option if you want more like it, and a skip link if you want to move on.</p></div><button type="button" class="btn btn-line btn-sm" data-skip-to="tiles">Skip the tour</button></div>' +
-    JOURNEY.map((r, i) => '<article class="room' + (i % 2 ? ' flip' : '') + '" id="' + r.id + '"><figure class="room-photo"><img src="' + r.img + '" alt="' + esc(r.alt) + '" loading="lazy"></figure><div class="room-body"><p class="mono eyebrow">Stop ' + (i + 1) + ' of ' + JOURNEY.length + '</p><h3>' + esc(r.name) + '</h3><p>' + esc(r.line) + '</p><div class="room-acts"><button type="button" class="btn btn-pa btn-sm" data-finder-kind="newbuild">See new builds</button><button type="button" class="btn btn-line btn-sm" data-skip-to="' + r.skip + '">' + esc(r.skipLabel) + '</button></div></div></article>').join('') +
-    '<p class="fine journey-credit">Room photos from Pexels.</p></div></section>';
 }
 
 /* ===== Homes I toured =====

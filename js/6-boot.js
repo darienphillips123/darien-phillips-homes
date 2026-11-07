@@ -1,7 +1,7 @@
 /* ===== Page colors (match the theme tokens) ===== */
 const COLORS = { home: '#F06A3B', about: '#D93A4E', 'new-builds': '#D9901A', build: '#7E8F1F', payment: '#2E9E5B', assumable: '#0E9C90', search: '#1C8DC9', 'zero-down': '#3B5BDB', guide: '#7B5CD6', refinance: '#C2367A', alerts: '#8A5A3C', adu: '#4F6D7A', placer: '#E9A23B', stockton: '#F2A33A', cart: '#0F2E44', finder: '#0E7490' };
 Object.keys(COLORS).forEach((k) => { PAGES[k].color = COLORS[k]; });
-const NAV_ORDER = ['home', 'guide', 'search', 'finder', 'assumable', 'zero-down', 'payment', 'new-builds', 'adu', 'refinance', 'build', 'about', 'alerts'];
+const NAV_ORDER = ['finder', 'home', 'guide', 'search', 'assumable', 'zero-down', 'payment', 'new-builds', 'adu', 'refinance', 'build', 'about', 'alerts'];
 
 /* ===== Keyword bar at the top ===== */
 $('kw').innerHTML = NAV_ORDER.map((k) => '<button type="button" data-go="' + k + '">' + navThumb(k) + '' + esc(PAGES[k].nav) + (k === 'alerts' ? '<span class="n"></span>' : '') + '</button>').join('') ;
@@ -210,7 +210,7 @@ function render(page, keep) {
   const portrait = P.portrait ? '<figure class="hero-portrait"><img src="img/darien-card.jpg' + PV + '" alt="Darien Phillips" decoding="async"></figure>' : '';
   const photoKey = P.photoKey ? P.photoKey() : page;
   $('hero').innerHTML = '<div class="scene">' + scene(P.scene) + photoImg(photoKey, false, P.photoUrl ? P.photoUrl() : '') + '</div><div class="wrap hero-in' + (portrait ? ' hero-split' : '') + '"><div class="hero-text"><p class="kicker">' + esc(V('kicker')) + (clientName() ? '<span class="forwho">Picked for ' + esc(clientName()) + '</span>' : '') + '</p>' +
-    '<h1 id="page-title" tabindex="-1">' + esc(V('title')) + (V('title2') ? '<span class="t2">' + esc(V('title2')) + '</span>' : '') + '</h1><p class="sub">' + esc(V('sub')) + '</p>' + (P.heroSearch ? searchBox('q2') + '<div class="hero-chips">' + [['Pool', { opts: ['pool'] }], ['Single story', { opts: ['1story'] }], ['Under $600k', { max: 600000 }], ['New builds', { opts: ['newconstruction'] }], ['1+ acre', { acres: 1 }], ['55+', { opts: ['adult'] }]].map(([t, f]) => '<button type="button" class="chip" data-chip=\'' + esc(JSON.stringify(f)) + '\'>' + esc(t) + '</button>').join('') + '</div>' : '') + '<div class="ctas">' + ctas + '</div></div>' + portrait + '</div>';
+    '<h1 id="page-title" tabindex="-1">' + esc(V('title')) + (V('title2') ? '<span class="t2">' + esc(V('title2')) + '</span>' : '') + '</h1><p class="sub">' + esc(V('sub')) + '</p>' + (P.heroSearch ? searchBox('q2') + '<div class="hero-chips">' + [['Pool', { opts: ['pool'] }], ['Single story', { opts: ['1story'] }], ['Under $600k', { max: 600000 }], ['New builds', { opts: ['newconstruction'] }], ['1+ acre', { acres: 1 }], ['55+', { opts: ['adult'] }]].map(([t, f]) => '<button type="button" class="chip" data-chip=\'' + esc(JSON.stringify(f)) + '\'>' + esc(t) + '</button>').join('') + '</div>' : '') + '<div class="ctas">' + ctas + '</div>' + (P.heroNote ? '<p class="hero-note">' + esc(P.heroNote()) + '</p>' : '') + '</div>' + portrait + '</div>';
   const pimg = $('hero').querySelector('.hero-portrait img');
   if (pimg) pimg.addEventListener('error', () => { pimg.closest('figure').remove(); $('hero').querySelector('.hero-in').classList.remove('hero-split'); }, { once: true });
   $('view').innerHTML = (page === 'home' || page === 'search' ? picksHtml() : '') + P.html();

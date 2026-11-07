@@ -73,7 +73,7 @@ if (typeof DEALS !== 'undefined' && typeof CARD_PROP !== 'undefined') {
     if (match && !CARD_PROP['d:' + c.id]) CARD_PROP['d:' + c.id] = slug(match.name);
   });
 }
-const FINDER_DEFAULTS = { kind: 'all', stories: 'any', min: 0, max: 0, beds: 0, baths: 0, sqMin: 0, sqMax: 0, lot: 0, city: '', q: '', sort: 'price' };
+const FINDER_DEFAULTS = { kind: 'all', stories: 'any', min: 0, max: 0, beds: 0, baths: 0, sqMin: 0, sqMax: 0, lot: 0, city: '', q: '', sort: 'price', gstep: 1, showFull: false };
 def('finder', {
   nav: 'Find your home', scene: 'home', kicker: 'Find exactly what you are looking for', tileTitle: 'Find exactly what you are looking for',
   title: 'Find exactly what you are looking for',
@@ -82,7 +82,15 @@ def('finder', {
   html() {
     const F = sub('finder', FINDER_DEFAULTS);
     const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
-    return '<section class="blk"><div class="wrap"><div class="panel" style="display:grid;gap:12px">' +
+    return '<section class="blk"><div class="wrap">' +
+      '<div class="panel accent guide-panel" id="fd-guide">' +
+        '<div class="bar"><div><p class="mono eyebrow">Find your home</p><h2>Answer four questions, see your homes</h2></div><button type="button" class="btn btn-line btn-sm" id="fd-startover">Start over</button></div>' +
+        '<div class="gz-steps" id="fd-steps" aria-label="Progress"></div>' +
+        '<div id="fd-step"></div>' +
+        '<div class="gz-nav" id="fd-nav"></div>' +
+      '</div>' +
+      '<div style="margin-top:14px"><button type="button" class="btn btn-line" id="fd-toggle-full">' + (F.showFull ? 'Hide all filters' : 'Show all filters') + '</button></div>' +
+      '<div class="panel" id="fd-full" style="display:grid;gap:12px;margin-top:14px"' + (F.showFull ? '' : ' hidden') + '>' +
       '<div class="fields">' +
         sel('fd-kind', [['all', 'Every home'], ['assumable', 'Assumable loans'], ['newbuild', 'New builds'], ['zerodown', '$0-down homes']], F.kind, 'Home type') +
         sel('fd-stories', [['any', 'Any'], ['1', 'Single story'], ['2', 'Two story']], F.stories, 'Stories') +
@@ -158,6 +166,8 @@ def('finder', {
         (breakdown ? ' <span class="sub">· ' + esc(breakdown) + '</span>' : '') +
         (missText ? ' <span class="sub">Not shown: ' + esc(missText) + '.</span>' : '') +
         (F.lot && missing.lot ? ' <span class="sub">New-build communities and build-to-order plans are not shown with a lot size picked, because builders do not publish a lot size for them.</span>' : '');
+      const gz = $('fd-gz-count');
+      if (gz) gz.textContent = plural(items.length, 'home or community', 'homes and communities') + ' match your answers';
       $('fd-chips').innerHTML = FINDER_KEYWORDS.map((kw) => {
         const n = base.filter((it) => kw.toLowerCase().split(/\s+/).every((w) => it.hay.includes(w))).length;
         return '<button type="button" class="chip" data-fdkw="' + esc(kw) + '" aria-pressed="' + (F.q === kw) + '">' + esc(kw) + ' (' + n + ')</button>';
@@ -165,7 +175,7 @@ def('finder', {
       root.querySelectorAll('[data-fdkw]').forEach((b) => b.addEventListener('click', () => {
         F.q = F.q === b.dataset.fdkw ? '' : b.dataset.fdkw;
         const q = $('fd-q'); if (q) q.value = F.q;
-        save(); draw();
+        save(); draw(); paintStep();
       }));
       pager('fd-list', 'fd-more', items, (it) => it.card(), st);
     };
@@ -174,12 +184,103 @@ def('finder', {
     [['fd-beds', 'beds'], ['fd-baths', 'baths'], ['fd-sqmin', 'sqMin'], ['fd-sqmax', 'sqMax'], ['fd-lot', 'lot']].forEach(([id, k]) => $(id).addEventListener('change', () => { F[k] = parseFloat($(id).value) || 0; change(); }));
     bindMoney('fd-min', (v) => { F.min = isNaN(v) ? 0 : v; change(); });
     bindMoney('fd-max', (v) => { F.max = isNaN(v) ? 0 : v; change(); });
-    $('fd-q').addEventListener('input', () => { F.q = $('fd-q').value.trim(); st.shown = 12; save(); draw(); });
+    $('fd-q').addEventListener('input', () => { F.q = $('fd-q').value.trim(); st.shown = 12; save(); draw(); paintStep(); });
     $('fd-more').addEventListener('click', () => { st.shown += 12; draw(); });
     $('fd-reset').addEventListener('click', () => {
-      Object.assign(F, { kind: 'all', stories: 'any', min: 0, max: 0, beds: 0, baths: 0, sqMin: 0, sqMax: 0, lot: 0, city: '', q: '', sort: 'price' });
+      const keepFull = F.showFull;
+      Object.assign(F, FINDER_DEFAULTS, { showFull: keepFull });
       save(); render(CURRENT, true);
     });
+
+    /* ===== Guided flow: one question at a time. It writes the same filters
+       the full panel uses, so the answers, the full filters and the results
+       always agree. Must-haves use the description word search, not a
+       verified feature list, and step 4 says so. ===== */
+    const GZ_KINDS = [['all', 'Any home', 'New builds, assumable loans, $0-down homes, everything'], ['newbuild', 'New build', 'Brand new homes and floor plans from builders'], ['assumable', 'Assumable loan', 'Take over a seller\'s low-rate FHA or VA loan'], ['zerodown', '$0 down', 'VA, USDA and FHA with CalHFA MyHome help']];
+    const GZ_MUST = ['open floor plan', 'large backyard', 'pool', 'ADU', 'single story'];
+    const GZ_MAX = [[0, 'Any price'], [500000, 'Up to $500k'], [700000, 'Up to $700k'], [1000000, 'Up to $1M'], [1500000, 'Up to $1.5M']];
+    const GZ_STEPS = ['Home type', 'City or area', 'Rooms and price', 'Must-haves', 'Your homes'];
+    const qWords = () => F.q.toLowerCase().split(/\s+/).filter(Boolean);
+    const hasPhrase = (ph) => ph.toLowerCase().split(/\s+/).every((w) => qWords().includes(w));
+    const togglePhrase = (ph) => {
+      const pw = ph.toLowerCase().split(/\s+/);
+      let words = qWords();
+      words = pw.every((w) => words.includes(w)) ? words.filter((w) => !pw.includes(w)) : words.concat(pw);
+      F.q = words.join(' ');
+      const q = $('fd-q'); if (q) q.value = F.q;
+      st.shown = 12; save(); draw(); paintStep();
+    };
+    const goStep = (n) => { F.gstep = Math.min(Math.max(n, 1), 5); save(); paintStep(); };
+    const kindLabel = (k) => (GZ_KINDS.find(([v]) => v === k) || GZ_KINDS[0])[1];
+    const gzChips = (list, cur, attr) => list.map(([v, t]) => '<button type="button" class="chip" ' + attr + '="' + esc(v) + '" aria-pressed="' + (String(v) === String(cur)) + '">' + esc(t) + '</button>').join('');
+    const paintStep = () => {
+      const stepEl = $('fd-step'), navEl = $('fd-nav'), stepsEl = $('fd-steps');
+      if (!stepEl) return;
+      stepsEl.innerHTML = GZ_STEPS.map((t, i) => '<span class="gz-step' + (i + 1 === F.gstep ? ' here' : (i + 1 < F.gstep ? ' done' : '')) + '">' + (i + 1) + '. ' + esc(t) + '</span>').join('');
+      if (F.gstep === 1) {
+        stepEl.innerHTML = '<p class="gz-q">What kind of home are you looking for?</p><div class="gz-opts">' +
+          GZ_KINDS.map(([v, t, d]) => '<button type="button" class="gz-opt" data-gz-kind="' + v + '" aria-pressed="' + (F.kind === v) + '"><b>' + esc(t) + '</b><span>' + esc(d) + '</span></button>').join('') + '</div>';
+        navEl.innerHTML = '<span class="sp"></span><button type="button" class="btn btn-line" data-gz-nav="2">Skip</button>';
+      } else if (F.gstep === 2) {
+        const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
+        const counts = {};
+        finderItems().forEach((it) => { if (it.city) counts[it.city] = (counts[it.city] || 0) + 1; });
+        const top = cities.slice().sort((a, b) => (counts[b] || 0) - (counts[a] || 0)).slice(0, 10);
+        stepEl.innerHTML = '<p class="gz-q">Where do you want to live?</p><p class="gz-sub">Pick a city or area, or leave it open and see everywhere.</p>' +
+          '<div class="chips" role="group" aria-label="City or area"><button type="button" class="chip" data-gz-city="" aria-pressed="' + (F.city === '') + '">Anywhere</button>' +
+          top.map((c) => '<button type="button" class="chip" data-gz-city="' + esc(c) + '" aria-pressed="' + (F.city === c) + '">' + esc(c) + '</button>').join('') + '</div>' +
+          '<div class="gz-group"><label class="lbl" for="gz-city-sel">Or pick any city or area on the site</label><select id="gz-city-sel"><option value="">Every city or area</option>' + cities.map((c) => '<option value="' + esc(c) + '"' + (F.city === c ? ' selected' : '') + '>' + esc(c) + '</option>').join('') + '</select></div>';
+        navEl.innerHTML = '<button type="button" class="btn btn-line" data-gz-nav="1">Back</button><span class="sp"></span><button type="button" class="btn btn-line" data-gz-nav="3">Skip</button>';
+      } else if (F.gstep === 3) {
+        stepEl.innerHTML = '<p class="gz-q">How much room do you need?</p><p class="gz-sub">Leave anything open if you are not sure yet. The exact price range is in Show all filters.</p>' +
+          '<div class="gz-group"><span class="lbl">Bedrooms</span><div class="chips" role="group" aria-label="Bedrooms">' + gzChips(BED_OPTS, F.beds, 'data-gz-beds') + '</div></div>' +
+          '<div class="gz-group"><span class="lbl">Bathrooms</span><div class="chips" role="group" aria-label="Bathrooms">' + gzChips(BATH_OPTS, F.baths, 'data-gz-baths') + '</div></div>' +
+          '<div class="gz-group"><span class="lbl">Top price</span><div class="chips" role="group" aria-label="Top price">' + gzChips(GZ_MAX, F.max, 'data-gz-max') + '</div></div>';
+        navEl.innerHTML = '<button type="button" class="btn btn-line" data-gz-nav="2">Back</button><span class="sp"></span><button type="button" class="btn btn-line" data-gz-nav="4">Skip</button><button type="button" class="btn btn-pa" data-gz-nav="4">Next</button>';
+      } else if (F.gstep === 4) {
+        stepEl.innerHTML = '<p class="gz-q">Any must-haves?</p><p class="gz-sub">These search the words in the listings, not a verified feature list, so a home only shows up if the listing mentions it. Pick as many as you like.</p>' +
+          '<div class="chips" role="group" aria-label="Must-haves">' + GZ_MUST.map((m) => '<button type="button" class="chip" data-gz-must="' + esc(m) + '" aria-pressed="' + hasPhrase(m) + '">' + esc(m) + '</button>').join('') + '</div>' +
+          '<p class="count" id="fd-gz-count" aria-live="polite"></p>';
+        navEl.innerHTML = '<button type="button" class="btn btn-line" data-gz-nav="3">Back</button><span class="sp"></span><button type="button" class="btn btn-pa" data-gz-nav="5">See results</button>';
+        draw();
+      } else {
+        const picked = GZ_MUST.filter((m) => hasPhrase(m));
+        stepEl.innerHTML = '<p class="gz-q">Your homes are ready</p><ul class="gz-sum">' +
+          '<li><span>Home type</span><b>' + esc(kindLabel(F.kind)) + '</b></li>' +
+          '<li><span>City or area</span><b>' + esc(F.city || 'Anywhere') + '</b></li>' +
+          '<li><span>Rooms</span><b>' + esc((F.beds ? F.beds + '+ beds' : 'Any beds') + ' · ' + (F.baths ? F.baths + '+ baths' : 'Any baths')) + '</b></li>' +
+          '<li><span>Top price</span><b>' + esc(F.max ? 'Up to ' + money(F.max) : 'Any price') + '</b></li>' +
+          '<li><span>Must-haves</span><b>' + esc(picked.length ? picked.join(', ') : 'None') + '</b></li></ul>' +
+          '<p class="count" id="fd-gz-count" aria-live="polite"></p>' +
+          '<div class="gz-nav" style="margin-top:10px"><button type="button" class="btn btn-pa" data-gz-see>See the homes</button><button type="button" class="btn btn-line" data-gz-nav="1">Change answers</button></div>';
+        navEl.innerHTML = '';
+        draw();
+      }
+    };
+    $('fd-startover').addEventListener('click', () => { Object.assign(F, FINDER_DEFAULTS); save(); render(CURRENT, true); });
+    $('fd-toggle-full').addEventListener('click', () => { F.showFull = !F.showFull; save(); render(CURRENT, true); });
+    $('fd-guide').addEventListener('click', (e) => {
+      const k = e.target.closest('[data-gz-kind]');
+      if (k) { F.kind = k.dataset.gzKind; st.shown = 12; save(); draw(); goStep(2); return; }
+      const c = e.target.closest('[data-gz-city]');
+      if (c) { F.city = c.dataset.gzCity; st.shown = 12; save(); draw(); goStep(3); return; }
+      const b = e.target.closest('[data-gz-beds]');
+      if (b) { F.beds = parseFloat(b.dataset.gzBeds) || 0; st.shown = 12; save(); draw(); paintStep(); return; }
+      const ba = e.target.closest('[data-gz-baths]');
+      if (ba) { F.baths = parseFloat(ba.dataset.gzBaths) || 0; st.shown = 12; save(); draw(); paintStep(); return; }
+      const mx = e.target.closest('[data-gz-max]');
+      if (mx) { F.max = parseFloat(mx.dataset.gzMax) || 0; st.shown = 12; save(); draw(); paintStep(); return; }
+      const m = e.target.closest('[data-gz-must]');
+      if (m) { togglePhrase(m.dataset.gzMust); return; }
+      const n = e.target.closest('[data-gz-nav]');
+      if (n) { goStep(+n.dataset.gzNav); return; }
+      const s = e.target.closest('[data-gz-see]');
+      if (s) { const l = $('fd-list'); if (l) l.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+    $('fd-guide').addEventListener('change', (e) => {
+      if (e.target.id === 'gz-city-sel') { F.city = e.target.value; st.shown = 12; save(); draw(); goStep(3); }
+    });
     draw();
+    paintStep();
   }
 });

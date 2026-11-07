@@ -346,22 +346,7 @@ details.more summary { cursor: pointer; font-weight: 600; color: var(--link); fo
 .places { display: flex; flex-wrap: wrap; gap: 8px; }
 .placebox { margin-top: 12px; }
 
-/* Home page journey: outside, then room by room */
-.journey .room { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; align-items: center; padding-block: 26px; border-top: 1px solid var(--line); }
-.journey .room:first-of-type { border-top: 0; padding-top: 6px; }
-.journey .room.flip .room-photo { order: 2; }
-.room-photo { margin: 0; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden; background: var(--soft); box-shadow: 0 1px 2px var(--shade); }
-.room-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.room-body { display: grid; gap: 8px; align-content: start; }
-.room-body h3 { font-size: clamp(1.4rem, 2.8vw, 1.9rem); font-stretch: 110%; font-weight: 800; line-height: 1.1; }
-.room-body p:not(.eyebrow) { color: var(--muted); max-width: 52ch; }
-.room-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-.journey-credit { margin-top: 10px; }
 #toured .card .note { color: var(--muted); }
-@media (max-width: 700px) {
-  .journey .room { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-block: 20px; }
-  .journey .room.flip .room-photo { order: 0; }
-}
 .why { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .why .panel b { display: block; font-family: var(--f-display); font-stretch: 106%; font-size: 1.08rem; margin-bottom: 4px; }
 .why .panel p { color: var(--muted); }
@@ -639,6 +624,56 @@ footer a { color: var(--brand-ink); }
 .cart-wheel-paused .cart-wheel-track, .cart-wheel-paused .cart-wheel-spin, .cart-wheel-paused .cart-wheel-card, .cart-wheel:hover .cart-wheel-track, .cart-wheel:hover .cart-wheel-spin, .cart-wheel:hover .cart-wheel-card, .cart-wheel:focus-within .cart-wheel-track, .cart-wheel:focus-within .cart-wheel-spin, .cart-wheel:focus-within .cart-wheel-card { animation-play-state: paused; }
 @media (max-width: 720px) { .cart-wheel { --r: 85px; height: 340px; } .cart-wheel-card { width: 190px; margin: -68px 0 0 -95px; } }
 @media (prefers-reduced-motion: reduce) { .cart-wheel-track, .cart-wheel-spin, .cart-wheel-card { animation: none; } .cart-wheel { height: auto; overflow: visible; } .cart-wheel-track { position: static; display: grid; gap: 12px; width: auto; height: auto; } .cart-wheel-slot { position: static; transform: none; } .cart-wheel-card { width: auto; margin: 0; } [data-wheel-pause] { display: none; } }
+
+/* Homepage backdrop: the photo fills the whole hero, edge to edge, with the
+   name, title, search and buttons centered over it. The photo key lives in
+   HOME_BACKDROP_KEY in js/2b-photos.js. These rules sit last so they win
+   over the split-hero rules above, which show the photo on the right only. */
+:root[data-page="home"] .hero { min-height: min(92svh, 860px); align-items: center; }
+:root[data-page="home"] .hero .scene { left: 0; width: 100%; -webkit-mask-image: none; mask-image: none; }
+:root[data-page="home"] .hero .scene .photo { object-position: 50% 42%; }
+:root[data-page="home"] .hero::after {
+  background:
+    linear-gradient(180deg, rgba(6, 12, 20, 0.58) 0%, rgba(6, 12, 20, 0.34) 42%, rgba(6, 12, 20, 0.68) 100%),
+    linear-gradient(0deg, rgba(6, 12, 20, 0.35) 0%, rgba(6, 12, 20, 0) 45%);
+}
+:root[data-page="home"] .hero-in { padding-block: 72px 56px; text-align: center; }
+:root[data-page="home"] .hero h1 { margin-inline: auto; max-width: 20ch; }
+:root[data-page="home"] .hero .sub { margin-inline: auto; }
+:root[data-page="home"] .hero .ctas { justify-content: center; }
+:root[data-page="home"] .hero-search { margin-inline: auto; }
+:root[data-page="home"] .hero-chips { justify-content: center; }
+.hero-note { margin-top: 28px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.78); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+@media (max-width: 720px) {
+  :root[data-page="home"] .hero { min-height: min(88svh, 720px); }
+  :root[data-page="home"] .hero .scene { bottom: 0; height: 100%; }
+  :root[data-page="home"] .hero-in { padding-block: 118px 40px; }
+  :root[data-page="home"] .hero::after {
+    background: linear-gradient(180deg, rgba(6, 12, 20, 0.62) 0%, rgba(6, 12, 20, 0.42) 45%, rgba(6, 12, 20, 0.72) 100%);
+  }
+}
+
+/* Find Your Home guided flow: one question at a time, with Back, Skip and Reset */
+.guide-panel { display: grid; gap: 14px; }
+.gz-steps { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.85rem; color: var(--muted); }
+.gz-steps .here { color: var(--ink); font-weight: 700; }
+.gz-steps .done { color: var(--good); }
+.gz-q { font-family: var(--f-display); font-stretch: 106%; font-size: 1.25rem; font-weight: 800; margin: 0; }
+.gz-sub { color: var(--muted); margin-top: 4px; }
+.gz-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 10px; margin-top: 12px; }
+.gz-opt { text-align: left; background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; color: var(--ink); display: grid; gap: 2px; }
+.gz-opt:hover { border-color: var(--pa); }
+.gz-opt[aria-pressed="true"] { border-color: var(--ink); background: var(--soft); }
+.gz-opt b { font-family: var(--f-display); font-stretch: 106%; }
+.gz-opt span { color: var(--muted); font-size: 0.9rem; }
+.gz-group { margin-top: 14px; }
+.gz-group > .lbl { display: block; margin-bottom: 6px; }
+.gz-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.gz-nav .sp { flex: 1; }
+.gz-sum { display: grid; gap: 4px; margin-top: 10px; }
+.gz-sum li { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); list-style: none; }
+.gz-sum li span:first-child { color: var(--muted); min-width: 110px; }
+.gz-sum ul { margin: 0; padding: 0; }
 </style>
 
 <img id="photo-src" src="__PHOTO__" alt="" hidden>

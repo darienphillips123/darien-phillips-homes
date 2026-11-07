@@ -1,4 +1,12 @@
-/* ===== Photo backdrops (Unsplash, free license). The drawn scene stays underneath as the fallback. ===== */
+/* ===== Homepage backdrop: swap this one line once Deklan's site is seen =====
+   HOME_BACKDROP_KEY is the photo key in PHOTOS below. No real photo of a home
+   Darien toured (Hazel at SHAWOOD Folsom, Carlsberg at Ridgeline at Bickford)
+   exists in img/, so the backdrop is a stock photo for now, labeled honestly
+   in HOME_BACKDROP_NOTE and in the footer credit. To use a real tour-home
+   photo later, add it to img/ as <key>-1920.jpg, <key>-960.jpg and
+   <key>-tile.jpg, add a PHOTOS entry for it, and point this key at it. */
+const HOME_BACKDROP_KEY = 'payment';
+const HOME_BACKDROP_NOTE = 'Backdrop photo: a home at dusk, by Michael Brown on Unsplash. This is a stock photo, not a home Darien toured.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', ai: true },
