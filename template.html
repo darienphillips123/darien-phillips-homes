@@ -587,17 +587,15 @@ footer a { color: var(--brand-ink); }
 /* Chat helper: small floating button and panel, on every tab */
 .chat-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 70; display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 6px 16px 6px 6px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font: 700 0.95rem var(--f-body); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); }
 .chat-fab img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--brand); }
-.chat-fab .chat-fab-wave { display: none; }
+.chat-fab .chat-fab-wave { display: block; position: absolute; left: 6px; top: 6px; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
 .chat-fab:hover { border-color: var(--pa); }
 /* Ask Darien avatar: an AI-generated avatar of Darien, arms crossed in a
-   suit. On hover or focus he waves and smiles with teeth. The wave image
-   is the same man, suit and background, so the swap reads as one person
-   moving. The motion is a small rotation of the whole round avatar, kept
-   subtle. Reduced motion shows the wave image still, with no motion. */
-.chat-fab:hover .chat-fab-base, .chat-fab:focus-visible .chat-fab-base, .chat-fab.waving .chat-fab-base { display: none; }
-.chat-fab:hover .chat-fab-wave, .chat-fab:focus-visible .chat-fab-wave, .chat-fab.waving .chat-fab-wave { display: block; animation: chat-wave 0.9s ease-in-out 2; transform-origin: 50% 85%; }
-@keyframes chat-wave { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-7deg); } 60% { transform: rotate(5deg); } }
-@media (prefers-reduced-motion: reduce) { .chat-fab:hover .chat-fab-wave, .chat-fab:focus-visible .chat-fab-wave, .chat-fab.waving .chat-fab-wave { animation: none; } }
+   suit, in a bright home. On hover or focus only the arm moves and he
+   smiles: the wave image is the same man, suit and background, so the
+   swap is a plain crossfade, no rotation, no spin, no whole-body motion.
+   Reduced motion shows the wave image still, with no transition. */
+.chat-fab:hover .chat-fab-wave, .chat-fab:focus-visible .chat-fab-wave, .chat-fab.waving .chat-fab-wave { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .chat-fab .chat-fab-wave { transition: none; } }
 .chat-panel { position: fixed; right: 16px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); z-index: 70; width: min(360px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 110px)); display: flex; flex-direction: column; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3); overflow: hidden; }
 .chat-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--brand); color: var(--brand-ink); }
 .chat-head img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
