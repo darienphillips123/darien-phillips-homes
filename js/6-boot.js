@@ -196,7 +196,7 @@ function render(page, keep) {
   document.documentElement.dataset.page = page;
   // A real title and description for each page, for Google and for link previews
   try {
-    const t = page === 'home' ? 'Darien Phillips, REALTOR® | Homes in Placer, Sacramento, San Joaquin and Stanislaus' : (page === 'property' && P.cur && P.cur() ? propTitle(P.cur(), false) + ' · ' + propPrice(P.cur()) : V('title')) + ' | Darien Phillips, REALTOR®';
+    const t = page === 'home' ? 'Darien Phillips, REALTOR® | Homes in Placer, Sacramento, San Joaquin and Stanislaus' : (page === 'property' && P.cur && P.cur() ? propTitle(P.cur(), false) + (signedIn() || (typeof detailsShown === 'function' && detailsShown(P.cur().key)) ? ' · ' + propPrice(P.cur()) : '') : V('title')) + ' | Darien Phillips, REALTOR®';
     document.title = t;
     const md = document.querySelector('meta[name="description"]');
     if (md) md.setAttribute('content', String(V('sub') || '').slice(0, 300));

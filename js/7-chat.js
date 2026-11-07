@@ -63,14 +63,19 @@
     addMsg('<a href="' + smsHref + '">Text this to Darien</a> · <a href="' + mailHref + '">Email this to Darien</a>', 'bot', true);
     showChips([['Talk to Darien', 'talk'], ['Ask something else', 'home']]);
   }
-  // Details first, agent question at the end, RIO ManyChat style.
-  // The visitor gets the details and link first, then is asked if they
-  // are working with an agent. Yes collects the agent's info, No just
-  // confirms, they already have the details.
+  // Click to get the details: asking for home info first offers one
+  // button. Tapping it shows the details first, then the agent question
+  // at the end, RIO ManyChat style. Yes collects the agent's info, No
+  // just confirms, they already have the details.
   function startRealtor(home) {
-    mode = 'realtor'; chatHome = home || '';
+    mode = 'realtor-offer'; chatHome = home || '';
+    addMsg('Tap below to get the details' + (chatHome ? ' on ' + chatHome : '') + '.');
+    showChips([['Click to get the details', 'realtor-show'], ['Talk to Darien', 'talk']]);
+  }
+  function showRealtorDetails() {
+    mode = 'realtor';
     var link = ' Here are the details: darienphillips.exprealty.com. You can also search for it on this site.';
-    addMsg('Thanks for asking! Here are the details' + (chatHome ? ' on ' + chatHome : '') + '.' + link);
+    addMsg('Here are the details' + (chatHome ? ' on ' + chatHome : '') + '.' + link);
     addMsg('Are you working with an agent?');
     showChips([['Yes, I have an agent', 'realtor-yes'], ['No, I do not', 'realtor-no']]);
   }
@@ -158,6 +163,7 @@
     showChips([['Talk to Darien', 'talk'], ['Leave a review', 'review'], ['Report a problem', 'problem']]);
   }
   function handle(text) {
+    if (text === 'realtor-show') { showRealtorDetails(); return; }
     if (text === 'realtor-yes') { startAgentInfo(); return; }
     if (text === 'realtor-no') { noRealtor(); return; }
     if (text === 'home-info') { startRealtor(''); return; }
@@ -219,7 +225,7 @@
       var found = null;
       try { found = (typeof propSearch === 'function') ? propSearch(v, 1)[0] : null; } catch (e) { found = null; }
       if (found) {
-        addMsg('Here it is. Tap Get full details on that page and Darien will send it straight to you.');
+        addMsg('Here it is. Tap Click to get the details on that page and Darien will send it straight to you.');
         showChips([['Open that home', 'go:p/' + found.key], ['Talk to Darien', 'talk']]);
       } else {
         addMsg('I could not find that home on the site. Darien can find it for you:');

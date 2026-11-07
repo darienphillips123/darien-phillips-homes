@@ -138,6 +138,26 @@ async function post(type, data) {
   if (!out || !out.ok) throw new Error((out && out.error) || 'failed');
   return out;
 }
+/* ===== Analytics-gap events, Nov 2026 =====
+   One helper for the events the tracker did not record before: tab
+   clicks, Click to get the details, info-request and agent-form
+   completions. Every event goes through the existing beacon('click', ...)
+   path, so it lands in the Clicks sheet right away with no Apps Script
+   redeploy. The optional future 'event' type in
+   Darien-Website-Tracker.gs is not used here and the client does not
+   depend on it. No new analytics account, no cookies. */
+function trackEvent(label, source, extra) {
+  beacon('click', Object.assign({ h: label, s: source, pg: navName() }, extra || {}));
+  logStep(label);
+}
+// The home behind a Click to get the details tap, for the event label
+function detailsHome(k) {
+  try {
+    const p = (typeof PROP_BY !== 'undefined' && PROP_BY[k]) || (typeof PAGES !== 'undefined' && PAGES.property && PAGES.property.cur && PAGES.property.cur());
+    if (!p) return null;
+    return { label: propTitle(p, true), p: propPrice(p), b: propFacts(p), r: '' };
+  } catch (e) { return null; }
+}
 
 /* ===== Money engine ===== */
 const RATES = DATA.rates;
@@ -238,13 +258,21 @@ function zillowCity(townName, filters) {
   return 'https://www.zillow.com/' + slug(townName) + '-ca/?searchQueryState=' + encodeURIComponent(JSON.stringify({ filterState: fs, isListVisible: true }));
 }
 
-/* ===== Full-details gate ===== */
+/* ===== Full-details gate: click to get the details =====
+   Home info is never shown openly on landing. Every entry point shows a
+   "Click to get the details" button instead, and clicking it shows the
+   details first, then the agent question at the end (see openRealtorCheck). */
 const GATES = new Map();
 let gateSeq = 0;
+// One tap per home, this visit only: the property page remembers that the
+// visitor tapped Click to get the details, so the details stay visible
+// while they look at that home, but a fresh visit starts gated again.
+function detailsShown(k) { return !!sess.get('dp-details-' + (k || ''), false); }
+function markDetailsShown(k) { if (k) sess.set('dp-details-' + k, true); }
 function details(info, label, cls) {
   const id = 'g' + (++gateSeq);
   GATES.set(id, Object.assign({ pg: navName() }, info));
-  return '<button type="button" class="btn ' + (cls || 'btn-pa') + ' btn-sm" data-gate="' + id + '">' + esc(label || 'Get full details') + '</button>';
+  return '<button type="button" class="btn ' + (cls || 'btn-pa') + ' btn-sm" data-gate="' + id + '">' + esc(label || 'Click to get the details') + '</button>';
 }
 
 /* ===== Saved homes ===== */
@@ -394,7 +422,7 @@ function realtorThanksHtml(agent, homeLabel) {
     (homeLabel ? '<p class="note">Home: ' + esc(homeLabel) + '</p>' : '');
 }
 
-/* "Get full details": details and link FIRST, agent question at the end.
+/* "Click to get the details": details and link FIRST, agent question at the end.
    RIO ManyChat style. The visitor sees the home details and every link
    before they answer anything. No: confirm and offer Text/Call/Email,
    no extra gate, no name form. Yes: collect the agent's info and send
@@ -433,6 +461,7 @@ function openGate(info) {
 // No path: the visitor already has the details and link, so just confirm
 // and offer Text/Call/Email Darien. No extra gate, no name form.
 function showGateDetails(info) {
+  trackEvent('Got details (no agent): ' + info.h, 'Info request', { p: info.p || '', b: info.b || '', r: info.r || '' });
   openModal('<p class="mono eyebrow">Here are the details</p><h2 id="modal-title">' + esc(info.h) + '</h2>' +
     gateDetailsHtml(info) +
     '<p class="toast" style="margin-top:14px">You have the details. Questions, or want a tour? Text, call or email Darien.</p>' +
@@ -446,6 +475,8 @@ async function submitGateAgent(info, agent) {
       sent = true;
     } catch (x) { sent = false; }
   }
+  // Counted even if the lead post failed, so the completion is not lost.
+  trackEvent('Sent details to agent: ' + info.h, 'Agent form', { p: info.p || '', b: info.b || '', r: info.r || '' });
   const body = 'Hi Darien, I would like the full details on ' + info.h + (info.p ? ' (' + info.p + ')' : '') + '.\n\n' + realtorAgentText(agent, info.h);
   openModal(realtorThanksHtml(agent, info.h) +
     '<div class="optlist">' + (sent
@@ -457,9 +488,34 @@ async function submitGateAgent(info, agent) {
 /* ===== Global clicks ===== */
 document.addEventListener('click', (e) => {
   const g = e.target.closest('[data-go]');
-  if (g) { e.preventDefault(); go(g.dataset.go); return; }
+  if (g) {
+    e.preventDefault();
+    const dest = g.dataset.go;
+    const label = (typeof PAGES !== 'undefined' && PAGES[dest] && PAGES[dest].nav) || dest;
+    trackEvent('Tab: ' + label, 'Tab');
+    go(dest);
+    return;
+  }
   const gate = e.target.closest('[data-gate]');
-  if (gate) { const info = GATES.get(gate.dataset.gate); if (info) openGate(info); return; }
+  if (gate) { const info = GATES.get(gate.dataset.gate); if (info) { trackEvent('Clicked to get details: ' + info.h, 'Details', { p: info.p || '', b: info.b || '', r: info.r || '' }); openGate(info); } return; }
+  // "Click to get the details" on a property page: reveal that home's
+  // details and sign-in form in place, then scroll to them.
+  const pd = e.target.closest('[data-prop-details]');
+  if (pd) {
+    const k = pd.dataset.propDetails || '';
+    if (k) {
+      markDetailsShown(k);
+      const dh = detailsHome(k);
+      trackEvent('Clicked to get details: ' + (dh ? dh.label : k), 'Details', dh ? { p: dh.p, b: dh.b } : {});
+      logStep('Tapped Click to get the details');
+    }
+    if (CURRENT === 'property') {
+      render('property', true);
+      const g = document.querySelector('.prop-grid');
+      if (g) g.scrollIntoView({ block: 'start' });
+    }
+    return;
+  }
   const s = e.target.closest('[data-save]');
   if (s) {
     const k = s.dataset.save;
@@ -492,6 +548,7 @@ document.addEventListener('click', (e) => {
       home: 'your cart (' + cart.size + (cart.size === 1 ? ' home' : ' homes') + ')',
       detailsHtml: '<p class="note">Here are the homes in your cart:</p><ul class="unlock-list">' + [...cart.values()].map((x) => '<li>' + esc(x.t + (x.p ? ' (' + x.p + ')' : '')) + '</li>').join('') + '</ul><p class="note">See them at darienphillips.exprealty.com, or tap Text or Email below and the list goes to Darien filled in.</p>',
       onNo: () => {
+        trackEvent('Got details (no agent): your cart (' + cart.size + (cart.size === 1 ? ' home' : ' homes') + ')', 'Info request');
         const body = cartMsg(null);
         closeModal();
         location.href = kind === 'sms'
@@ -499,6 +556,7 @@ document.addEventListener('click', (e) => {
           : 'mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent('More info on homes in my cart') + '&body=' + encodeURIComponent(body);
       },
       onYes: (agent) => {
+        trackEvent('Sent details to agent: your cart (' + cart.size + (cart.size === 1 ? ' home' : ' homes') + ')', 'Agent form');
         const body = cartMsg(agent);
         openModal(realtorThanksHtml(agent, homes) +
           '<div class="optlist"><a class="btn btn-line" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent(body)) + '">Text this to Darien</a>' +

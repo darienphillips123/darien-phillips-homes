@@ -122,20 +122,24 @@ function touredPropCard(p, cartKey) {
   const media = photo || '<div class="lux-panel" aria-hidden="true"></div>';
   return '<article class="lux-card"><a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + media +
     '<span class="lux-pill"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
-    '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span><span class="lux-price num">' + esc(propPrice(p)) + '</span></span></a>' +
-    '<div class="lux-body">' + (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') + (p.hook ? '<p class="note">' + esc(p.hook) + '</p>' : '') +
+    '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span></span></a>' +
+    '<div class="lux-body">' +
+    '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
     '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></div></article>';
 }
 function touredCustomCard(t) {
   const info = { h: t.addr, p: t.price, b: t.facts, l: t.hook, city: t.city, z: t.z || '', m: mapFor(t.addr + ', CA') };
+  // Click to get the details: no price, facts, hook or Zillow button open
+  // on landing. The button opens the details first, then the agent
+  // question at the end. The photo itself still links out on a tap, which
+  // is a click, not an open display. A community page link is navigation.
+  const see = t.z ? '' : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
   const seeHref = t.z ? track(t.z, { h: info.h, s: 'Zillow', p: info.p }) : '#p/' + t.page;
   const seeAttrs = t.z ? ' target="_blank" rel="noopener"' : '';
-  const seeLabel = t.z ? 'See photos on Zillow' : t.pageLabel;
-  const see = '<a class="btn btn-line btn-sm" href="' + esc(seeHref) + '"' + seeAttrs + '>' + esc(seeLabel) + '</a>';
   return '<article class="lux-card"><a class="lux-photo" href="' + esc(seeHref) + '"' + seeAttrs + ' aria-label="' + esc(t.addr) + '"><div class="lux-panel" aria-hidden="true"></div>' +
     '<span class="lux-pill"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
-    '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span><span class="lux-price num">' + esc(t.price) + '</span></span></a>' +
-    '<div class="lux-body"><div class="facts">' + esc(t.facts) + '</div><p class="note">' + esc(t.hook) + '</p>' +
+    '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span></span></a>' +
+    '<div class="lux-body"><p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
     '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div></article>';
 }
 function touredHtml() {

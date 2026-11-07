@@ -77,7 +77,7 @@ with sync_playwright() as p:
     pg.wait_for_timeout(700)
     print('1 load:', q('document.title'), '| h1:', q("document.getElementById('page-title').textContent"), '| events:', kinds())
     pg.click('#kw [data-go="assumable"]'); pg.wait_for_timeout(300)
-    pg.click('#kw [data-go="stockton"]'); pg.wait_for_timeout(300)
+    q("location.hash = 'stockton'"); pg.wait_for_timeout(300)  # stockton is not in the top nav; it opens by hash
     print('2 views:', [k for k in kinds() if k[0] == 'pv'], '| first pv fields:', {k: events[0].get(k) for k in ('type', 'v', 'c', 'n', 'pg', 'p', 'dev', 'ref')})
     print('3 back button:', q("document.getElementById('back').hidden"), q("document.getElementById('back').getAttribute('aria-label')"))
     pg.click('#back'); pg.wait_for_timeout(250)
@@ -91,22 +91,28 @@ with sync_playwright() as p:
     print('   stockton top y:', q('window.scrollY'))
     pg.click('#back'); pg.wait_for_timeout(300)
     print('   back to assumable, y restored:', q('window.scrollY'), '| page:', q('document.documentElement.dataset.page'))
-    # lead
+    # lead: click to get the details, details first, agent question at the end, Yes sends a lead with the agent's info
     n0 = len(events)
     pg.click('#view [data-gate]'); pg.wait_for_timeout(150)
-    pg.fill('#g-name', 'Maria Lopez'); pg.fill('#g-phone', '209-555-0101'); pg.fill('#g-email', 'maria@example.com'); pg.fill('#g-note', 'Saturday?')
-    pg.click('#gate-form button[type=submit]'); pg.wait_for_timeout(500)
+    print('   gate modal asks agent:', q("document.getElementById('dialog').textContent.includes('Are you working with an agent?')"))
+    pg.click('#rt-yes'); pg.wait_for_timeout(100)
+    pg.fill('#rt-name', 'Test Agent'); pg.fill('#rt-phone', '209-555-0101')
+    pg.click('#rt-form button[type=submit]'); pg.wait_for_timeout(500)
     lead = [e for e in events[n0:] if e.get('type') == 'lead']
-    print('4 lead sent:', bool(lead), '| fields:', {k: lead[0].get(k) for k in ('name', 'phone', 'email', 'h', 'p', 'pg', 'c', 'v')} if lead else None, '| method:', lead[0]['_method'] if lead else None)
-    print('   thanks:', q("document.getElementById('g-thanks').textContent"), '| options:', q("[...document.querySelectorAll('#g-opts a, #g-opts button')].map(a=>a.textContent).join(' / ')"))
+    print('4 lead sent:', bool(lead), '| fields:', {k: lead[0].get(k) for k in ('agentName', 'agentContact', 'hasAgent', 'h', 'p', 'pg', 'c', 'v')} if lead else None, '| method:', lead[0]['_method'] if lead else None)
+    print('   thanks:', q("document.getElementById('dialog').textContent.includes('Thanks, Darien will be in contact with you soon to send all home info to your agent to share with you.')"))
     print('   no personal info in any tracker URL:', all('maria' not in (r or '').lower() for r in []))
+    pg.click('#dialog .x'); pg.wait_for_timeout(100)
+    # No path: the details stay visible, with a Zillow link to open
+    pg.click('#view [data-gate]'); pg.wait_for_timeout(150)
+    pg.click('#rt-no'); pg.wait_for_timeout(200)
     with ctx.expect_page() as newp:
-        pg.click('#g-opts a[href*="zillow"]')
+        pg.click('#dialog a[href*="zillow"]')
     newp.value.close()
     pg.wait_for_timeout(300)
     clicks = [e for e in events if e.get('type') == 'click']
     print('5 click logged:', {k: clicks[-1].get(k) for k in ('h', 's', 'p', 'pg', 'n', 'c')} if clicks else None)
-    pg.keyboard.press('Escape'); pg.wait_for_timeout(100)
+    pg.click('#dialog .x'); pg.wait_for_timeout(100)
     # goals on About
     pg.click('#kw [data-go="about"]'); pg.wait_for_timeout(400)
     print('6 about: portrait shown:', q("!!document.querySelector('.hero-portrait img') && document.querySelector('.hero-portrait img').naturalWidth"),
@@ -126,7 +132,10 @@ with sync_playwright() as p:
         for sel, val in (('#al-name', 'Maria Lopez'), ('#al-email', 'maria@example.com')):
             if q("!!document.querySelector('%s')" % sel) and not q("document.querySelector('%s').value" % sel):
                 pg.fill(sel, val)
-        pg.click('#al-send'); pg.wait_for_timeout(500)
+        pg.click('#al-send'); pg.wait_for_timeout(300)
+        # signup runs the click flow: details first, agent question at the end; answer No to complete the signup
+        if q("!document.getElementById('modal').hidden"):
+            pg.click('#rt-no'); pg.wait_for_timeout(500)
     su = [e for e in events[n2:] if e.get('type') == 'signup']
     print('7 signup sent:', {k: su[0].get(k) for k in ('name', 'email', 'wants', 'areas', 'mls')} if su else None, '| toast:', q("(document.getElementById('al-toast')||{}).textContent"))
     # admin
@@ -147,7 +156,7 @@ with sync_playwright() as p:
     pg.click('[data-ab="people"]'); pg.wait_for_timeout(100)
     print('   people:', q("[...document.querySelectorAll('.ab-list li')].map(li=>li.textContent).join(' || ')")[:240])
     pg.click('[data-ab="link"]'); pg.wait_for_timeout(100)
-    pg.fill('#ab-name', 'Maria Lopez'); pg.select_option('#ab-page', 'stockton'); pg.wait_for_timeout(100)
+    pg.fill('#ab-name', 'Maria Lopez'); pg.select_option('#ab-page', 'new-builds')  # stockton is not a top-nav page, so it is not an option here; pg.wait_for_timeout(100)
     print('   client link:', q("document.getElementById('ab-url').textContent"))
     pv_after = len([e for e in events if e.get('type') == 'pv'])
     print('   page views counted while in admin:', pv_after - pv_before)
@@ -162,9 +171,9 @@ with sync_playwright() as p:
     before = q("getComputedStyle(document.querySelector('%s')).backgroundColor" % sel)
     pg.hover(sel); pg.wait_for_timeout(250)
     after = q("getComputedStyle(document.querySelector('%s')).backgroundColor" % sel)
-    g0 = q("getComputedStyle(document.querySelector('.hero .ctas .btn-ghost')).backgroundColor")
-    pg.hover('.hero .ctas .btn-ghost'); pg.wait_for_timeout(250)
-    g1 = q("getComputedStyle(document.querySelector('.hero .ctas .btn-ghost')).backgroundColor")
+    g0 = q("getComputedStyle(document.querySelector('.hero .ctas .hero-quiet')).backgroundColor")
+    pg.hover('.hero .ctas .hero-quiet'); pg.wait_for_timeout(250)  # home hero uses .hero-quiet, not .btn-ghost, since the luxury rebuild
+    g1 = q("getComputedStyle(document.querySelector('.hero .ctas .hero-quiet')).backgroundColor")
     print('9 hover: main button', before, '->', after, '| outline button', g0, '->', g1)
     print('errors:', errs)
     ctx.close()

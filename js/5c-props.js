@@ -115,18 +115,19 @@ async function loadListings() {
   if (waiting && (CURRENT === 'property' || CURRENT === 'links' || CURRENT === 'home')) render(CURRENT, true);
 }
 function listingCard(p) {
-  const title = p.addr + (p.city ? ', ' + p.city : '');
-  const facts = propFacts(p);
-  const info = { h: title, p: p.price ? money(p.price) : '', b: facts, l: p.hook, city: p.city,
+  const title = propTitle(p, false);
+  const info = { h: propTitle(p, true), p: p.price ? money(p.price) : '', b: propFacts(p), l: p.hook, city: p.city,
     z: p.city ? zillowFor(p.addr, p.city, p.zip) : '', x: p.link, xs: 'Full listing', m: mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') };
-  return '<article class="card"><div class="head"><span class="pill pa">Featured home</span>' + heart('l:' + p.key, title, info.p) + '</div>' +
+  // Click to get the details: the card shows no price, facts, hook or
+  // about text on landing. The button opens the details first, then the
+  // agent question at the end. The full address stays behind the sign-in.
+  return '<article class="card"><div class="head"><span class="pill pa">Featured home</span>' + heart('l:' + p.key, propTitle(p, true), info.p) + '</div>' +
     (p.img && ON_WEB ? '<img class="card-photo" src="' + esc(p.img) + '" alt="' + esc(title) + '" loading="lazy" referrerpolicy="no-referrer">' : '') +
-    '<div><h3>' + esc(p.addr) + '</h3><div class="sub">' + esc(p.city || '') + '</div></div>' +
-    (p.price ? '<div class="price num">' + money(p.price) + '</div>' : '') + (facts ? '<div class="facts">' + esc(facts) + '</div>' : '') +
-    (p.hook ? '<p><b>' + esc(p.hook) + '</b></p>' : '') + (p.about ? '<p class="note">' + esc(p.about) + '</p>' : '') +
-    '<div class="actions">' + details(info) + cartBtn('l:' + p.key, title, info.p) + '</div><div class="src">Featured by Darien</div></article>';
+    '<div><h3>' + esc(title) + '</h3><div class="sub">' + esc(p.city || '') + '</div></div>' +
+    '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
+    '<div class="actions">' + details(info) + cartBtn('l:' + p.key, propTitle(p, true), info.p) + '</div><div class="src">Featured by Darien</div></article>';
 }
-// The details behind a home's card (title, price, links), the same ones its "Get full details" button uses
+// The details behind a home's card (title, price, links), the same ones its "Click to get the details" button uses
 function propInfo(p) {
   const html = p.card();
   const m = html.match(/data-gate="(g\d+)"/);
@@ -144,9 +145,11 @@ function homeOptions(info, name) {
   return out.join('');
 }
 function teaserCard(p, full) {
+  // Click to get the details: no price, facts or hook on landing. The
+  // whole card links to the property page, which is gated the same way.
   return '<a class="card teaser" href="#p/' + esc(p.key) + '"><div class="head"><span class="pill ' + (p.kind === 'community' || p.kind === 'stockton' ? 'pa' : p.kind === 'listing' ? 'ok' : 'fha') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + (toursFor(commOf(p)).length ? '<span class="pill ok">▶ Video tour</span>' : '') + '</div>' +
-    '<h3>' + esc(propTitle(p, full || signedIn())) + '</h3><div class="price num">' + esc(propPrice(p)) + '</div>' +
-    (propFacts(p) ? '<div class="facts">' + esc(propFacts(p)) + '</div>' : '') + (p.hook ? '<div class="sub">' + esc(p.hook) + '</div>' : '') + '<span class="go">See this home →</span></a>';
+    '<h3>' + esc(propTitle(p, signedIn())) + '</h3>' +
+    '<p class="note">Price, facts, photos and links are behind one tap.</p><span class="btn btn-pa btn-sm">Click to get the details</span> <span class="go">See this home →</span></a>';
 }
 
 /* ===== The home page itself ===== */
@@ -158,11 +161,12 @@ def('property', {
   photoUrl() { const p = this.cur(); return p && p.img ? p.img : ''; },
   kicker() { const p = this.cur(); return p ? KIND_LABEL[p.kind] + (p.city ? ' · ' + p.city : '') : 'Home details'; },
   title() { const p = this.cur(); return p ? propTitle(p, signedIn()) : LISTINGS === 'loading' ? 'Finding your home…' : 'Let\'s find that home'; },
-  title2() { const p = this.cur(); return p ? propPrice(p) : ''; },
-  sub() { const p = this.cur(); return p ? [p.hook, propFacts(p)].filter(Boolean).join(' · ') : 'Search by street, town or the keyword from Darien\'s post.'; },
+  title2() { const p = this.cur(); return p ? (signedIn() || detailsShown(p.key) ? propPrice(p) : '') : ''; },
+  sub() { const p = this.cur(); return p ? (signedIn() || detailsShown(p.key) ? [p.hook, propFacts(p)].filter(Boolean).join(' · ') : 'Tap Click to get the details to see the price, facts and links for this home.') : 'Search by street, town or the keyword from Darien\'s post.'; },
   ctas() {
     const p = this.cur();
     if (!p) return '<a class="btn btn-ghost" href="sms:+12098826469">Text Darien</a>';
+    if (!signedIn() && !detailsShown(p.key)) return '<button type="button" class="btn btn-pa" data-prop-details="' + esc(p.key) + '">Click to get the details</button><button type="button" class="btn btn-ghost" data-jump="similar">Similar homes</button>';
     if (!signedIn()) return '<button type="button" class="btn btn-pa" data-jump="pf-form">See the full details</button><button type="button" class="btn btn-ghost" data-jump="similar">Similar homes</button>';
     return '<a class="btn btn-pa" href="' + esc('sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, I\'d like to see ' + propTitle(p, true) + '.')) + '">Text Darien to tour it</a><button type="button" class="btn btn-ghost" data-jump="similar">Similar homes</button><a class="btn btn-ghost" href="tel:+12098826469">Call</a>';
   },
@@ -252,6 +256,8 @@ def('property', {
         if (TRACKER) {
           try { await post('lead', Object.assign({}, propInfo(p).info, { hasAgent: 'yes', agentName: a.name, agentBrokerage: a.brokerage, agentContact: a.contact, agentPhone: a.phone, agentEmail: a.email, key: p.key, pg: navName(), note: realtorAgentText(a, propTitle(p, true)) })); } catch (x) { /* the thanks message below still shows; the visitor can text Darien */ }
         }
+        // Counted even if the lead post failed, so the completion is not lost.
+        { const pi = propInfo(p).info; trackEvent('Sent details to agent: ' + propTitle(p, true), 'Agent form', { p: pi.p || '', b: pi.b || '', r: pi.r || '' }); }
         f.innerHTML = '<h3>Thanks</h3><p class="toast">' + esc(REALTOR_MSG) + '</p><p class="note">Your agent: ' + esc(a.name) + (a.brokerage ? ' · ' + esc(a.brokerage) : '') + ' · ' + esc(a.contact) + '</p><p class="note">Darien will send all home info for ' + esc(propTitle(p, true)) + ' to your agent to share with you.</p><div class="ctas"><a class="btn btn-line" href="sms:+12098826469">Text Darien</a></div>';
         return;
       }
@@ -266,7 +272,7 @@ def('property', {
         const btn = $('pf-go');
         btn.disabled = true; btn.textContent = 'Opening…'; $('pf-err').textContent = '';
         const body = Object.assign({}, propInfo(p).info, v, { how: 'signin', key: p.key, kw: p.keywords[0] || '', landed: sess.get('dp-landed', ''), pg: navName(), steps: stepsText().slice(-25) });
-        try { await post('lead', body); } catch (x) { beacon('lead', body); }
+        try { await post('lead', body); trackEvent('Signed in to see: ' + propTitle(p, true), 'Info request', { p: body.p || '', b: body.b || '', r: body.r || '' }); } catch (x) { beacon('lead', body); }
       }
       render('property', true);
       afterSignIn();
@@ -284,6 +290,22 @@ function cartKeyForPage(p) {
   return (ck === p.key && p.kind === 'listing') ? 'l:' + p.key : ck;
 }
 function lockedHtml(p) {
+  // Click to get the details: before the tap, no price, facts, hook or
+  // links are shown on landing, only this button. The tap reveals the
+  // details first, with the agent question at the end of the form below.
+  if (!detailsShown(p.key)) {
+    return '<div class="prop-grid">' +
+      '<div class="panel prop-lock"><p class="mono eyebrow">Preview</p><h2>' + esc(propTitle(p, false)) + '</h2>' +
+        '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
+        '<div class="ctas" style="margin:12px 0 0"><button type="button" class="btn btn-pa" data-prop-details="' + esc(p.key) + '">Click to get the details</button></div>' +
+        '<div class="ctas" style="margin:12px 0 0">' + cartBtn(cartKeyForPage(p), propTitle(p, true), propPrice(p)) + '</div>' +
+        '<button type="button" class="linkbtn" data-jump="similar">Or see similar homes nearby ↓</button>' +
+      '</div>' +
+      '<div class="panel prop-form"><h3>How it works</h3>' +
+        '<p class="note">Tap Click to get the details to see the price, facts and links first. Then one last question at the end: are you working with an agent? If yes, Darien sends all home info to your agent instead. The full address and monthly payment stay behind the sign-in, and on the Yes path they go to your agent only.</p>' +
+        '<div class="ctas"><a class="btn btn-pa" href="sms:+12098826469">Text Darien</a><a class="btn btn-line" href="tel:+12098826469">Call Darien</a><a class="btn btn-line" href="mailto:darienphillips45@gmail.com">Email Darien</a></div>' +
+      '</div></div>';
+  }
   const m = me();
   const { info } = propInfo(p);
   const links = [
@@ -416,7 +438,7 @@ def('links', {
   nav: 'ManyChat links', scene: 'alerts', color: '#2F7A6B', kicker: 'For your posts and DMs',
   photoKey() { return 'alerts'; },
   title: 'A link for every home',
-  sub: 'Paste a home\'s link into ManyChat. People who comment your keyword get it in a DM, sign in with their name, phone and email to see the home, and you get an email.',
+  sub: 'Paste a home\'s link into ManyChat. People who comment your keyword get it in a DM, tap Click to get the details to see the home, then answer one question about an agent, and you get an email.',
   ctas() { return '<button type="button" class="btn btn-pa" data-jump="lk-q">Find a home</button>'; },
   html() {
     const L = sub('links', { q: '', src: 'instagram' });
@@ -424,7 +446,7 @@ def('links', {
       '<ol class="steps">' +
         '<li><b>Copy the home\'s link</b><span>Search below by street, town, community or MLS#. Use the street name as your keyword (ENCINO for 8160 Encino Ave) and it works in the site\'s search too.</span></li>' +
         '<li><b>Make the DM in ManyChat</b><span>New automation, then "User comments on your post or reel" (or a DM keyword). Add your keyword and a message with a button that opens the home\'s link.</span></li>' +
-        '<li><b>They sign in to see it</b><span>Name, mobile and email first. The same goes for anyone who types the keyword into the site\'s search.</span></li>' +
+        '<li><b>They tap Click to get the details</b><span>Details first, then one question about an agent at the end. The same goes for anyone who types the keyword into the site\'s search.</span></li>' +
         '<li><b>You get the details</b><span>An email the moment they sign in, then a summary of every page and home they looked at once they\'re done.</span></li>' +
       '</ol>' +
       '<div class="panel" style="display:grid;gap:12px;margin-top:16px"><div class="chips" role="group" aria-label="Where you\'ll post the link"><span class="mono">Link for</span>' +

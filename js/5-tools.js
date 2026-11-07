@@ -381,6 +381,8 @@ def('alerts', {
       btn.disabled = true; btn.textContent = 'Sending...'; $('al-toast').textContent = '';
       try {
         await post('signup', { name: A.name, email: A.email, phone: A.phone, notes: A.notes, wants: A.wants.join(', '), areas: areasText(), price: A.price, pay: A.pay, beds: A.beds, baths: A.baths, size: A.size, lot: A.lot, when: A.when, mls: A.mls ? 'yes' : 'no', saved: savedText().slice(0, 600), hasAgent: agent ? 'yes' : 'no', agentName: agent ? agent.name : '', agentBrokerage: agent ? agent.brokerage : '', agentContact: agent ? agent.contact : '' });
+        if (agent) trackEvent('Signed up, sent to agent', 'Agent form');
+        else trackEvent('Signed up for homes by email', 'Info request');
         $('al-toast').textContent = agent ? REALTOR_MSG : 'You\'re signed up, ' + A.name.split(' ')[0] + '. Darien will set up your search and reach out soon.';
         btn.textContent = agent ? 'Sent to your agent' : 'Signed up';
       } catch (x) {
@@ -521,7 +523,7 @@ def('cart', {
         const linked = p ? '<a href="#p/' + esc(p.key) + '">' + inner + '</a>' : inner;
         return '<li>' + linked + '<button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></li>';
       }).join('') + '</ul>' +
-      '<div class="panel accent" style="margin-top:16px;display:grid;gap:12px"><b>Get more info on these ' + plural(items.length, 'home') + '</b><p class="note">Tap below and your text or email opens with the list filled in, so Darien knows exactly which homes you mean.</p>' +
+      '<div class="panel accent" style="margin-top:16px;display:grid;gap:12px"><b>Get more info on these ' + plural(items.length, 'home') + '</b><p class="note">Tap below to see the details for these homes first, then answer one question about an agent.</p>' +
       '<div class="ctas" style="margin:0"><button type="button" class="btn btn-pa" data-cart-contact="sms">Text Darien about these homes</button>' +
       '<button type="button" class="btn btn-line" data-cart-contact="email">Email Darien about these homes</button>' +
       '<a class="btn btn-line" href="tel:+12098826469">Call Darien</a></div></div></div></section>';
