@@ -588,9 +588,9 @@ footer a { color: var(--brand-ink); }
    Find Your Home photo thumb next to it. */
 .kw .kw-home-icon { width: 22px; height: 22px; border-radius: 6px; display: inline-grid; place-items: center; flex: none; margin-left: -4px; box-shadow: 0 0 0 2px rgba(255,255,255,.2); }
 /* Tour video cells: the home photo is the poster, with a big play button.
-   No profile picture and no View profile button on landing. The player
-   iframe, loaded on hover, fills the same cell. */
-.lux-video { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #000; }
+   No profile picture on landing. Tapping the poster opens the exact
+   Instagram or TikTok reel in a new tab, no login needed. */
+.lux-video { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--soft); }
 .lux-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 2; }
 .lux-video-poster { position: absolute; inset: 0; display: block; }
 .lux-video-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -620,15 +620,17 @@ footer a { color: var(--brand-ink); }
 /* Chat helper: small floating button and panel, on every tab */
 .chat-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 70; display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 6px 16px 6px 6px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font: 700 0.95rem var(--f-body); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); }
 .chat-fab img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--brand); }
-.chat-fab .chat-fab-wave { display: block; position: absolute; left: 6px; top: 6px; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
+.chat-fab-wave-wrap { display: block; position: absolute; left: 6px; top: 6px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
+.chat-fab-wave-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; transform: scale(1.75); transform-origin: 50% 16%; }
 .chat-fab:hover { border-color: var(--pa); }
 /* Ask Darien avatar: an AI-generated avatar of Darien, arms crossed in a
-   suit, in a bright home. On hover or focus only the arm moves and he
-   smiles: the wave image is the same man, suit and background, so the
-   swap is a plain crossfade, no rotation, no spin, no whole-body motion.
-   Reduced motion shows the wave image still, with no transition. */
-.chat-fab:hover .chat-fab-wave, .chat-fab:focus-visible .chat-fab-wave, .chat-fab.waving .chat-fab-wave { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .chat-fab .chat-fab-wave { transition: none; } }
+   suit, in a bright home. On hover or focus the swap is a plain crossfade
+   to the waving image, no rotation, no spin. The wave image is zoomed and
+   cropped inside its circle so the raised arm is out of frame and only
+   his face and big smile show. Reduced motion shows the wave image still,
+   with no transition. */
+.chat-fab:hover .chat-fab-wave-wrap, .chat-fab:focus-visible .chat-fab-wave-wrap, .chat-fab.waving .chat-fab-wave-wrap { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .chat-fab-wave-wrap { transition: none; } }
 .chat-panel { position: fixed; right: 16px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); z-index: 70; width: min(360px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 110px)); display: flex; flex-direction: column; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3); overflow: hidden; }
 .chat-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--brand); color: var(--brand-ink); }
 .chat-head img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
@@ -644,28 +646,34 @@ footer a { color: var(--brand-ink); }
 .chat-input input { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 999px; padding: 8px 12px; background: var(--card); color: var(--ink); }
 .chat-input input:focus { border-color: var(--pa); outline: 0; }
 .chat-fine { padding: 0 12px 10px; }
-/* Cart: a clean page with no photo backdrop. Homes circle around at the
-   top of the page, one side to the other, on a rotating ring. The ring
-   turns, each home stays upright, and the home at the front is largest. */
+/* Cart: a clean page with no photo backdrop. Carted homes show in a
+   horizontal row of square boxes that pans right to left, like
+   Squarespace. The row pauses on hover or focus, and Prev and Next
+   arrows step through it. Pan, All and Next switch how the cart is shown. */
 .cart-page { background: transparent; }
 .cart-list { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--line); }
 .cart-list li { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 14px 4px; border-bottom: 1px solid var(--line); }
 .cart-list li a { color: inherit; text-decoration: none; }
 .cart-list li a:hover { text-decoration: underline; }
 .cart-list .cart-list-facts { display: block; color: var(--brand-muted); font-size: .92rem; margin-top: 2px; }
-.cart-wheel { --r: 150px; position: relative; height: 480px; overflow: hidden; margin-bottom: 8px; }
-.cart-wheel-track { position: absolute; left: 50%; top: 50%; width: 0; height: 0; animation: cart-spin 30s linear infinite; }
-@keyframes cart-spin { to { transform: rotate(360deg); } }
-.cart-wheel-slot { position: absolute; left: 0; top: 0; transform: rotate(var(--a, 0deg)) translateY(calc(var(--r) * -1)); }
-.cart-wheel-spin { animation: cart-spin-rev 30s linear infinite; }
-@keyframes cart-spin-rev { to { transform: rotate(-360deg); } }
-.cart-wheel-card { width: 230px; margin: -78px 0 0 -115px; animation: cart-wheel-zoom 30s ease-in-out infinite both; animation-delay: var(--zd, 0s); }
-@keyframes cart-wheel-zoom { 0%, 100% { transform: scale(.82); } 50% { transform: scale(1.06); } }
-.cart-wheel-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.cart-wheel-hint { text-align: center; color: var(--brand-muted); font-size: .92rem; margin: 6px 0; }
-.cart-wheel-paused .cart-wheel-track, .cart-wheel-paused .cart-wheel-spin, .cart-wheel-paused .cart-wheel-card, .cart-wheel:hover .cart-wheel-track, .cart-wheel:hover .cart-wheel-spin, .cart-wheel:hover .cart-wheel-card, .cart-wheel:focus-within .cart-wheel-track, .cart-wheel:focus-within .cart-wheel-spin, .cart-wheel:focus-within .cart-wheel-card { animation-play-state: paused; }
-@media (max-width: 720px) { .cart-wheel { --r: 85px; height: 340px; } .cart-wheel-card { width: 190px; margin: -68px 0 0 -95px; } }
-@media (prefers-reduced-motion: reduce) { .cart-wheel-track, .cart-wheel-spin, .cart-wheel-card { animation: none; } .cart-wheel { height: auto; overflow: visible; } .cart-wheel-track { position: static; display: grid; gap: 12px; width: auto; height: auto; } .cart-wheel-slot { position: static; transform: none; } .cart-wheel-card { width: auto; margin: 0; } [data-wheel-pause] { display: none; } }
+.cart-view { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.cart-view .btn[aria-pressed="true"] { background: var(--pa); color: #fff; border-color: var(--pa); }
+.cart-pan-bar { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cart-pan-hint { text-align: center; color: var(--brand-muted); font-size: .92rem; margin: 0; flex: 1; }
+.cart-pan-viewport { overflow-x: auto; scrollbar-width: thin; scroll-snap-type: x mandatory; }
+.cart-pan-track { display: flex; gap: 14px; width: max-content; padding-bottom: 8px; }
+.cart-pan-card { flex: 0 0 250px; scroll-snap-align: start; aspect-ratio: 1 / 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+.cart-pan-card h3 { font-size: 1.02rem; margin: 0; }
+.cart-pan-card h3 a { color: inherit; text-decoration: none; }
+.cart-pan-card h3 a:hover { text-decoration: underline; }
+.cart-pan-card .price { font-size: 1.15rem; }
+.cart-pan-card .facts { color: var(--muted); font-size: .9rem; }
+.cart-pan-card .cart-pan-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+.cart-next { display: grid; gap: 10px; justify-items: start; }
+.cart-next-step { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: .95rem; }
+.cart-next-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; max-width: 560px; }
+@media (max-width: 720px) { .cart-pan-card { flex-basis: 210px; } }
+@media (prefers-reduced-motion: reduce) { .cart-pan-viewport { scroll-behavior: auto; } }
 
 /* Homepage backdrop: the photo fills the whole hero, edge to edge, with the
    name, title, search and buttons centered over it. The photo key lives in
@@ -707,20 +715,51 @@ footer a { color: var(--brand-ink); }
    with a white serif title and price overlaid at the bottom. The buttons sit
    in a row below the photo, never on top of it. A home with no real photo of
    its own gets a warm solid panel, never a stock photo passed off as the home. */
-.lux-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 18px; margin-top: 14px; }
-.lux-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px var(--shade); display: grid; grid-template-rows: auto 1fr; min-width: 0; }
-.lux-photo { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--soft); text-decoration: none; }
+.lux-list { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 14px; }
+/* Toured video cards, wide and square: details on the left, the tour
+   video on the right filling the full height of the card. No black
+   cover on the video. The details box starts small and grows as it
+   scrolls into view (see [data-grow] below). */
+.lux-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px var(--shade); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 340px; }
+.lux-photo { position: relative; display: block; height: 100%; overflow: hidden; background: var(--soft); text-decoration: none; }
 .lux-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.lux-panel { width: 100%; height: 100%; background: linear-gradient(155deg, #6E4527 0%, #96703F 52%, #B98D55 100%); }
+.lux-panel { width: 100%; height: 100%; min-height: 240px; background: linear-gradient(155deg, #6E4527 0%, #96703F 52%, #B98D55 100%); }
 .lux-pill { position: absolute; top: 12px; left: 12px; z-index: 2; display: flex; gap: 6px; flex-wrap: wrap; }
 .lux-pill .pill { background: rgba(255, 255, 255, 0.92); color: #14212B; }
 .lux-cap { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 44px 16px 14px; background: linear-gradient(0deg, rgba(6, 12, 20, 0.66) 0%, rgba(6, 12, 20, 0) 100%); color: #FFFFFF; }
 .lux-cap .lux-title { display: block; font-family: var(--f-serif); font-weight: 500; font-size: 1.5rem; line-height: 1.15; }
 .lux-cap .lux-price { display: block; font-family: var(--f-serif); font-weight: 500; font-size: 1.35rem; margin-top: 4px; }
-.lux-body { padding: 12px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.lux-pill-static { display: flex; gap: 6px; flex-wrap: wrap; }
+.lux-media { position: relative; overflow: hidden; min-height: 300px; background: var(--soft); }
+.lux-media .lux-video, .lux-media .lux-photo { position: absolute; inset: 0; height: 100%; }
+.lux-media .lux-video { aspect-ratio: auto; }
+.lux-body { padding: 20px 20px 22px; display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: start; }
+.lux-body h3 { margin: 0; font-size: 1.25rem; }
+.lux-body .lux-hook { color: var(--ink); font-size: 1rem; margin: 0; }
 .lux-body .facts { color: var(--muted); font-size: 0.92rem; }
-.lux-body .note { color: var(--muted); font-size: 0.95rem; }
-.lux-body .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.lux-body .note { color: var(--muted); font-size: 0.95rem; margin: 0; }
+.lux-body .actions { display: grid; gap: 8px; margin-top: 6px; justify-items: start; }
+@media (max-width: 720px) { .lux-card { grid-template-columns: 1fr; min-height: 0; } .lux-media { min-height: 0; aspect-ratio: 16 / 10; } }
+/* Scroll-grow: cards, headings and sections start small and grow to full
+   size as they scroll into view. JS adds .grow-start and then .in (see
+   bindGrow); without JS nothing is hidden, because the starting state is
+   only applied by JS. */
+[data-grow] { transition: opacity .5s ease, transform .5s ease; }
+[data-grow].grow-start { opacity: 0; transform: scale(.92); }
+[data-grow].grow-start.in { opacity: 1; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) { [data-grow] { transition: none; } [data-grow].grow-start { opacity: 1; transform: none; } }
+/* Help section: "This Is How I Can Be More Helpful to You" */
+.help-opts { display: grid; gap: 10px; margin-top: 14px; }
+.help-opt { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 0 16px; }
+.help-opt summary { cursor: pointer; padding: 14px 0; font-weight: 700; list-style: none; }
+.help-opt summary::-webkit-details-marker { display: none; }
+.help-opt p { margin: 0 0 10px; }
+.help-opt .help-msg { display: grid; gap: 8px; justify-items: start; padding-bottom: 14px; }
+.help-scen { margin-top: 26px; }
+.help-label { font-size: 1.05rem; margin: 0 0 12px; }
+.help-scenarios { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.help-scenario { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 14px 16px; margin: 0; }
+.help-close { margin-top: 26px; font-size: 1.1rem; }
 
 /* Find Your Home guided flow: one question at a time, with Back, Skip and Reset */
 .guide-panel { display: grid; gap: 14px; }
@@ -794,7 +833,7 @@ footer a { color: var(--brand-ink); }
   </div>
 </footer>
 
-<button type="button" class="chat-fab" id="chat-fab" aria-label="Ask Darien a question"><img class="chat-fab-base" src="img/ask-darien.jpg" alt="" aria-hidden="true"><img class="chat-fab-wave" src="img/ask-darien-wave.jpg" alt="" aria-hidden="true">Ask Darien</button>
+<button type="button" class="chat-fab" id="chat-fab" aria-label="Ask Darien a question"><img class="chat-fab-base" src="img/ask-darien.jpg" alt="" aria-hidden="true"><span class="chat-fab-wave-wrap"><img class="chat-fab-wave" src="img/ask-darien-wave.jpg" alt="" aria-hidden="true"></span>Ask Darien</button>
 <div class="chat-panel" id="chat-panel" hidden role="dialog" aria-label="Ask Darien">
   <div class="chat-head"><img src="img/ask-darien.jpg" alt=""><div><b>Ask Darien</b><span>A quick helper, not a live person</span></div><button type="button" id="chat-close" aria-label="Close chat">×</button></div>
   <div class="chat-msgs" id="chat-msgs" aria-live="polite"></div>
@@ -806,7 +845,7 @@ footer a { color: var(--brand-ink); }
 <div class="cart-overlay" id="cart-overlay" hidden></div>
 <aside class="cart-drawer" id="cart-drawer" hidden role="dialog" aria-label="Your cart">
   <div class="cart-drawer-head"><h2 id="cart-drawer-title">Your cart</h2><button type="button" class="x" id="cart-drawer-close" aria-label="Close cart">×</button></div>
-  <div class="cart-drawer-view" role="group" aria-label="How to see your carted homes"><button type="button" class="btn btn-line btn-sm" id="cart-view-all" aria-pressed="true">All</button><button type="button" class="btn btn-line btn-sm" id="cart-view-next" aria-pressed="false">Next</button></div>
+  <div class="cart-drawer-view" role="group" aria-label="How to see your carted homes"><button type="button" class="btn btn-line btn-sm" id="cart-view-pan" aria-pressed="false">Pan</button><button type="button" class="btn btn-line btn-sm" id="cart-view-all" aria-pressed="true">All</button><button type="button" class="btn btn-line btn-sm" id="cart-view-next" aria-pressed="false">Next</button></div>
   <div class="cart-drawer-body" id="cart-drawer-body"></div>
   <div class="cart-drawer-foot">
     <button type="button" class="btn btn-pa" data-cart-contact="sms">Text Darien about these homes</button>

@@ -171,7 +171,7 @@ const GOALS = [
   { k: 'pay', t: 'The monthly payment', help: 'Start with a payment you\'re comfortable with. I\'ll show you the prices, loans and homes that fit it, with every monthly cost included.', go: [['payment', 'Shop by payment']] },
   { k: 'rate', t: 'Today\'s interest rates', help: 'Some homes come with the seller\'s low-rate FHA or VA loan that you can take over. And if rates drop after you buy, a refinance can lower your payment.', go: [['assumable', 'See assumable homes'], ['refinance', 'Refinance calculator']] },
   { k: 'credit', t: 'My credit', help: 'FHA loans accept lower credit scores than most loans. I\'ll connect you with a lender who can give you a clear plan to qualify.', go: [] },
-  { k: 'find', t: 'Finding the right home', help: 'Tell me what matters most and I\'ll set up your own MLS search, with new matches sent to you every day.', go: [['alerts', 'Get homes by email']] },
+  { k: 'find', t: 'Finding the right home', help: 'Tell me what matters most and I\'ll set up your own home search, with new matches sent to you every day.', go: [['alerts', 'Get homes by email']] },
   { k: 'sell', t: 'Selling my current home first', help: 'We\'ll plan the timing together so you can sell and buy in the right order, without paying for two homes longer than you need to.', go: [] },
   { k: 'new', t: 'Building or buying new', help: 'Compare more than 200 new-home communities and their builder offers, or estimate what it costs to build on your own lot.', go: [['new-builds', 'See new builds'], ['build', 'Cost to build']] },
   { k: 'start', t: 'Not sure where to start', help: 'That\'s what I\'m here for. We\'ll talk through your goals, budget and timeline, with no pressure.', go: [] }
@@ -187,7 +187,7 @@ def('about', {
       '<div class="bio"><p class="mono eyebrow">About me</p><h2>Hi, I\'m Darien</h2>' +
         '<p class="lead-in">Being a buyer in today\'s market is a challenge. Prices are high, rates change every week, and the right homes don\'t wait. With the right agent beside you, the process can still be smooth, and even exciting.</p>' +
         '<p>I\'m a REALTOR® with eXp Realty of Northern California, DRE #02439090, and I help buyers across Placer, Sacramento, San Joaquin and Stanislaus counties, from Loomis and Roseville to Stockton, Lodi, Manteca and Modesto.</p>' +
-        '<p>My focus is making your next home affordable. I find homes with low-rate loans you can take over, line up $0-down options, compare builder offers and show you the real monthly cost before you decide. You\'ll get your own MLS search with new matches every day, and I\'ll be with you from the first showing to the day you get your keys.</p>' +
+        '<p>My focus is making your next home affordable. I find homes with low-rate loans you can take over, line up $0-down options, compare builder offers and show you the real monthly cost before you decide. You\'ll get your own custom portal with new matches every day, and I\'ll be with you from the first showing to the day you get your keys.</p>' +
         '<p class="call">Contact me and we can get started on your new path together.</p>' +
         '<div class="actions"><a class="btn btn-pa" href="sms:+12098826469">Text Darien</a><a class="btn btn-line" href="tel:+12098826469">Call 209.882.6469</a><a class="btn btn-line" href="mailto:darienphillips45@gmail.com">Email</a></div>' +
       '</div>' +
@@ -455,30 +455,54 @@ function cartKeyForProp(p) {
   const hit = Object.keys(CARD_PROP).find((k) => CARD_PROP[k] === p.key);
   return hit || p.key;
 }
-// One home on the rotating ring. Each home sits at its own angle around
-// the circle, stays upright while the ring turns, and grows largest when
-// it comes around to the front (the bottom of the ring). The zoom delay
-// is timed so the home is biggest at the front, not at the top.
-function cartWheelItem(e, i, n) {
-  const a = (i * 360) / Math.max(n, 1);
-  const tBottom = ((((180 - a) % 360) + 360) % 360) / 360 * 30;
-  const zd = (15 - tBottom).toFixed(2);
+/* ===== Cart pan row =====
+   Carted homes in a horizontal row of square boxes that pans right to
+   left. The row pauses on hover or focus, and Prev and Next arrows step
+   through it. No ring anywhere. */
+function cartPanCard(e) {
   const body = '<div class="head"><span class="pill pa">' + esc(e.pill) + '</span></div>' +
     (e.link ? '<h3><a href="' + esc(e.link) + '">' + esc(e.title) + '</a></h3>' : '<h3>' + esc(e.title) + '</h3>') +
     (e.price ? '<div class="price num">' + esc(e.price) + '</div>' : '') +
     (e.facts ? '<div class="facts">' + esc(e.facts) + '</div>' : '') +
-    '<div class="cart-wheel-acts">' +
+    '<div class="cart-pan-acts">' +
     (e.removeKey ? '<button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(e.removeKey) + '">Remove</button>' : '') +
     (e.addKey ? cartBtn(e.addKey, e.title, e.price || '') : '') +
     '</div>';
-  return '<div class="cart-wheel-slot" style="--a:' + a.toFixed(1) + 'deg"><div class="cart-wheel-spin"><article class="card cart-wheel-card" style="--zd:' + zd + 's">' + body + '</article></div></div>';
+  return '<article class="card cart-pan-card">' + body + '</article>';
 }
-function cartWheelHtml(entries, label) {
-  return '<div class="cart-wheel" role="region" aria-label="' + esc(label) + '">' +
-    '<div class="cart-wheel-track">' + entries.map((e, i) => cartWheelItem(e, i, entries.length)).join('') + '</div>' +
-    '</div>' +
-    '<p class="cart-wheel-hint">Homes circle around, from one side of the screen to the other. Hover to pause the circle, or tap Pause below. Tap a home to see it.</p>' +
-    '<p style="text-align:center"><button type="button" class="btn btn-line btn-sm" data-wheel-pause>Pause the circle</button></p>';
+function cartPanHtml(entries, label) {
+  return '<div class="cart-pan-wrap" data-cart-pan-wrap>' +
+    '<div class="cart-pan-bar"><button type="button" class="btn btn-line btn-sm" data-pan-prev aria-label="Show earlier homes">← Prev</button><p class="cart-pan-hint">Homes slide right to left. Hover to pause, or use Prev and Next.</p><button type="button" class="btn btn-line btn-sm" data-pan-next aria-label="Show more homes">Next →</button></div>' +
+    '<div class="cart-pan-viewport" data-cart-pan tabindex="0" role="region" aria-label="' + esc(label) + '"><div class="cart-pan-track">' + entries.map(cartPanCard).join('') + '</div></div></div>';
+}
+// Auto-pan: the row drifts right to left on its own, pauses on hover or
+// focus, and Prev and Next step it by one card. The track is duplicated
+// once so the loop wraps without a jump.
+function bindCartPan(root) {
+  root.querySelectorAll('[data-cart-pan]').forEach((vp) => {
+    const track = vp.querySelector('.cart-pan-track');
+    if (!track || !track.children.length) return;
+    track.innerHTML += track.innerHTML;
+    let paused = false, coolUntil = 0;
+    const step = () => {
+      if (!document.contains(vp)) { clearInterval(t); return; }
+      if (paused || Date.now() < coolUntil || document.hidden) return;
+      vp.scrollLeft += 1;
+      if (vp.scrollLeft >= track.scrollWidth / 2) vp.scrollLeft = 0;
+    };
+    const t = setInterval(step, 40);
+    vp.addEventListener('mouseenter', () => { paused = true; });
+    vp.addEventListener('mouseleave', () => { paused = false; });
+    vp.addEventListener('focusin', () => { paused = true; });
+    vp.addEventListener('focusout', () => { paused = false; });
+    const wrap = vp.closest('[data-cart-pan-wrap]');
+    if (wrap) {
+      const prev = wrap.querySelector('[data-pan-prev]'), next = wrap.querySelector('[data-pan-next]');
+      const hop = (d) => { coolUntil = Date.now() + 5000; vp.scrollBy({ left: d * 280, behavior: 'smooth' }); };
+      if (prev) prev.addEventListener('click', () => hop(-1));
+      if (next) next.addEventListener('click', () => hop(1));
+    }
+  });
 }
 function cartEntryFor(x) {
   const p = typeof propOfCard === 'function' ? propOfCard(x.k) : null;
@@ -498,6 +522,7 @@ def('cart', {
   ctas: () => '<a class="btn btn-ghost" href="sms:+12098826469">Text Darien</a><a class="btn btn-ghost" href="tel:+12098826469">Call Darien</a><a class="btn btn-ghost" href="mailto:darienphillips45@gmail.com">Email Darien</a>',
   html() {
     const items = [...cart.values()];
+    const views = '<div class="cart-view" role="group" aria-label="How to see your carted homes"><button type="button" class="btn btn-line btn-sm" data-cart-view="pan" aria-pressed="true">Pan</button><button type="button" class="btn btn-line btn-sm" data-cart-view="all" aria-pressed="false">All</button><button type="button" class="btn btn-line btn-sm" data-cart-view="next" aria-pressed="false">Next</button></div>';
     if (!items.length) {
       const sim = similarHomes();
       const entries = sim.list.map((p) => ({
@@ -508,12 +533,13 @@ def('cart', {
         addKey: cartKeyForProp(p)
       }));
       return '<section class="blk cart-page"><div class="wrap"><div class="empty"><h3>Your cart is empty</h3><p>Tap "Add to cart" on any home or new-build community, on any tab, and it will show up here.</p><p><button type="button" class="btn btn-pa" data-go="assumable">Browse assumable homes</button> <button type="button" class="btn btn-line" data-go="new-builds">Browse new builds</button></p></div>' +
-        (entries.length ? '<div class="shead" style="margin-top:22px"><div><h2>' + (sim.basedOn ? 'Homes like the ones you looked at' : 'Popular homes to start with') + '</h2><p>' + (sim.basedOn ? 'Based on homes you saved or liked on this site.' : 'Popular homes on this site. These are not based on your history, because there is no saved or liked home on this device yet.') + '</p></div></div>' + cartWheelHtml(entries, 'Similar homes, rotating') : '') +
+        (entries.length ? '<div class="shead" style="margin-top:22px" data-grow><div><h2>' + (sim.basedOn ? 'Homes like the ones you looked at' : 'Popular homes to start with') + '</h2><p>' + (sim.basedOn ? 'Based on homes you saved or liked on this site.' : 'Popular homes on this site. These are not based on your history, because there is no saved or liked home on this device yet.') + '</p></div></div>' + cartPanHtml(entries, 'Similar homes') : '') +
         '</div></section>';
     }
     const entries = items.map(cartEntryFor);
-    return '<section class="blk cart-page"><div class="wrap">' + cartWheelHtml(entries, 'Homes in your cart, rotating') +
-      '<div class="shead" style="margin-top:22px"><div><h2>Your cart, ' + items.length + (items.length === 1 ? ' home' : ' homes') + '</h2><p>Every home below is in your cart. Remove any you do not want, or ask Darien about all of them at once.</p></div></div>' +
+    return '<section class="blk cart-page"><div class="wrap">' + views +
+      '<div data-cart-view-panel="pan">' + cartPanHtml(entries, 'Homes in your cart') + '</div>' +
+      '<div data-cart-view-panel="all" hidden><div class="shead" style="margin-top:4px"><div><h2>Your cart, ' + items.length + (items.length === 1 ? ' home' : ' homes') + '</h2><p>Every home below is in your cart. Remove any you do not want, or ask Darien about all of them at once.</p></div></div>' +
       '<ul class="cart-list">' + items.map((x) => {
         const p = typeof propOfCard === 'function' ? propOfCard(x.k) : null;
         const title = p ? propTitle(p, true) : x.t;
@@ -522,19 +548,43 @@ def('cart', {
         const inner = '<div><b>' + esc(title) + '</b><span class="cart-list-facts">' + esc([price, facts].filter(Boolean).join(' · ')) + '</span></div>';
         const linked = p ? '<a href="#p/' + esc(p.key) + '">' + inner + '</a>' : inner;
         return '<li>' + linked + '<button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></li>';
-      }).join('') + '</ul>' +
+      }).join('') + '</ul></div>' +
+      '<div data-cart-view-panel="next" hidden><div class="cart-next" data-cart-next></div></div>' +
       '<div class="panel accent" style="margin-top:16px;display:grid;gap:12px"><b>Get more info on these ' + plural(items.length, 'home') + '</b><p class="note">Tap below to see the details for these homes first, then answer one question about an agent.</p>' +
       '<div class="ctas" style="margin:0"><button type="button" class="btn btn-pa" data-cart-contact="sms">Text Darien about these homes</button>' +
       '<button type="button" class="btn btn-line" data-cart-contact="email">Email Darien about these homes</button>' +
       '<a class="btn btn-line" href="tel:+12098826469">Call Darien</a></div></div></div></section>';
   },
   mount(root) {
-    const wheel = root.querySelector('.cart-wheel');
-    if (!wheel) return;
-    const btn = root.querySelector('[data-wheel-pause]');
-    if (btn) btn.addEventListener('click', () => {
-      const paused = wheel.classList.toggle('cart-wheel-paused');
-      btn.textContent = paused ? 'Play the circle' : 'Pause the circle';
-    });
+    bindCartPan(root);
+    const panels = {};
+    root.querySelectorAll('[data-cart-view-panel]').forEach((p) => { panels[p.dataset.cartViewPanel] = p; });
+    const btns = [...root.querySelectorAll('[data-cart-view]')];
+    if (!btns.length) return;
+    const items = [...cart.values()];
+    let idx = 0;
+    const drawNext = () => {
+      const box = panels.next ? panels.next.querySelector('[data-cart-next]') : null;
+      if (!box || !items.length) return;
+      if (idx >= items.length) idx = items.length - 1;
+      if (idx < 0) idx = 0;
+      const x = items[idx];
+      const p = typeof propOfCard === 'function' ? propOfCard(x.k) : null;
+      const title = p ? propTitle(p, true) : x.t;
+      const price = p ? propPrice(p) : (x.p || '');
+      const facts = p ? [p.city, propFacts(p)].filter(Boolean).join(' · ') : '';
+      const inner = '<b>' + esc(title) + '</b>' + ((price || facts) ? '<span class="cart-list-facts">' + esc([price, facts].filter(Boolean).join(' · ')) + '</span>' : '');
+      box.innerHTML = '<div class="cart-next-step"><button type="button" class="btn btn-line btn-sm" data-next-prev>← Prev</button><span>' + (idx + 1) + ' of ' + items.length + '</span><button type="button" class="btn btn-line btn-sm" data-next-next>Next →</button></div>' +
+        '<div class="cart-next-card">' + (p ? '<a href="#p/' + esc(p.key) + '">' + inner + '</a>' : inner) +
+        '<div class="cart-pan-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></div>';
+      box.querySelector('[data-next-prev]').addEventListener('click', () => { idx = (idx - 1 + items.length) % items.length; drawNext(); });
+      box.querySelector('[data-next-next]').addEventListener('click', () => { idx = (idx + 1) % items.length; drawNext(); });
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      Object.keys(panels).forEach((k) => { panels[k].hidden = k !== b.dataset.cartView; });
+      if (b.dataset.cartView === 'next') drawNext();
+    }));
+    drawNext();
   }
 });

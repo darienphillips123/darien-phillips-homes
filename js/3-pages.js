@@ -67,31 +67,53 @@ def('home', {
   ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
-    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + justListedHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
+    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + helpHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
       sellerHtml() + '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Popular places</h2><p>Pick a town to see assumable homes, new builds, $0-down options and homes by payment there.</p></div></div>' +
       '<div class="places">' + POPULAR.map((n) => '<button type="button" class="chip" data-place="' + esc(n) + '">' + esc(n) + '</button>').join('') + '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="statrow">' +
-        '<div class="panel"><div class="v num">' + DATA.assumables.length + '</div><div class="k">Homes with assumable loans in Darien\'s MLS search</div></div>' +
+        '<div class="panel"><div class="v num">' + DATA.assumables.length + '</div><div class="k">Homes with assumable loans in Darien\'s custom portal</div></div>' +
         '<div class="panel"><div class="v num">' + DATA.communities.length + '</div><div class="k">New-home communities across four counties</div></div>' +
         '<div class="panel"><div class="v num">$0</div><div class="k">Down payment possible with VA, USDA or FHA plus CalHFA MyHome</div></div>' +
         '<div class="panel"><div class="v num">' + RATES.conv + '%</div><div class="k">Average 30-year rate on Oct 29, 2026. Assumable loans are often half that.</div></div>' +
       '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>How Darien helps</h2></div></div><div class="why">' +
-        '<div class="panel"><b>Your own MLS search</b><p>Darien sets up a custom MLS page with every home in your range. New matches come by email each day, and you can save or pass on each one.</p></div>' +
+        '<div class="panel"><b>Your own home search</b><p>Darien sets up a custom portal with every home in your range. New matches come by email each day, and you can save or pass on each one.</p></div>' +
         '<div class="panel"><b>Low-rate and $0-down know-how</b><p>He finds homes with assumable FHA and VA loans and lines up $0-down options, then walks you through the lender\'s approval.</p></div>' +
         '<div class="panel"><b>New builds without the runaround</b><p>Builders usually need your agent at the first visit. Text Darien first and he\'ll register you and compare builder offers.</p></div>' +
       '</div></div></section>' +
-      '<section class="blk"><div class="wrap"><div class="panel accent bar"><div><b>Get homes by email</b><p class="note">Tell Darien what you want and get new matches every day, or ask for your own MLS page.</p></div><button type="button" class="btn btn-pa" data-go="alerts">Sign up</button></div></div></section>';
+      '<section class="blk"><div class="wrap"><div class="panel accent bar"><div><b>Get homes by email</b><p class="note">Tell Darien what you want and get new matches every day, or ask for your own custom portal.</p></div><button type="button" class="btn btn-pa" data-go="alerts">Sign up</button></div></div></section>';
   }
 });
 
-// Darien's newest homes from his Instagram posts (the Listings tab), newest first
-function justListedHtml() {
-  if (typeof PROPS === 'undefined') return '';
-  const list = PROPS.filter((p) => p.kind === 'listing').slice(0, 6);
-  if (!list.length) return LISTINGS === 'loading' ? '<section class="blk" id="just-listed"></section>' : '';
-  return '<section class="blk" id="just-listed"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Just posted</p><h2>New from Darien\'s Instagram</h2><p>The homes Darien toured and posted most recently. Tap one to see it.</p></div></div>' +
-    '<div class="cards">' + list.map((p) => teaserCard(p)).join('') + '</div></div></section>';
+/* ===== How Darien can help: four relatable situations, not client stories =====
+   Replaces the old Instagram boxes on the home page.
+   Each option opens a short warm answer plus a button to message Darien.
+   The scenarios below it are common situations, labelled as such, with no
+   fake names, no fake quotes and no client attributions. No buyer guide
+   and no rent versus mortgage breakdown here. */
+const HELP_OPTIONS = [
+  { t: 'I have been looking for months', a: 'Months of scrolling and starting over is tiring, and it is not your fault. The listings all start to look the same after a while. Tell me what matters most and I will narrow it to homes that actually fit, and keep the new matches coming to you.', sms: 'Hi Darien, I have been looking for months and I could use your help.' },
+  { t: 'I have been looking for years', a: 'Two years of looking, and being outbid or priced out more than once, wears anyone down. It is fair to wonder if buying is even worth it. Let me look at your numbers and your must-haves with fresh eyes, and we will find a path that fits.', sms: 'Hi Darien, I have been looking for years and I feel stuck.' },
+  { t: 'I do not know where to start', a: 'Not knowing where to start is the best place to start. We will go one step at a time: what you can afford each month, what matters most in a home, and what the first step looks like. No pressure, just a clear plan.', sms: 'Hi Darien, I do not know where to start with buying a home.' },
+  { t: 'Is buying worth it for me', a: 'That is a fair question, and the answer is different for everyone. We will look at your rent, your income, and what a home would really cost each month, and then you can decide with real numbers in front of you.', sms: 'Hi Darien, is buying worth it for me? Can we look at my numbers?' }
+];
+const HELP_SCENARIOS = [
+  'A household making around $100,000 a year, looking for 8 months, spending every weekend scrolling listings and starting over, tired and no closer to a home.',
+  'A renter paying $2,400 a month who would rather keep renting than go through the whole buying process, the paperwork, the showings, the waiting.',
+  'A family looking for 2 years, feeling stuck, outbid and priced out more than once, wondering if buying is even worth it.',
+  'A first-time buyer with steady income who does not know where to start, rent keeps going up, and dreads how much energy buying seems to take.'
+];
+function helpHtml() {
+  const msgBtn = (body, label) => '<a class="btn btn-pa btn-sm" href="sms:+12098826469?&body=' + encodeURIComponent(body) + '">' + esc(label || 'Message Darien') + '</a>';
+  return '<section class="blk" id="help"><div class="wrap">' +
+    '<div class="shead" data-grow><div><p class="mono eyebrow">How I can help</p><h2>This Is How I Can Be More Helpful to You</h2><p>Pick the one that sounds like you. There is no wrong answer, and no pressure after.</p></div></div>' +
+    '<div class="help-opts">' + HELP_OPTIONS.map((o) => '<details class="help-opt" data-grow><summary>' + esc(o.t) + '</summary><p>' + esc(o.a) + '</p><div class="help-msg">' + msgBtn(o.sms) + '<p class="note">Darien Phillips, REALTOR, 209.882.6469, DRE 02439090</p></div></details>').join('') + '</div>' +
+    '<div class="help-scen" data-grow><p class="help-label"><b>Sound familiar? These are common situations, not client stories.</b></p>' +
+    '<div class="help-scenarios">' + HELP_SCENARIOS.map((s) => '<p class="help-scenario" data-grow>' + esc(s) + '</p>').join('') + '</div></div>' +
+    '<p class="help-close" data-grow>Let me show you how I can find you the right home with less energy involved. Message me and we will get started on your search.</p>' +
+    '<div class="actions" data-grow>' + msgBtn('Hi Darien, can you help me find the right home with less energy involved?') + '<a class="btn btn-line" href="tel:+12098826469">Call 209.882.6469</a></div>' +
+    '<p class="note" style="margin-top:8px">Darien Phillips, REALTOR, DRE 02439090</p>' +
+    '</div></section>';
 }
 
 /* ===== Homes I toured =====
@@ -140,70 +162,63 @@ const TOURED_MEDIA = {
   't:carlsberg-670-ridgeline-ct': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_CCON_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Contemporary Craftsman elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok, Carlsberg plan tour' }
 };
 /* The video cell shows the home photo as its poster, with a big play
-   button and no profile picture and no View profile button. Hovering
-   loads the tour and starts it playing; tapping the poster opens the
-   tour on Instagram or TikTok in a new tab, no login needed. Homes with
-   no verified photo get the video cell on its own, full width, instead
-   of a gold panel. */
-function touredVideoCell(m, title) {
-  const poster = m.photo ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '';
-  return '<div class="lux-video" data-embed="' + esc(m.video) + '" data-watch="' + esc(m.watch) + '">' +
-    '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + ', opens in a new tab">' + poster +
-    '<span class="lux-play"><span aria-hidden="true">▶</span> Watch Darien\'s tour</span>' +
-    (title ? '<span class="lux-cap"><span class="lux-title">' + esc(title) + '</span></span>' : '') + '</a></div>';
-}
-function touredDuo(m, photoHtml) {
-  return '<div class="lux-duo">' + photoHtml + touredVideoCell(m) + '</div>';
+   button and no profile picture. There is no embedded player on the
+   card: tapping the poster opens the exact tour on Instagram or TikTok
+   in a new tab, no login needed. Homes with no verified photo get a
+   warm panel as the poster instead of a gold panel. */
+function touredVideoCell(m, poster) {
+  const img = poster || m.photo;
+  const posterHtml = img ? '<img src="' + esc(img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>';
+  return '<div class="lux-video">' +
+    '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + ', opens in a new tab">' + posterHtml +
+    '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(m.plat.split(',')[0]) + '</span></a></div>';
 }
 function touredCredit(m) { return '<p class="note">' + esc(m.credit) + '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>.</p>'; }
-/* Hover starts the tour playing. The poster link still handles a tap or
-   click, which opens the tour on Instagram or TikTok. */
-document.addEventListener('mouseover', (e) => {
-  const cell = e.target.closest ? e.target.closest('.lux-video[data-embed]') : null;
-  if (!cell || cell.dataset.playing) return;
-  cell.dataset.playing = '1';
-  const src = cell.dataset.embed + (cell.dataset.embed.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1&muted=1';
-  const f = document.createElement('iframe');
-  f.src = src; f.title = 'Darien\'s video tour'; f.loading = 'lazy'; f.allowFullscreen = true;
-  f.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-  cell.appendChild(f);
-  if (typeof beacon === 'function') { try { beacon('click', { h: 'Watched video tour: ' + (cell.dataset.watch || ''), s: 'Video', u: cell.dataset.watch || '' }); } catch (x) { /* tracking is best effort */ } }
+/* A tap on a tour poster opens the reel in a new tab. The click is still
+   tracked, best effort, so Darien can see which tours get watched. */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest ? e.target.closest('.lux-video-poster') : null;
+  if (!a) return;
+  if (typeof beacon === 'function') { try { beacon('click', { h: 'Watched video tour: ' + a.href, s: 'Video', u: a.href }); } catch (x) { /* tracking is best effort */ } }
 });
 
+/* Wide square card: details on the left, the tour video on the right
+   filling the full height of the card. The details stack: Click to get
+   the details, Add to cart, See this home. */
 function touredPropCard(p, cartKey) {
   const info = { h: propTitle(p, true), p: propPrice(p), b: propFacts(p), l: p.hook, city: p.city, z: p.addr && p.city ? zillowFor(p.addr, p.city, p.zip) : '', m: p.addr ? mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') : '' };
   const tour = (typeof toursFor === 'function' && toursFor(commOf(p)).length) ? '<span class="pill ok">▶ Video tour</span>' : '';
-  // The home's own photo when the sheet has one; otherwise a warm solid
-  // panel, never a stock photo passed off as the home.
-  const photo = (p.img && ON_WEB) ? photoImg('home', false, p.img) : '';
   const m = TOURED_MEDIA[p.key];
-  const media = photo || (m ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>');
-  const photoLink = '<a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + media +
-    '<span class="lux-pill"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
-    '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span></span></a>';
-  const mediaHtml = (m && !photo) ? (m.photo ? touredDuo(m, photoLink) : touredVideoCell(m, propTitle(p, false))) : photoLink;
-  return '<article class="lux-card">' + mediaHtml +
-    '<div class="lux-body">' + (m && !photo ? touredCredit(m) : '') +
+  // The home's own photo when the sheet has one is the video poster;
+  // otherwise the verified photo from TOURED_MEDIA is. No video means
+  // the photo itself fills the right side, never a stock photo passed
+  // off as the home.
+  const sheetPhoto = (p.img && /^https:\/\//i.test(p.img)) ? p.img : '';
+  const media = m ? touredVideoCell(m, sheetPhoto) :
+    ((sheetPhoto || (p.img && ON_WEB)) ? '<a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + photoImg('home', false, p.img) + '</a>' : '<div class="lux-photo"><div class="lux-panel" aria-hidden="true"></div></div>');
+  return '<article class="lux-card" data-grow><div class="lux-body">' +
+    '<span class="lux-pill-static"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
+    '<h3>' + esc(propTitle(p, false)) + '</h3><p class="lux-hook">' + esc(p.hook || '') + '</p>' +
+    (m ? touredCredit(m) : '') +
     '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
-    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></div></article>';
+    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></div>' +
+    '<div class="lux-media">' + media + '</div></article>';
 }
 function touredCustomCard(t) {
   const info = { h: t.addr, p: t.price, b: t.facts, l: t.hook, city: t.city, z: t.z || '', m: mapFor(t.addr + ', CA') };
   // Click to get the details: no price, facts, hook or Zillow button open
   // on landing. The button opens the details first, then the agent
-  // question at the end. The photo itself still links out on a tap, which
-  // is a click, not an open display. A community page link is navigation.
-  const see = t.z ? '' : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
-  const seeHref = t.z ? track(t.z, { h: info.h, s: 'Zillow', p: info.p }) : '#p/' + t.page;
-  const seeAttrs = t.z ? ' target="_blank" rel="noopener"' : '';
+  // question at the end. See this home goes to Zillow for the resales
+  // and to the community page for the builder homes.
+  const see = t.z ? '<a class="btn btn-line btn-sm" href="' + esc(track(t.z, { h: info.h, s: 'Zillow', p: info.p })) + '" target="_blank" rel="noopener">See this home</a>' : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
   const m = TOURED_MEDIA[t.key];
-  const photoLink = '<a class="lux-photo" href="' + esc(seeHref) + '"' + seeAttrs + ' aria-label="' + esc(t.addr) + '">' + (m ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>') +
-    '<span class="lux-pill"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
-    '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span></span></a>';
-  const mediaHtml = m ? (m.photo ? touredDuo(m, photoLink) : touredVideoCell(m, t.title)) : photoLink;
-  return '<article class="lux-card">' + mediaHtml +
-    '<div class="lux-body">' + (m ? touredCredit(m) : '') + '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
-    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div></article>';
+  const media = m ? touredVideoCell(m, '') : '<div class="lux-photo"><div class="lux-panel" aria-hidden="true"></div></div>';
+  return '<article class="lux-card" data-grow><div class="lux-body">' +
+    '<span class="lux-pill-static"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
+    '<h3>' + esc(t.title) + '</h3><p class="lux-hook">' + esc(t.hook) + '</p>' +
+    (m ? touredCredit(m) : '') + '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
+    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div>' +
+    '<div class="lux-media">' + media + '</div></article>';
 }
 function touredHtml() {
   if (typeof PROPS === 'undefined') return '';
@@ -221,7 +236,7 @@ function touredHtml() {
   TOURED_CUSTOM.forEach((t) => items.push({ price: Number(String(t.price).replace(/[^0-9]/g, '')) || 0, html: touredCustomCard(t) }));
   if (!items.length) return '';
   items.sort((a, b) => a.price - b.price);
-  return '<style>.lux-duo{display:grid;grid-template-columns:1fr 1fr;}.lux-duo .lux-photo{aspect-ratio:4/3;}.lux-video{position:relative;aspect-ratio:4/3;overflow:hidden;background:#000;}.lux-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.lux-vid-tag{position:absolute;left:8px;bottom:8px;z-index:2;background:rgba(0,0,0,.65);color:#fff;font-size:.78rem;padding:3px 8px;border-radius:999px;pointer-events:none;}@media(max-width:640px){.lux-duo{grid-template-columns:1fr;}.lux-duo .lux-photo,.lux-video{aspect-ratio:16/10;}}</style><section class="blk" id="toured"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
+  return '<section class="blk" id="toured"><div class="wrap"><div class="shead" data-grow><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
     '<div class="lux-list">' + items.map((x) => x.html).join('') + '</div></div></section>';
 }
 
@@ -235,7 +250,7 @@ def('assumable', {
     return '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">How it works</p><h2>How to find an assumable home</h2></div></div>' +
       '<ol class="steps">' +
         '<li><b>Look for FHA, VA or USDA loans</b><span>Most conventional loans can\'t be taken over. FHA, VA and USDA loans usually can, with the lender\'s approval.</span></li>' +
-        '<li><b>Search listings for "assumable"</b><span>Agents mention it in the listing remarks. This page, Roots and Darien\'s MLS search pull those homes for you.</span></li>' +
+        '<li><b>Search listings for "assumable"</b><span>Agents mention it in the listing remarks. This page, Roots and Darien\'s custom portal pull those homes for you.</span></li>' +
         '<li><b>Get the loan details</b><span>Ask for the rate, balance, payment and years left. The listing agent can get them from the seller\'s statement.</span></li>' +
         '<li><b>Cover the gap</b><span>Pay the difference between the price and the loan balance in cash, or with a second loan on top.</span></li>' +
         '<li><b>Apply with the seller\'s lender</b><span>The loan servicer approves you, so closing often takes 45 to 90 days.</span></li>' +
@@ -245,7 +260,7 @@ def('assumable', {
         '<tr><td><b>VA</b></td><td>Anyone who qualifies, veteran or not</td><td>VA charges a 0.5% funding fee on an assumption. The seller\'s VA entitlement stays with the loan unless a veteran buyer swaps in their own.</td></tr>' +
         '<tr><td><b>USDA</b></td><td>Buyers who meet USDA income limits and will live in the home</td><td>The home must be in a USDA-eligible area.</td></tr>' +
       '</tbody></table></div></div></section>' +
-      '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes now</p><h2>Homes with assumable loans</h2><p>From Darien\'s MLS search of listings that mention an assumable loan, checked ' + esc(DATA.assumablesChecked) + '. Ask for the full loan details on any of them.</p></div></div>' +
+      '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes now</p><h2>Homes with assumable loans</h2><p>From Darien\'s own home search of listings that mention an assumable loan, checked ' + esc(DATA.assumablesChecked) + '. Ask for the full loan details on any of them.</p></div></div>' +
       '<div class="panel" style="display:grid;gap:12px">' + countyChips(true) +
         '<div class="chips" role="group" aria-label="Loan type"><span class="mono">Loan</span>' + [['all', 'All'], ['FHA', 'FHA'], ['VA', 'VA'], ['', 'Not listed']].map(([v, t]) => '<button type="button" class="chip" data-type="' + v + '" aria-pressed="' + (A.type === v) + '">' + t + '</button>').join('') + '</div>' +
         '<div class="fields">' + sel('as-max', PRICE_OPTS, A.max, 'Price') + sel('as-beds', BED_OPTS, A.beds, 'Bedrooms') + sel('as-baths', BATH_OPTS, A.baths, 'Bathrooms') + sel('as-sqft', SIZE_OPTS, A.sqft, 'Home size') +
@@ -259,7 +274,7 @@ def('assumable', {
   },
   mount(root) {
     const A = S.assum;
-    const st = { shown: 12, empty: '<div class="empty"><h3>No homes match these filters</h3><p>Try another area, a higher price or fewer bedrooms. Darien\'s MLS search finds new assumable listings every day.</p></div>' };
+    const st = { shown: 12, empty: '<div class="empty"><h3>No homes match these filters</h3><p>Try another area, a higher price or fewer bedrooms. Darien\'s custom portal finds new assumable listings every day.</p></div>' };
     const draw = () => {
       root.querySelectorAll('[data-type]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.type === A.type)));
       const q = A.text.toLowerCase();
@@ -416,7 +431,7 @@ def('payment', {
       '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2 id="py-homes-h">Homes in your range</h2><p>New builds, assumable homes and the Placer and Stockton picks that fit the price you can shop up to.</p></div></div><div id="py-groups"></div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Check a specific price</h2></div></div><div class="calc"><div class="panel"><div class="fields">' + moneyField('py-price', 'Home price', Y.price) + '</div></div><div class="result"><span class="lbl">Monthly payment</span><div class="big num" id="py-p-total">$0</div><div id="py-p-break"></div></div></div></div></section>' +
-      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Search every home in your range</h2><p>Opens Zillow with your top price set, or ask Darien for your own MLS page with every match.</p></div></div><div class="tiles" id="py-live"></div></div></section>';
+      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Search every home in your range</h2><p>Opens Zillow with your top price set, or ask Darien for your own custom portal with every match.</p></div></div><div class="tiles" id="py-live"></div></div></section>';
   },
   mount() {
     const Y = S.pay;
@@ -453,7 +468,7 @@ def('payment', {
       $('py-groups').querySelectorAll('[data-group]').forEach((b) => b.addEventListener('click', () => { const g = groups[+b.dataset.group]; g[3](); save(); go(g[4]); }));
       const towns = TOWNS.filter((t) => t.c === Y.county).slice(0, 8);
       $('py-live').innerHTML = towns.map((t) => '<a class="tile" style="--tc:' + PAGES.payment.color + ';grid-template-rows:auto" target="_blank" rel="noopener" href="' + esc(track(zillowCity(t.n, { max }), { h: t.n + ' homes up to ' + short(max), s: 'Zillow' })) + '"><div class="body"><b>' + esc(t.n) + ' up to ' + short(max) + '</b><span>On Zillow ↗</span></div></a>').join('') +
-        '<button type="button" class="tile" style="--tc:' + PAGES.payment.color + ';grid-template-rows:auto" data-go="alerts"><div class="body"><b>Your own MLS page</b><span>Every home in your range, emailed daily</span></div></button>';
+        '<button type="button" class="tile" style="--tc:' + PAGES.payment.color + ';grid-template-rows:auto" data-go="alerts"><div class="body"><b>Your own custom portal</b><span>Every home in your range, emailed daily</span></div></button>';
       const pf = payment(Object.assign({}, opts(), { price: Y.price || 0 }));
       $('py-p-total').textContent = Y.price ? money(pf.total) : '$0';
       $('py-p-break').innerHTML = Y.price ? breakdown(pf) + (pf.note ? '<p class="note">' + esc(pf.note) + '</p>' : '') : '';

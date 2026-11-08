@@ -293,11 +293,12 @@ function updateCartCount() {
 }
 /* ===== Cart drawer, Squarespace style =====
    A panel that slides in from the right side of the page to the left.
-   All shows every carted home lined up; Next steps through them one
-   at a time, so the visitor can see which ones they want more info on.
-   The full cart page and the click-to-get-details agent flow are
-   untouched: Text and Email in the drawer still run the details-first,
-   agent-question-at-the-end flow. */
+   Pan shows the carted homes in a horizontal row of square boxes that
+   scrolls sideways. All shows every carted home lined up; Next steps
+   through them one at a time, so the visitor can see which ones they
+   want more info on. The full cart page and the click-to-get-details
+   agent flow are untouched: Text and Email in the drawer still run the
+   details-first, agent-question-at-the-end flow. */
 let cartDrawerMode = 'all', cartDrawerIdx = 0, cartDrawerOpen = false;
 function cartDrawerItems() { return [...cart.values()]; }
 function cartDrawerLink(x) {
@@ -308,9 +309,10 @@ function renderCartDrawer() {
   if (!body || !title) return;
   const items = cartDrawerItems();
   title.textContent = 'Your cart' + (items.length ? ' (' + items.length + (items.length === 1 ? ' home' : ' homes') + ')' : '');
-  const allBtn = $('cart-view-all'), nextBtn = $('cart-view-next');
+  const allBtn = $('cart-view-all'), nextBtn = $('cart-view-next'), panBtn = $('cart-view-pan');
   if (allBtn) allBtn.setAttribute('aria-pressed', String(cartDrawerMode === 'all'));
   if (nextBtn) nextBtn.setAttribute('aria-pressed', String(cartDrawerMode === 'next'));
+  if (panBtn) panBtn.setAttribute('aria-pressed', String(cartDrawerMode === 'pan'));
   if (!items.length) {
     body.innerHTML = '<p class="note">Your cart is empty. Tap Add to cart on any home or new-build community, on any tab, and it will show up here.</p><p><button type="button" class="btn btn-pa" data-go="assumable">Browse assumable homes</button></p>';
     return;
@@ -323,6 +325,20 @@ function renderCartDrawer() {
     return '<li>' + (link ? '<a href="' + esc(link) + '">' + inner + '</a>' : inner) +
       '<div class="cart-drawer-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></li>';
   };
+  if (cartDrawerMode === 'pan') {
+    body.innerHTML = '<div class="cart-pan-bar"><button type="button" class="btn btn-line btn-sm" data-drawer-pan-prev>← Prev</button><p class="cart-pan-hint">Swipe or scroll sideways.</p><button type="button" class="btn btn-line btn-sm" data-drawer-pan-next>Next →</button></div>' +
+      '<div class="cart-pan-viewport" data-drawer-pan tabindex="0"><div class="cart-pan-track">' + items.map((x) => {
+        const link = cartDrawerLink(x);
+        return '<article class="card cart-pan-card">' + (link ? '<h3><a href="' + esc(link) + '">' + esc(x.t) + '</a></h3>' : '<h3>' + esc(x.t) + '</h3>') +
+          (x.p ? '<div class="price num">' + esc(x.p) + '</div>' : '') +
+          '<div class="cart-pan-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></article>';
+      }).join('') + '</div></div>';
+    const vp = body.querySelector('[data-drawer-pan]');
+    const pv = body.querySelector('[data-drawer-pan-prev]'), nx = body.querySelector('[data-drawer-pan-next]');
+    if (pv) pv.addEventListener('click', () => vp.scrollBy({ left: -280, behavior: 'smooth' }));
+    if (nx) nx.addEventListener('click', () => vp.scrollBy({ left: 280, behavior: 'smooth' }));
+    return;
+  }
   if (cartDrawerMode === 'next') {
     const x = items[cartDrawerIdx];
     body.innerHTML = '<div class="cart-drawer-step"><button type="button" class="btn btn-line btn-sm" id="cart-prev">← Prev</button><span>' + (cartDrawerIdx + 1) + ' of ' + items.length + '</span><button type="button" class="btn btn-line btn-sm" id="cart-next">Next →</button></div>' +
@@ -354,6 +370,7 @@ function closeCartDrawer() {
 }
 document.addEventListener('click', (e) => {
   if (e.target.closest && e.target.closest('#cart-drawer-close, #cart-overlay')) { closeCartDrawer(); return; }
+  if (e.target.closest && e.target.closest('#cart-view-pan')) { cartDrawerMode = 'pan'; renderCartDrawer(); return; }
   if (e.target.closest && e.target.closest('#cart-view-all')) { cartDrawerMode = 'all'; renderCartDrawer(); return; }
   if (e.target.closest && e.target.closest('#cart-view-next')) { cartDrawerMode = 'next'; renderCartDrawer(); return; }
   if (e.target.closest && e.target.closest('#cart-drawer-full')) { closeCartDrawer(); go('cart'); return; }

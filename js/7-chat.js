@@ -142,7 +142,7 @@
       return;
     }
     if (/(buy|buying|first home|first time|how do i|how to buy|pre-approval|preapproval)/.test(s)) {
-      addMsg('Start with the Beginner\'s guide tab. It walks through every step from pre-approval to keys, in plain words. Then Darien can set up a custom MLS page for you. ' + contactHtml(), 'bot', true);
+      addMsg('Start with the Beginner\'s guide tab. It walks through every step from pre-approval to keys, in plain words. Then Darien can set up a custom portal for you. ' + contactHtml(), 'bot', true);
       showChips([['Read the guide', 'go:guide'], ['Talk to Darien', 'talk']]);
       return;
     }
@@ -247,8 +247,8 @@
     }
     input.focus();
   }
-  // Touch devices have no hover: a tap briefly shows the waving avatar
-  // too, then the chat opens as normal.
+  // Touch devices have no hover: a tap briefly crossfades to the cropped
+  // waving avatar too, then the chat opens as normal.
   fab.addEventListener('pointerdown', function () {
     fab.classList.add('waving');
     setTimeout(function () { fab.classList.remove('waving'); }, 1200);

@@ -190,6 +190,19 @@ $('back').addEventListener('click', () => {
 
 let lastRendered = '';
 let lastView = { p: '', t: 0 }, firstView = true;
+/* ===== Scroll-grow: elements marked data-grow start small and grow to
+   full size as they scroll into view. render() calls this after every
+   page mount, so it works on re-renders too. */
+let growObs = null;
+function bindGrow(root) {
+  const scope = root || document;
+  const els = [...scope.querySelectorAll('[data-grow]:not(.grow-start)')];
+  if (!els.length) return;
+  els.forEach((el) => el.classList.add('grow-start'));
+  if (!('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('in')); return; }
+  if (!growObs) growObs = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); growObs.unobserve(en.target); } }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+  els.forEach((el) => growObs.observe(el));
+}
 function render(page, keep) {
   const y0 = window.scrollY;
   CURRENT = page;
@@ -225,6 +238,7 @@ function render(page, keep) {
   if (pimg) pimg.addEventListener('error', () => { pimg.closest('figure').remove(); $('hero').querySelector('.hero-in').classList.remove('hero-split'); }, { once: true });
   $('view').innerHTML = (page === 'home' || page === 'search' ? picksHtml() : '') + P.html();
   if (P.mount) P.mount($('view'));
+  bindGrow($('view'));
   wirePhotos($('hero'));
   wirePhotos($('view'));
   $('foot-photo').innerHTML = photoCredit(photoKey);
