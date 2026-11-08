@@ -74,7 +74,7 @@
   }
   function showRealtorDetails() {
     mode = 'realtor';
-    var link = ' Here are the details: darienphillips.exprealty.com. You can also search for it on this site.';
+    var link = ' Here are the details: https://darien-phillips-homes.pages.dev. You can also search for it on this site.';
     addMsg('Here are the details' + (chatHome ? ' on ' + chatHome : '') + '.' + link);
     addMsg('Are you working with an agent?');
     showChips([['Yes, I have an agent', 'realtor-yes'], ['No, I do not', 'realtor-no']]);
@@ -93,7 +93,7 @@
       return;
     }
     mode = 'home-name';
-    addMsg('No problem, you already have the details at darienphillips.exprealty.com. Which home would you like info on? Type the street or town, and I will point you to it.');
+    addMsg('No problem, you already have the details at https://darien-phillips-homes.pages.dev. Which home would you like info on? Type the street or town, and I will point you to it.');
     showChips([['Talk to Darien', 'talk']]);
   }
   function finishAgentInfo() {
@@ -247,6 +247,12 @@
     }
     input.focus();
   }
+  // Touch devices have no hover: a tap briefly shows the waving avatar
+  // too, then the chat opens as normal.
+  fab.addEventListener('pointerdown', function () {
+    fab.classList.add('waving');
+    setTimeout(function () { fab.classList.remove('waving'); }, 1200);
+  });
   fab.addEventListener('click', function () {
     if (panel.hidden) openChat(); else { panel.hidden = true; fab.setAttribute('aria-expanded', 'false'); }
   });

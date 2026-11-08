@@ -119,13 +119,17 @@ const TOURED_CUSTOM = [
    visually checked in the workspace on Nov 7, 2026. RIO was rejected: its
    candidate photo shows only a garage/barn, not the house. Ridge Park was
    rejected: its candidate photo shows only the pool and grounds, no house.
-   Cornwall has no verifiable photo URL at all. Those three keep the gold
-   panel. Oak Rock's photo is an aerial from the prior listing of the same
+   Cornwall has no verifiable photo URL at all. Those three get the tour
+   video on its own instead of a gold panel, and the card says so.
+   Oak Rock's photo is an aerial from the prior listing of the same
    house, pre-remodel, and is labelled as such. Builder photos are labelled
    as builder photos. Videos are Darien's own reels, verified Nov 7, 2026.
    The Carlsberg video is one plan-level tour; its December move-in line
    points to 835 Ridgeline Dr, so 670 Ridgeline Ct is labelled plan tour. */
 const TOURED_MEDIA = {
+  'rio': { video: 'https://www.tiktok.com/embed/v2/7703266645698989326', watch: 'https://www.tiktok.com/@realtordarien/video/7703266645698989326', plat: 'TikTok', credit: 'Tour video only, no verified listing photo on file for this home' },
+  't:ridge-park-loomis': { video: 'https://www.instagram.com/reel/De7Q5GZyqYJ/embed/', watch: 'https://www.instagram.com/reel/De7Q5GZyqYJ/', plat: 'Instagram', credit: 'Tour video only, no verified listing photo on file for this home' },
+  't:cornwall-rocklin': { video: 'https://www.instagram.com/reel/DfbX0B1STYQ/embed/', watch: 'https://www.instagram.com/reel/DfbX0B1STYQ/', plat: 'Instagram', credit: 'Tour video only, no verified listing photo on file for this home' },
   'ser': { photo: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/09/21/16a81d77-1658-4c22-b2b9-2c013064d826.jpg', credit: 'Listing photo via MetroList', video: 'https://www.instagram.com/reel/DfSUUIJyqGq/embed/', watch: 'https://www.instagram.com/reel/DfSUUIJyqGq/', plat: 'Instagram' },
   'palm': { photo: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/10/15/65fe65dd-29aa-41f2-ae83-a54e37dbf999.jpg', credit: 'Aerial listing photo via MetroList', video: 'https://www.instagram.com/reel/DfQIcvGyUNP/embed/', watch: 'https://www.instagram.com/reel/DfQIcvGyUNP/', plat: 'Instagram' },
   'haven': { photo: 'https://bluemountaincommunities.com/wp-content/uploads/2024/02/BMC_Oakhaven_-Plan2_B_CS_07-1600x1120.jpg', credit: 'Builder photo, Blue Mountain Communities', video: 'https://www.instagram.com/reel/DfQzh2jyHQo/embed/', watch: 'https://www.instagram.com/reel/DfQzh2jyHQo/', plat: 'Instagram' },
@@ -135,11 +139,36 @@ const TOURED_MEDIA = {
   't:carlsberg-835-ridgeline-dr': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_MODF_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Modern Farmhouse elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok' },
   't:carlsberg-670-ridgeline-ct': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_CCON_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Contemporary Craftsman elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok, Carlsberg plan tour' }
 };
+/* The video cell shows the home photo as its poster, with a big play
+   button and no profile picture and no View profile button. Hovering
+   loads the tour and starts it playing; tapping the poster opens the
+   tour on Instagram or TikTok in a new tab, no login needed. Homes with
+   no verified photo get the video cell on its own, full width, instead
+   of a gold panel. */
+function touredVideoCell(m, title) {
+  const poster = m.photo ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '';
+  return '<div class="lux-video" data-embed="' + esc(m.video) + '" data-watch="' + esc(m.watch) + '">' +
+    '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + ', opens in a new tab">' + poster +
+    '<span class="lux-play"><span aria-hidden="true">▶</span> Watch Darien\'s tour</span>' +
+    (title ? '<span class="lux-cap"><span class="lux-title">' + esc(title) + '</span></span>' : '') + '</a></div>';
+}
 function touredDuo(m, photoHtml) {
-  return '<div class="lux-duo">' + photoHtml +
-    '<div class="lux-video"><iframe src="' + esc(m.video) + '" title="Darien\'s video tour" loading="lazy" allowfullscreen allow="autoplay; encrypted-media; fullscreen; picture-in-picture"></iframe><span class="lux-vid-tag">▶ Darien\'s tour, ' + esc(m.plat) + '</span></div></div>';
+  return '<div class="lux-duo">' + photoHtml + touredVideoCell(m) + '</div>';
 }
 function touredCredit(m) { return '<p class="note">' + esc(m.credit) + '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>.</p>'; }
+/* Hover starts the tour playing. The poster link still handles a tap or
+   click, which opens the tour on Instagram or TikTok. */
+document.addEventListener('mouseover', (e) => {
+  const cell = e.target.closest ? e.target.closest('.lux-video[data-embed]') : null;
+  if (!cell || cell.dataset.playing) return;
+  cell.dataset.playing = '1';
+  const src = cell.dataset.embed + (cell.dataset.embed.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1&muted=1';
+  const f = document.createElement('iframe');
+  f.src = src; f.title = 'Darien\'s video tour'; f.loading = 'lazy'; f.allowFullscreen = true;
+  f.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+  cell.appendChild(f);
+  if (typeof beacon === 'function') { try { beacon('click', { h: 'Watched video tour: ' + (cell.dataset.watch || ''), s: 'Video', u: cell.dataset.watch || '' }); } catch (x) { /* tracking is best effort */ } }
+});
 
 function touredPropCard(p, cartKey) {
   const info = { h: propTitle(p, true), p: propPrice(p), b: propFacts(p), l: p.hook, city: p.city, z: p.addr && p.city ? zillowFor(p.addr, p.city, p.zip) : '', m: p.addr ? mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') : '' };
@@ -152,7 +181,7 @@ function touredPropCard(p, cartKey) {
   const photoLink = '<a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + media +
     '<span class="lux-pill"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
     '<span class="lux-cap"><span class="lux-title">' + esc(propTitle(p, false)) + '</span></span></a>';
-  const mediaHtml = (m && !photo) ? touredDuo(m, photoLink) : photoLink;
+  const mediaHtml = (m && !photo) ? (m.photo ? touredDuo(m, photoLink) : touredVideoCell(m, propTitle(p, false))) : photoLink;
   return '<article class="lux-card">' + mediaHtml +
     '<div class="lux-body">' + (m && !photo ? touredCredit(m) : '') +
     '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
@@ -171,7 +200,7 @@ function touredCustomCard(t) {
   const photoLink = '<a class="lux-photo" href="' + esc(seeHref) + '"' + seeAttrs + ' aria-label="' + esc(t.addr) + '">' + (m ? '<img src="' + esc(m.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>') +
     '<span class="lux-pill"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
     '<span class="lux-cap"><span class="lux-title">' + esc(t.title) + '</span></span></a>';
-  const mediaHtml = m ? touredDuo(m, photoLink) : photoLink;
+  const mediaHtml = m ? (m.photo ? touredDuo(m, photoLink) : touredVideoCell(m, t.title)) : photoLink;
   return '<article class="lux-card">' + mediaHtml +
     '<div class="lux-body">' + (m ? touredCredit(m) : '') + '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
     '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div></article>';

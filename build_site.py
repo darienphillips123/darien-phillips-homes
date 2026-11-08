@@ -15,7 +15,7 @@ if tracker and not re.fullmatch(r"https://script\.google\.com/macros/s/[A-Za-z0-
 
 # page: accent, text on accent, accent text (light), soft (light), accent text (dark), soft (dark)
 THEMES = {
-    "home": ("#F06A3B", "#FFFFFF", "#BB532E", "#FDEAE4", "#F1764B", "#3D221C"),
+    "home": ("#E8590C", "#FFFFFF", "#BB532E", "#FDEAE4", "#F1764B", "#3D221C"),
     "guide": ("#7B5CD6", "#FFFFFF", "#7B5CD6", "#EDE8F9", "#A08AE2", "#251F3B"),
     "search": ("#1C8DC9", "#FFFFFF", "#1877AA", "#DFEFF7", "#3F9FD1", "#122938"),
     "assumable": ("#0E9C90", "#FFFFFF", "#0B7970", "#DDF1EF", "#33ABA1", "#102C2D"),
@@ -30,8 +30,8 @@ THEMES = {
     "adu": ("#4F6D7A", "#FFFFFF", "#4F6D7A", "#E7ECEE", "#93AEBA", "#1C2529"),
     "alerts": ("#8A5A3C", "#FFFFFF", "#8A5A3C", "#EFE8E4", "#B2927E", "#281F1C"),
     "cart": ("#0F2E44", "#FFFFFF", "#0F2E44", "#E4E9EC", "#7FA3B8", "#101E28"),
-    "finder": ("#0E7490", "#FFFFFF", "#0E7490", "#E2EFF3", "#5AA9C4", "#0F2A33"),
-    "portal": ("#1D7A5F", "#FFFFFF", "#14604F", "#E0F0EB", "#4FA88F", "#10261F"),
+    "finder": ("#0B7285", "#FFFFFF", "#0E7490", "#E2EFF3", "#5AA9C4", "#0F2A33"),
+    "portal": ("#D6336C", "#FFFFFF", "#14604F", "#E0F0EB", "#4FA88F", "#10261F"),
 }
 
 

@@ -1,13 +1,15 @@
 /* ===== Homepage backdrop =====
    HOME_BACKDROP_KEY is the photo key in PHOTOS below. The front photo is
-   now the AI-generated keys image Darien supplied (Handing_Keys_AI.jpeg),
-   labeled honestly in HOME_BACKDROP_NOTE and in the footer credit. It is
-   NOT a photo of a real closing, and no couple, home or closing date is
-   named for it. To use a real tour-home photo later, add it to img/ as
+   back to the stock home-at-dusk photo ('payment'), labeled honestly in
+   HOME_BACKDROP_NOTE and in the footer credit: a stock photo, not a home
+   Darien toured. The AI-generated keys image lives on the Finder instead:
+   Finder photoKey is 'keys' in js/5j-finder.js, and the Finder tile on the
+   homepage uses the 'finder' PHOTOS entry below, which points at the same
+   keys image. To use a real tour-home photo later, add it to img/ as
    <key>-1920.jpg, <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry
    for it, and point this key at it. */
-const HOME_BACKDROP_KEY = 'keys';
-const HOME_BACKDROP_NOTE = 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.';
+const HOME_BACKDROP_KEY = 'payment';
+const HOME_BACKDROP_NOTE = 'Backdrop photo: a home at dusk, by Michael Brown on Unsplash. This is a stock photo, not a home Darien toured.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', ai: true },
@@ -25,7 +27,12 @@ const PHOTOS = {
   alerts: { pos: '50% 50%', by: 'Roger Starnes Sr', id: 'LUdiEvMAyQ8' },
   adu: { pos: '50% 50%' },
   cart: { pos: '50% 50%' },
-  keys: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' }
+  /* Custom Portal tab picture: the same stock home-at-dusk photo as the
+     homepage backdrop, by Michael Brown on Unsplash. It is a stock photo,
+     not a home Darien toured, and photoCredit labels it as such. */
+  portal: { pos: '48% 50%', by: 'Michael Brown', id: 'G48h926L2qo' },
+  keys: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' },
+  finder: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' }
 };
 function photoImg(key, tile, url) {
   // A listing's own photo (an https link from Darien's sheet) on the public site
@@ -59,9 +66,12 @@ function photoCredit(key) {
     : 'Backdrop photo by <a href="https://unsplash.com/photos/' + p.id + '" target="_blank" rel="noopener">' + esc(p.by) + '</a> on Unsplash.';
 }
 
-// A small round picture for each tab in the top bar (the colored dot when a page has no photo yet)
+// A small round picture for each tab in the top bar (the colored dot when a page has no photo yet).
+// Home gets a house icon, not a photo thumb, so Home and Find Your Home
+// never look the same at the top of the page.
 function navThumb(k) {
   const p = PHOTOS[k], c = (typeof COLORS !== 'undefined' && COLORS[k]) || '#888';
+  if (k === 'home') return '<span class="kw-home-icon" style="background:' + c + '" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 3.5 3 10.5h2.2v9.2h5.4v-5.6h2.8v5.6h5.4v-9.2H21L12 3.5z" fill="#fff"/></svg></span>';
   if (!p || p.optional) return '<span class="dot" style="background:' + c + '"></span>';
   const src = p.src ? p.src + '&w=96&h=96&fit=crop' : 'img/' + k + '-tile.jpg' + PV;
   return '<img class="kw-pic" src="' + esc(src) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="--tc:' + c + '" onerror="this.outerHTML=\'<span class=&quot;dot&quot; style=&quot;background:' + c + '&quot;></span>\'">';

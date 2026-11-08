@@ -311,7 +311,7 @@ function lockedHtml(p) {
   const links = [
     info.z ? '<a class="btn btn-line btn-sm" href="' + esc(track(info.z, { h: info.h, s: 'Zillow', p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">See photos and details on Zillow</a>' : '',
     info.m ? '<a class="btn btn-line btn-sm" href="' + esc(track(info.m, { h: info.h, s: 'Google Maps', p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">Map</a>' : '',
-    '<a class="btn btn-line btn-sm" href="https://darienphillips.exprealty.com" target="_blank" rel="noopener">See the details: darienphillips.exprealty.com</a>'
+    '<a class="btn btn-line btn-sm" href="https://darien-phillips-homes.pages.dev" target="_blank" rel="noopener">See more homes on Darien\'s website</a>'
   ].filter(Boolean).join('');
   const what = p.kind === 'community' || p.kind === 'stockton' ? 'Your $0-down payment, builder offers and floor plans'
     : p.kind === 'listing' ? 'Price, payment and loan options' : 'The seller\'s loan, your cash to close and monthly payment';

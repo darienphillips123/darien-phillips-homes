@@ -374,7 +374,7 @@ def('alerts', {
     // then the agent question at the end.
     const signupDetailsHtml = () => '<p class="note">Here are the details first. You asked for: ' + esc(A.wants.join(', ') || 'homes') + ' in ' + esc(areasText()) + (A.price ? ', up to ' + esc(A.price) : '') + ', ' + esc(A.beds) + ' bed, ' + esc(A.baths) + ' bath.</p>' +
       (saved.size ? '<p class="note">Homes you saved: ' + esc(savedText()) + '</p>' : '') +
-      '<div class="optlist"><a class="btn btn-line" href="https://darienphillips.exprealty.com" target="_blank" rel="noopener">See the details: darienphillips.exprealty.com</a></div>';
+      '<div class="optlist"><a class="btn btn-line" href="https://darien-phillips-homes.pages.dev" target="_blank" rel="noopener">See more homes on Darien\'s website</a></div>';
     const doSignup = async (agent) => {
       if (agent) { A.agentName = agent.name; A.agentBrokerage = agent.brokerage; A.agentContact = agent.contact; A.agentPhone = agent.phone || ''; A.agentEmail = agent.email || ''; save(); }
       const btn = $('al-send');

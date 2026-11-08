@@ -584,6 +584,39 @@ footer a { color: var(--brand-ink); }
 .area-links .mono { color: var(--muted); }
 .leaflet-container a { color: #1C6FB8; }
 .cart-btn [data-cart-count] { display: inline-block; min-width: 1.2em; padding: 0 4px; border-radius: 999px; background: var(--pa, #F06A3B); color: #fff; font-weight: 700; }
+/* Home tab icon: a house in the Home color, so it never looks like the
+   Find Your Home photo thumb next to it. */
+.kw .kw-home-icon { width: 22px; height: 22px; border-radius: 6px; display: inline-grid; place-items: center; flex: none; margin-left: -4px; box-shadow: 0 0 0 2px rgba(255,255,255,.2); }
+/* Tour video cells: the home photo is the poster, with a big play button.
+   No profile picture and no View profile button on landing. The player
+   iframe, loaded on hover, fills the same cell. */
+.lux-video { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #000; }
+.lux-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 2; }
+.lux-video-poster { position: absolute; inset: 0; display: block; }
+.lux-video-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lux-video-poster .lux-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 8px; background: rgba(6, 12, 20, 0.72); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 10px 16px; border-radius: 999px; white-space: nowrap; }
+.lux-video-poster .lux-play span { font-size: 0.8rem; }
+.lux-video-full { aspect-ratio: 16 / 10; }
+/* Cart drawer, Squarespace style: a panel that slides in from the right
+   side of the page to the left, over a dimmed overlay. */
+.cart-overlay { position: fixed; inset: 0; background: rgba(6, 12, 20, 0.45); z-index: 80; }
+.cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 81; width: min(420px, 92vw); background: var(--card); color: var(--ink); box-shadow: -12px 0 40px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; transform: translateX(0); transition: transform 0.28s ease; }
+.cart-drawer[hidden], .cart-overlay[hidden] { display: none; }
+.cart-drawer.closing { transform: translateX(100%); }
+.cart-drawer-head { display: flex; align-items: center; gap: 10px; padding: 16px; border-bottom: 1px solid var(--line); }
+.cart-drawer-head h2 { font-size: 1.15rem; margin: 0; flex: 1; }
+.cart-drawer-head .x { border: 0; background: transparent; font-size: 1.4rem; cursor: pointer; padding: 4px 8px; color: inherit; }
+.cart-drawer-view { display: flex; gap: 8px; padding: 12px 16px 0; }
+.cart-drawer-view .btn[aria-pressed="true"] { background: var(--pa); color: #fff; border-color: var(--pa); }
+.cart-drawer-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.cart-drawer-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.cart-drawer-list li { display: grid; gap: 2px; padding: 14px 2px; border-bottom: 1px solid var(--line); }
+.cart-drawer-list li b { font-size: 1rem; }
+.cart-drawer-list .cart-list-facts { color: var(--brand-muted); font-size: 0.92rem; }
+.cart-drawer-list .cart-drawer-acts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.cart-drawer-step { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; color: var(--muted); font-size: 0.92rem; }
+.cart-drawer-foot { padding: 14px 16px 18px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+@media (prefers-reduced-motion: reduce) { .cart-drawer { transition: none; } }
 /* Chat helper: small floating button and panel, on every tab */
 .chat-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 70; display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 6px 16px 6px 6px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font: 700 0.95rem var(--f-body); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); }
 .chat-fab img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--brand); }
@@ -769,6 +802,18 @@ footer a { color: var(--brand-ink); }
   <div class="chat-input"><input id="chat-text" type="text" placeholder="Type your question..." aria-label="Type your question"><button type="button" class="btn btn-pa" id="chat-send">Send</button></div>
   <p class="chat-fine note">Ask Darien is an AI-generated avatar of Darien, not a real photo and not a live person. A review or problem is sent to Darien by your own text or email app. It is not stored on this site.</p>
 </div>
+
+<div class="cart-overlay" id="cart-overlay" hidden></div>
+<aside class="cart-drawer" id="cart-drawer" hidden role="dialog" aria-label="Your cart">
+  <div class="cart-drawer-head"><h2 id="cart-drawer-title">Your cart</h2><button type="button" class="x" id="cart-drawer-close" aria-label="Close cart">×</button></div>
+  <div class="cart-drawer-view" role="group" aria-label="How to see your carted homes"><button type="button" class="btn btn-line btn-sm" id="cart-view-all" aria-pressed="true">All</button><button type="button" class="btn btn-line btn-sm" id="cart-view-next" aria-pressed="false">Next</button></div>
+  <div class="cart-drawer-body" id="cart-drawer-body"></div>
+  <div class="cart-drawer-foot">
+    <button type="button" class="btn btn-pa" data-cart-contact="sms">Text Darien about these homes</button>
+    <button type="button" class="btn btn-line" data-cart-contact="email">Email Darien about these homes</button>
+    <button type="button" class="btn btn-line" id="cart-drawer-full">Open the full cart page</button>
+  </div>
+</aside>
 
 <div class="modal" id="modal" hidden><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="dialog"></div></div>
 

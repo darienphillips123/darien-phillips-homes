@@ -286,10 +286,79 @@ function cartBtn(k, title, price) {
 }
 function persistCart() { store.set('dp-cart', [...cart.values()]); updateCartCount(); }
 function updateCartCount() {
+  if (typeof cartDrawerOpen !== 'undefined' && cartDrawerOpen && typeof renderCartDrawer === 'function') renderCartDrawer();
   document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = cart.size ? String(cart.size) : ''; el.hidden = !cart.size; });
   const b = document.querySelector('#kw [data-go="cart"] .n');
   if (b) b.textContent = cart.size ? ' · ' + cart.size + ' in cart' : '';
 }
+/* ===== Cart drawer, Squarespace style =====
+   A panel that slides in from the right side of the page to the left.
+   All shows every carted home lined up; Next steps through them one
+   at a time, so the visitor can see which ones they want more info on.
+   The full cart page and the click-to-get-details agent flow are
+   untouched: Text and Email in the drawer still run the details-first,
+   agent-question-at-the-end flow. */
+let cartDrawerMode = 'all', cartDrawerIdx = 0, cartDrawerOpen = false;
+function cartDrawerItems() { return [...cart.values()]; }
+function cartDrawerLink(x) {
+  try { const p = (typeof propOfCard === 'function') ? propOfCard(x.k) : null; return p ? '#p/' + p.key : ''; } catch (e) { return ''; }
+}
+function renderCartDrawer() {
+  const body = $('cart-drawer-body'), title = $('cart-drawer-title');
+  if (!body || !title) return;
+  const items = cartDrawerItems();
+  title.textContent = 'Your cart' + (items.length ? ' (' + items.length + (items.length === 1 ? ' home' : ' homes') + ')' : '');
+  const allBtn = $('cart-view-all'), nextBtn = $('cart-view-next');
+  if (allBtn) allBtn.setAttribute('aria-pressed', String(cartDrawerMode === 'all'));
+  if (nextBtn) nextBtn.setAttribute('aria-pressed', String(cartDrawerMode === 'next'));
+  if (!items.length) {
+    body.innerHTML = '<p class="note">Your cart is empty. Tap Add to cart on any home or new-build community, on any tab, and it will show up here.</p><p><button type="button" class="btn btn-pa" data-go="assumable">Browse assumable homes</button></p>';
+    return;
+  }
+  if (cartDrawerIdx >= items.length) cartDrawerIdx = items.length - 1;
+  if (cartDrawerIdx < 0) cartDrawerIdx = 0;
+  const itemHtml = (x) => {
+    const link = cartDrawerLink(x);
+    const inner = '<b>' + esc(x.t) + '</b>' + (x.p ? '<span class="cart-list-facts">' + esc(x.p) + '</span>' : '');
+    return '<li>' + (link ? '<a href="' + esc(link) + '">' + inner + '</a>' : inner) +
+      '<div class="cart-drawer-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></li>';
+  };
+  if (cartDrawerMode === 'next') {
+    const x = items[cartDrawerIdx];
+    body.innerHTML = '<div class="cart-drawer-step"><button type="button" class="btn btn-line btn-sm" id="cart-prev">← Prev</button><span>' + (cartDrawerIdx + 1) + ' of ' + items.length + '</span><button type="button" class="btn btn-line btn-sm" id="cart-next">Next →</button></div>' +
+      '<ul class="cart-drawer-list">' + itemHtml(x) + '</ul>';
+    const prev = $('cart-prev'), next = $('cart-next');
+    if (prev) prev.addEventListener('click', () => { cartDrawerIdx = (cartDrawerIdx - 1 + items.length) % items.length; renderCartDrawer(); });
+    if (next) next.addEventListener('click', () => { cartDrawerIdx = (cartDrawerIdx + 1) % items.length; renderCartDrawer(); });
+    return;
+  }
+  body.innerHTML = '<ul class="cart-drawer-list">' + items.map(itemHtml).join('') + '</ul>';
+}
+function openCartDrawer() {
+  const d = $('cart-drawer'), o = $('cart-overlay');
+  if (!d || !o) return;
+  cartDrawerOpen = true;
+  d.hidden = false; o.hidden = false;
+  d.classList.remove('closing');
+  renderCartDrawer();
+  const c = $('cart-drawer-close');
+  if (c) c.focus();
+  if (typeof trackEvent === 'function') trackEvent('Opened cart drawer', 'Tab');
+}
+function closeCartDrawer() {
+  const d = $('cart-drawer'), o = $('cart-overlay');
+  if (!d || !o) return;
+  cartDrawerOpen = false;
+  d.classList.add('closing');
+  setTimeout(() => { d.hidden = true; o.hidden = true; d.classList.remove('closing'); }, 280);
+}
+document.addEventListener('click', (e) => {
+  if (e.target.closest && e.target.closest('#cart-drawer-close, #cart-overlay')) { closeCartDrawer(); return; }
+  if (e.target.closest && e.target.closest('#cart-view-all')) { cartDrawerMode = 'all'; renderCartDrawer(); return; }
+  if (e.target.closest && e.target.closest('#cart-view-next')) { cartDrawerMode = 'next'; renderCartDrawer(); return; }
+  if (e.target.closest && e.target.closest('#cart-drawer-full')) { closeCartDrawer(); go('cart'); return; }
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && cartDrawerOpen) closeCartDrawer(); });
 const cartText = () => [...cart.values()].map((x) => x.t + (x.p ? ' (' + x.p + ')' : '')).join('; ');
 // The text or email body for asking about the whole cart. With an agent,
 // it says so and carries the agent's info, so Darien sends the home
@@ -434,7 +503,7 @@ function gateLinksHtml(info) {
     info.m ? ['Map', info.m, 'Google Maps', 'btn-line'] : null
   ].filter(Boolean);
   return opts.map(([label, url, site, cls]) => '<a class="btn ' + cls + '" href="' + esc(track(url, { h: info.h, s: site, p: info.p, b: info.b, r: info.r })) + '" target="_blank" rel="noopener">' + esc(label) + '</a>').join('') +
-    '<a class="btn btn-line" href="https://darienphillips.exprealty.com" target="_blank" rel="noopener">See the details: darienphillips.exprealty.com</a>';
+    '<a class="btn btn-line" href="https://darien-phillips-homes.pages.dev" target="_blank" rel="noopener">See more homes on Darien\'s website</a>';
 }
 function gateDetailsHtml(info) {
   return '<p class="note">' + esc([info.p, info.b, info.l].filter(Boolean).join(' · ')) + '</p>' +
@@ -487,6 +556,8 @@ async function submitGateAgent(info, agent) {
 }
 /* ===== Global clicks ===== */
 document.addEventListener('click', (e) => {
+  const cartBtnEl = e.target.closest('#cart-btn');
+  if (cartBtnEl) { e.preventDefault(); openCartDrawer(); return; }
   const g = e.target.closest('[data-go]');
   if (g) {
     e.preventDefault();
@@ -527,10 +598,12 @@ document.addEventListener('click', (e) => {
   const cb = e.target.closest('[data-cart]');
   if (cb) {
     const k = cb.dataset.cart;
+    const added = !cart.has(k);
     if (cart.has(k)) cart.delete(k); else cart.set(k, { k, t: cb.dataset.t, p: cb.dataset.p });
     document.querySelectorAll('[data-cart="' + k + '"]').forEach((b) => { b.setAttribute('aria-pressed', String(cart.has(k))); b.textContent = cart.has(k) ? '✓ In cart' : 'Add to cart'; });
     persistCart();
     if (CURRENT === 'cart') render('cart');
+    if (added) openCartDrawer(); else if (cartDrawerOpen) renderCartDrawer();
     return;
   }
   const rb = e.target.closest('[data-remove-cart]');
@@ -538,6 +611,7 @@ document.addEventListener('click', (e) => {
     cart.delete(rb.dataset.removeCart);
     persistCart();
     if (CURRENT === 'cart') render('cart');
+    if (cartDrawerOpen) renderCartDrawer();
     return;
   }
   const cc = e.target.closest('[data-cart-contact]');
@@ -546,7 +620,7 @@ document.addEventListener('click', (e) => {
     const homes = cartText();
     openRealtorCheck({
       home: 'your cart (' + cart.size + (cart.size === 1 ? ' home' : ' homes') + ')',
-      detailsHtml: '<p class="note">Here are the homes in your cart:</p><ul class="unlock-list">' + [...cart.values()].map((x) => '<li>' + esc(x.t + (x.p ? ' (' + x.p + ')' : '')) + '</li>').join('') + '</ul><p class="note">See them at darienphillips.exprealty.com, or tap Text or Email below and the list goes to Darien filled in.</p>',
+      detailsHtml: '<p class="note">Here are the homes in your cart:</p><ul class="unlock-list">' + [...cart.values()].map((x) => '<li>' + esc(x.t + (x.p ? ' (' + x.p + ')' : '')) + '</li>').join('') + '</ul><p class="note">See them on this website, or tap Text or Email below and the list goes to Darien filled in.</p>',
       onNo: () => {
         trackEvent('Got details (no agent): your cart (' + cart.size + (cart.size === 1 ? ' home' : ' homes') + ')', 'Info request');
         const body = cartMsg(null);

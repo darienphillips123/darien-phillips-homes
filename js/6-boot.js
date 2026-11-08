@@ -1,7 +1,9 @@
 /* ===== Page colors (match the theme tokens) ===== */
-const COLORS = { home: '#F06A3B', about: '#D93A4E', 'new-builds': '#D9901A', build: '#7E8F1F', payment: '#2E9E5B', assumable: '#0E9C90', search: '#1C8DC9', 'zero-down': '#3B5BDB', guide: '#7B5CD6', refinance: '#C2367A', alerts: '#8A5A3C', adu: '#4F6D7A', placer: '#E9A23B', stockton: '#F2A33A', cart: '#0F2E44', finder: '#0E7490', portal: '#1D7A5F' };
+/* Page colors: every tab gets its own color, no two tabs share one.
+   Home is orange, Custom Portal is pink, Find Your Home is dark teal. */
+const COLORS = { home: '#E8590C', about: '#9C36B5', 'new-builds': '#F59F00', build: '#74B816', payment: '#0CA678', assumable: '#2F9E44', search: '#1971C2', 'zero-down': '#E67700', guide: '#6741D9', refinance: '#C2255C', alerts: '#8A5A3C', adu: '#495057', placer: '#9775FA', stockton: '#15AABF', cart: '#0F2E44', finder: '#0B7285', portal: '#D6336C' };
 Object.keys(COLORS).forEach((k) => { PAGES[k].color = COLORS[k]; });
-const NAV_ORDER = ['finder', 'portal', 'home', 'guide', 'search', 'assumable', 'zero-down', 'payment', 'new-builds', 'adu', 'refinance', 'build', 'about', 'alerts'];
+const NAV_ORDER = ['home', 'finder', 'portal', 'guide', 'search', 'assumable', 'zero-down', 'payment', 'new-builds', 'adu', 'refinance', 'build', 'about', 'alerts'];
 
 /* ===== Keyword bar at the top ===== */
 $('kw').innerHTML = NAV_ORDER.map((k) => '<button type="button" data-go="' + k + '">' + navThumb(k) + '' + esc(PAGES[k].nav) + (k === 'alerts' ? '<span class="n"></span>' : '') + '</button>').join('') ;
