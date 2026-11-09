@@ -190,6 +190,38 @@ $('back').addEventListener('click', () => {
 
 let lastRendered = '';
 let lastView = { p: '', t: 0 }, firstView = true;
+/* Homepage hero slideshow timer, Nov 9, 2026. Cleared on every
+   render, so leaving the home page stops the slideshow. */
+let heroTimer = null;
+function heroSlidesHtml() {
+  const slides = heroSlidesData();
+  return slides.map((s, i) => '<div class="hero-slide' + (i === 0 ? ' active' : '') + '" data-slide="' + i + '">' +
+    '<img src="' + esc(s.src) + '" alt="' + esc(s.label + ', ' + s.city + ', ' + s.tag) + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" referrerpolicy="no-referrer">' +
+    '<span class="hero-slide-tag">' + esc(s.label + ', ' + s.city + ' · ' + s.tag) + '</span></div>').join('') +
+    '<div class="hero-dots" role="group" aria-label="Hero photos">' + slides.map((s, i) => '<button type="button" data-hero-dot="' + i + '" aria-label="Show ' + esc(s.label + ', ' + s.city) + '"' + (i === 0 ? ' class="on"' : '') + '></button>').join('') + '</div>';
+}
+/* Home page only: replace the single hero backdrop with the fading
+   slideshow from heroSlidesData(), one toured home at a time,
+   crossfading every 6 seconds with a slow pan, dots to jump slides.
+   Other pages keep their own hero photo, untouched. */
+function startHeroSlideshow() {
+  const scene = document.querySelector('#hero .scene');
+  if (!scene || typeof heroSlidesData !== 'function') return;
+  scene.innerHTML = heroSlidesHtml();
+  const slides = [...scene.querySelectorAll('.hero-slide')];
+  const dots = [...scene.querySelectorAll('[data-hero-dot]')];
+  if (!slides.length) return;
+  let idx = 0;
+  const show = (i) => {
+    idx = (i + slides.length) % slides.length;
+    slides.forEach((s, j) => s.classList.toggle('active', j === idx));
+    dots.forEach((d, j) => d.classList.toggle('on', j === idx));
+  };
+  const restart = () => { clearInterval(heroTimer); heroTimer = setInterval(() => show(idx + 1), 6000); };
+  dots.forEach((d) => d.addEventListener('click', () => { show(+d.dataset.heroDot); restart(); }));
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  restart();
+}
 /* ===== Scroll-grow: elements marked data-grow start small and grow to
    full size as they scroll into view. render() calls this after every
    page mount, so it works on re-renders too. */
@@ -205,6 +237,7 @@ function bindGrow(root) {
 }
 function render(page, keep) {
   const y0 = window.scrollY;
+  if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
   CURRENT = page;
   const P = PAGES[page];
   const V = (k) => (typeof P[k] === 'function' ? P[k]() : P[k]);
@@ -233,6 +266,7 @@ function render(page, keep) {
     sc.innerHTML = 'SCROLL<span aria-hidden="true">↓</span>';
     sc.addEventListener('click', () => { const t = document.getElementById('toured'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('hero').appendChild(sc);
+    startHeroSlideshow();
   }
   const pimg = $('hero').querySelector('.hero-portrait img');
   if (pimg) pimg.addEventListener('error', () => { pimg.closest('figure').remove(); $('hero').querySelector('.hero-in').classList.remove('hero-split'); }, { once: true });

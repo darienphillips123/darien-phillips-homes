@@ -662,7 +662,14 @@ footer a { color: var(--brand-ink); }
 .cart-pan-hint { text-align: center; color: var(--brand-muted); font-size: .92rem; margin: 0; flex: 1; }
 .cart-pan-viewport { overflow-x: auto; scrollbar-width: thin; scroll-snap-type: x mandatory; }
 .cart-pan-track { display: flex; gap: 14px; width: max-content; padding-bottom: 8px; }
-.cart-pan-card { flex: 0 0 250px; scroll-snap-align: start; aspect-ratio: 1 / 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+.cart-pan-card { flex: 0 0 250px; scroll-snap-align: start; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; min-height: 330px; }
+/* Every carted home shows a photo, never a text-only card. */
+.cart-pan-photo { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; display: block; }
+.cart-photo-tag { font-size: 0.75rem; color: var(--muted); }
+.cart-photo-none { display: grid; place-items: center; min-height: 100px; border-radius: 10px; background: var(--soft); color: var(--muted); font-size: 0.88rem; text-align: center; padding: 12px; }
+.cart-list-photo { width: 84px; height: 64px; object-fit: cover; border-radius: 8px; flex: none; }
+.cart-next-photo { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; display: block; }
+.cart-drawer-photo { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; display: block; margin-bottom: 6px; }
 .cart-pan-card h3 { font-size: 1.02rem; margin: 0; }
 .cart-pan-card h3 a { color: inherit; text-decoration: none; }
 .cart-pan-card h3 a:hover { text-decoration: underline; }
@@ -702,6 +709,19 @@ footer a { color: var(--brand-ink); }
 .hero-scroll { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 2; background: none; border: 0; color: rgba(255, 255, 255, 0.92); font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; cursor: pointer; padding: 6px 10px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
 .hero-scroll span { display: block; font-size: 1rem; line-height: 1; margin-top: 2px; }
 .hero-note { margin-top: 28px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.78); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+/* Homepage hero slideshow, Nov 9, 2026: the toured homes fade one by
+   one over the hero, crossfading every 6 seconds with a slow pan.
+   Each slide names its home and city and labels its photo honestly,
+   REAL PHOTO, builder or listing photo, or STOCK PHOTO. Dots jump
+   straight to a slide. Only the home page has slides. */
+.hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s ease; }
+.hero-slide.active { opacity: 1; }
+.hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; animation: hero-pan 12s ease-in-out infinite alternate; }
+@keyframes hero-pan { from { transform: scale(1) translateX(0); } to { transform: scale(1.08) translateX(-1.5%); } }
+.hero-slide-tag { position: absolute; left: 16px; bottom: 64px; z-index: 3; background: rgba(6, 12, 20, 0.72); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; }
+.hero-dots { position: absolute; right: 16px; top: 14px; z-index: 4; display: flex; gap: 8px; }
+.hero-dots button { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; background: transparent; cursor: pointer; padding: 0; }
+.hero-dots button.on { background: #fff; }
 @media (max-width: 720px) {
   :root[data-page="home"] .hero { min-height: min(88svh, 720px); }
   :root[data-page="home"] .hero .scene { bottom: 0; height: 100%; }
@@ -714,7 +734,8 @@ footer a { color: var(--brand-ink); }
 /* Full-bleed "Homes I toured" cards: one big photo per home, edge to edge,
    with a white serif title and price overlaid at the bottom. The buttons sit
    in a row below the photo, never on top of it. A home with no real photo of
-   its own gets a warm solid panel, never a stock photo passed off as the home. */
+   its own shows its tour video link or a plain note, never a stock photo
+   passed off as the home and never a gold panel. */
 .lux-list { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 14px; }
 /* Toured video cards, wide and square: details on the left, the tour
    video on the right filling the full height of the card. No black
@@ -723,7 +744,23 @@ footer a { color: var(--brand-ink); }
 .lux-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px var(--shade); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 340px; }
 .lux-photo { position: relative; display: block; height: 100%; overflow: hidden; background: var(--soft); text-decoration: none; }
 .lux-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.lux-panel { width: 100%; height: 100%; min-height: 240px; background: linear-gradient(155deg, #6E4527 0%, #96703F 52%, #B98D55 100%); }
+/* No-photo fallback for a toured card: the tour video link, or a plain
+   note when the reel link is still to be added. Plain background, no
+   gold panel anywhere. */
+.lux-video-poster.lux-video-fallback, .lux-video-fallback { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; text-align: center; padding: 20px; background: var(--soft); color: var(--ink); text-decoration: none; }
+.lux-video-poster.lux-video-fallback .lux-play, .lux-video-fallback .lux-play { position: static; transform: none; }
+.lux-fallback-note { font-size: 0.9rem; color: var(--muted); max-width: 36ch; }
+/* Prev/Next on a toured photo carousel, Cornwall A, B, C and D. */
+.lux-video .photo-nav { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; gap: 8px; align-items: center; justify-content: center; background: rgba(6, 12, 20, 0.72); color: #fff; padding: 8px 10px; font-size: 0.82rem; }
+.lux-video .photo-nav button { background: #fff; color: #14212B; border: 0; border-radius: 999px; padding: 4px 12px; cursor: pointer; font-weight: 700; font-size: 0.82rem; }
+/* Homes like this: similar toured homes only, with a photo each. */
+.similar-panel { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.similar-panel h4 { font-size: 1.05rem; margin-bottom: 4px; }
+.similar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px; }
+.similar-card { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+.similar-card img { width: 100%; height: 140px; object-fit: cover; display: block; }
+.similar-card > div { padding: 12px; font-size: 0.9rem; display: grid; gap: 4px; justify-items: start; }
+.similar-card .price { font-weight: 800; font-size: 1.05rem; }
 .lux-pill { position: absolute; top: 12px; left: 12px; z-index: 2; display: flex; gap: 6px; flex-wrap: wrap; }
 .lux-pill .pill { background: rgba(255, 255, 255, 0.92); color: #14212B; }
 .lux-cap { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 44px 16px 14px; background: linear-gradient(0deg, rgba(6, 12, 20, 0.66) 0%, rgba(6, 12, 20, 0) 100%); color: #FFFFFF; }

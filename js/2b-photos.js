@@ -1,15 +1,17 @@
 /* ===== Homepage backdrop =====
-   HOME_BACKDROP_KEY is the photo key in PHOTOS below. The front photo is
-   back to the stock home-at-dusk photo ('payment'), labeled honestly in
-   HOME_BACKDROP_NOTE and in the footer credit: a stock photo, not a home
-   Darien toured. The AI-generated keys image lives on the Finder instead:
-   Finder photoKey is 'keys' in js/5j-finder.js, and the Finder tile on the
-   homepage uses the 'finder' PHOTOS entry below, which points at the same
-   keys image. To use a real tour-home photo later, add it to img/ as
-   <key>-1920.jpg, <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry
-   for it, and point this key at it. */
+   HOME_BACKDROP_KEY is the photo key in PHOTOS below. The home page
+   hero itself is now the fading slideshow in heroSlidesData() below,
+   cycling through the toured homes one by one; the stock home-at-dusk
+   photo ('payment') is only the fallback backdrop, labeled honestly
+   in HOME_BACKDROP_NOTE and in the footer credit: a stock photo, not
+   a home Darien toured. The AI-generated keys image lives on the
+   Finder instead: Finder photoKey is 'keys' in js/5j-finder.js, and
+   the Finder tile on the homepage uses the 'finder' PHOTOS entry
+   below, which points at the same keys image. To use a real tour-home
+   photo later, add it to img/ as <key>-1920.jpg, <key>-960.jpg and
+   <key>-tile.jpg, add a PHOTOS entry for it, and point this key at it. */
 const HOME_BACKDROP_KEY = 'payment';
-const HOME_BACKDROP_NOTE = 'Backdrop photo: a home at dusk, by Michael Brown on Unsplash. This is a stock photo, not a home Darien toured.';
+const HOME_BACKDROP_NOTE = 'Hero photos cycle through the homes Darien toured, one at a time. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', ai: true },
@@ -34,6 +36,38 @@ const PHOTOS = {
   keys: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' },
   finder: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' }
 };
+/* ===== Homepage hero slideshow, Nov 9, 2026 =====
+   The home page hero cycles through the toured homes one by one,
+   crossfading every 6 seconds, in traction order: Ridge Park first,
+   then Cornwall photos A, B, C and D, then SER, PALM, HAVEN, Plan 7,
+   Oak Rock, Hazel, Carlsberg 835, RIO and BRADY last. Real Zillow
+   listing photos are labeled REAL PHOTO. Builder and listing photos
+   from TOURED_MEDIA are labeled as builder or listing photos, never
+   as real photos. A home with no verified photo uses the stock
+   home-at-dusk photo below, labeled STOCK PHOTO. Only the home page
+   uses this slideshow, in js/6-boot.js; every other page keeps its
+   own photo. */
+const TOUR_STOCK_IMG = 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=80&auto=format&fit=crop';
+function heroSlidesData() {
+  const media = (typeof TOURED_MEDIA !== 'undefined') ? TOURED_MEDIA : {};
+  const mediaPhoto = (k) => { const m = media[k]; return m ? (m.photo || (m.photos && m.photos[0]) || '') : ''; };
+  return [
+    { label: 'Ridge Park', city: 'Loomis', src: 'https://photos.zillowstatic.com/fp/cac6e1c31cfe3d7565b45a729b2028c0-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo' },
+    { label: 'Cornwall, Photo A', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/ac07c90610729589746756f36bd5036e-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front, elevated' },
+    { label: 'Cornwall, Photo B', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/5dc51bd67ab2fd8a30808208e84b1baa-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front, second angle' },
+    { label: 'Cornwall, Photo C', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/a60c046de98fbc09ac9fa05de42d9aaa-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, daytime rear from pool' },
+    { label: 'Cornwall, Photo D', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/eb319e25af0ccd3fe1fe5c255577ce18-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front, best of 77 to 82' },
+    { label: 'SER', city: 'Folsom', src: mediaPhoto('ser') || TOUR_STOCK_IMG, tag: mediaPhoto('ser') ? 'Listing photo via MetroList' : 'STOCK PHOTO, not a toured home' },
+    { label: 'PALM', city: 'Oakdale', src: mediaPhoto('palm') || TOUR_STOCK_IMG, tag: mediaPhoto('palm') ? 'Aerial listing photo via MetroList' : 'STOCK PHOTO, not a toured home' },
+    { label: 'HAVEN', city: 'Rescue', src: mediaPhoto('haven') || TOUR_STOCK_IMG, tag: mediaPhoto('haven') ? 'Builder photo, Blue Mountain Communities' : 'STOCK PHOTO, not a toured home' },
+    { label: 'Plan 7', city: 'Stockton', src: mediaPhoto('10732-stevie-dr') || TOUR_STOCK_IMG, tag: mediaPhoto('10732-stevie-dr') ? 'Builder photo, Century Communities' : 'STOCK PHOTO, not a toured home' },
+    { label: 'Oak Rock', city: 'Folsom', src: mediaPhoto('t:oak-rock-folsom') || TOUR_STOCK_IMG, tag: mediaPhoto('t:oak-rock-folsom') ? 'Aerial photo from the prior listing of this home' : 'STOCK PHOTO, not a toured home' },
+    { label: 'Hazel', city: 'Folsom', src: mediaPhoto('q:shawood-at-folsom-4681-dehone-circle') || TOUR_STOCK_IMG, tag: mediaPhoto('q:shawood-at-folsom-4681-dehone-circle') ? 'Builder photo, SHAWOOD' : 'STOCK PHOTO, not a toured home' },
+    { label: 'Carlsberg, 835 Ridgeline Dr', city: 'Lincoln', src: mediaPhoto('t:carlsberg-835-ridgeline-dr') || TOUR_STOCK_IMG, tag: mediaPhoto('t:carlsberg-835-ridgeline-dr') ? 'Builder photo, Toll Brothers' : 'STOCK PHOTO, not a toured home' },
+    { label: 'RIO', city: 'Modesto', src: 'https://photos.zillowstatic.com/fp/02ffcbe525dd66aa93bba03512df8ce9-cc_ft_960.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front view' },
+    { label: 'BRADY', city: 'Modesto', src: TOUR_STOCK_IMG, tag: 'STOCK PHOTO, not a toured home, no verified front photo on file yet' }
+  ];
+}
 function photoImg(key, tile, url) {
   // A listing's own photo (an https link from Darien's sheet) on the public site
   if (url && ON_WEB && /^https:\/\/[^\s"'<>]+$/i.test(url)) return '<img class="photo" src="' + esc(url) + '" alt="" decoding="async" referrerpolicy="no-referrer">';

@@ -321,15 +321,19 @@ function renderCartDrawer() {
   if (cartDrawerIdx < 0) cartDrawerIdx = 0;
   const itemHtml = (x) => {
     const link = cartDrawerLink(x);
+    const photo = (typeof cartPhotoFor === 'function') ? cartPhotoFor(x) : null;
     const inner = '<b>' + esc(x.t) + '</b>' + (x.p ? '<span class="cart-list-facts">' + esc(x.p) + '</span>' : '');
-    return '<li>' + (link ? '<a href="' + esc(link) + '">' + inner + '</a>' : inner) +
+    const imgHtml = photo ? '<img class="cart-drawer-photo" src="' + esc(photo.src) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '';
+    return '<li>' + imgHtml + (link ? '<a href="' + esc(link) + '">' + inner + '</a>' : inner) +
       '<div class="cart-drawer-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></li>';
   };
   if (cartDrawerMode === 'pan') {
     body.innerHTML = '<div class="cart-pan-bar"><button type="button" class="btn btn-line btn-sm" data-drawer-pan-prev>← Prev</button><p class="cart-pan-hint">Swipe or scroll sideways.</p><button type="button" class="btn btn-line btn-sm" data-drawer-pan-next>Next →</button></div>' +
       '<div class="cart-pan-viewport" data-drawer-pan tabindex="0"><div class="cart-pan-track">' + items.map((x) => {
         const link = cartDrawerLink(x);
-        return '<article class="card cart-pan-card">' + (link ? '<h3><a href="' + esc(link) + '">' + esc(x.t) + '</a></h3>' : '<h3>' + esc(x.t) + '</h3>') +
+        const photo = (typeof cartPhotoFor === 'function') ? cartPhotoFor(x) : null;
+        const imgHtml = photo ? '<img class="cart-pan-photo" src="' + esc(photo.src) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (photo.tag ? '<span class="cart-photo-tag">' + esc(photo.tag) + '</span>' : '') : '';
+        return '<article class="card cart-pan-card">' + imgHtml + (link ? '<h3><a href="' + esc(link) + '">' + esc(x.t) + '</a></h3>' : '<h3>' + esc(x.t) + '</h3>') +
           (x.p ? '<div class="price num">' + esc(x.p) + '</div>' : '') +
           '<div class="cart-pan-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></article>';
       }).join('') + '</div></div>';

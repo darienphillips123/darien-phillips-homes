@@ -458,9 +458,28 @@ function cartKeyForProp(p) {
 /* ===== Cart pan row =====
    Carted homes in a horizontal row of square boxes that pans right to
    left. The row pauses on hover or focus, and Prev and Next arrows step
-   through it. No ring anywhere. */
+   through it. No ring anywhere. Every carted home shows a photo: its
+   property photo, its TOURED_MEDIA photo, Cornwall photo A, or the
+   home's sheet photo, with a stock photo and an honest label as the
+   last resort, never a text-only card. */
+function cartPhotoFor(x) {
+  const media = (typeof TOURED_MEDIA !== 'undefined') ? TOURED_MEDIA : {};
+  const m = media[x.k];
+  if (m && m.photos && m.photos.length) return { src: m.photos[0], tag: 'REAL PHOTO, Zillow listing photo, Photo A' };
+  if (m && m.photo) return { src: m.photo, tag: m.credit || 'Listing photo' };
+  const p = (typeof propOfCard === 'function') ? propOfCard(x.k) : null;
+  if (p) {
+    if (p.img && /^https:\/\//i.test(p.img)) return { src: p.img, tag: 'Listing photo' };
+    const pm = media[p.key];
+    if (pm && pm.photos && pm.photos.length) return { src: pm.photos[0], tag: 'REAL PHOTO, Zillow listing photo, Photo A' };
+    if (pm && pm.photo) return { src: pm.photo, tag: pm.credit || 'Listing photo' };
+  }
+  if (x.k === 't:cornwall-rocklin') return { src: 'https://photos.zillowstatic.com/fp/ac07c90610729589746756f36bd5036e-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, Photo A' };
+  return { src: TOUR_STOCK_IMG, tag: 'STOCK PHOTO, not this home' };
+}
 function cartPanCard(e) {
-  const body = '<div class="head"><span class="pill pa">' + esc(e.pill) + '</span></div>' +
+  const photo = e.img ? '<img class="cart-pan-photo" src="' + esc(e.img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (e.imgTag ? '<span class="cart-photo-tag">' + esc(e.imgTag) + '</span>' : '') : '<div class="cart-photo-none">No photo on file for this home yet</div>';
+  const body = '<div class="head"><span class="pill pa">' + esc(e.pill) + '</span></div>' + photo +
     (e.link ? '<h3><a href="' + esc(e.link) + '">' + esc(e.title) + '</a></h3>' : '<h3>' + esc(e.title) + '</h3>') +
     (e.price ? '<div class="price num">' + esc(e.price) + '</div>' : '') +
     (e.facts ? '<div class="facts">' + esc(e.facts) + '</div>' : '') +
@@ -506,12 +525,15 @@ function bindCartPan(root) {
 }
 function cartEntryFor(x) {
   const p = typeof propOfCard === 'function' ? propOfCard(x.k) : null;
+  const photo = cartPhotoFor(x);
   return {
     title: p ? propTitle(p, true) : x.t,
     price: p ? propPrice(p) : (x.p || ''),
     facts: p ? [p.city, propFacts(p)].filter(Boolean).join(' · ') : '',
     link: p ? '#p/' + p.key : '',
     pill: 'In your cart',
+    img: photo.src,
+    imgTag: photo.tag,
     removeKey: x.k
   };
 }
@@ -525,13 +547,18 @@ def('cart', {
     const views = '<div class="cart-view" role="group" aria-label="How to see your carted homes"><button type="button" class="btn btn-line btn-sm" data-cart-view="pan" aria-pressed="true">Pan</button><button type="button" class="btn btn-line btn-sm" data-cart-view="all" aria-pressed="false">All</button><button type="button" class="btn btn-line btn-sm" data-cart-view="next" aria-pressed="false">Next</button></div>';
     if (!items.length) {
       const sim = similarHomes();
-      const entries = sim.list.map((p) => ({
-        title: propTitle(p, true), price: propPrice(p),
-        facts: [p.city, propFacts(p)].filter(Boolean).join(' · '),
-        link: '#p/' + p.key,
-        pill: sim.basedOn ? 'Like the ones you looked at' : 'Popular home',
-        addKey: cartKeyForProp(p)
-      }));
+      const entries = sim.list.map((p) => {
+        const photo = cartPhotoFor({ k: cartKeyForProp(p) });
+        return {
+          title: propTitle(p, true), price: propPrice(p),
+          facts: [p.city, propFacts(p)].filter(Boolean).join(' · '),
+          link: '#p/' + p.key,
+          pill: sim.basedOn ? 'Like the ones you looked at' : 'Popular home',
+          img: photo.src,
+          imgTag: photo.tag,
+          addKey: cartKeyForProp(p)
+        };
+      });
       return '<section class="blk cart-page"><div class="wrap"><div class="empty"><h3>Your cart is empty</h3><p>Tap "Add to cart" on any home or new-build community, on any tab, and it will show up here.</p><p><button type="button" class="btn btn-pa" data-go="assumable">Browse assumable homes</button> <button type="button" class="btn btn-line" data-go="new-builds">Browse new builds</button></p></div>' +
         (entries.length ? '<div class="shead" style="margin-top:22px" data-grow><div><h2>' + (sim.basedOn ? 'Homes like the ones you looked at' : 'Popular homes to start with') + '</h2><p>' + (sim.basedOn ? 'Based on homes you saved or liked on this site.' : 'Popular homes on this site. These are not based on your history, because there is no saved or liked home on this device yet.') + '</p></div></div>' + cartPanHtml(entries, 'Similar homes') : '') +
         '</div></section>';
@@ -541,13 +568,11 @@ def('cart', {
       '<div data-cart-view-panel="pan">' + cartPanHtml(entries, 'Homes in your cart') + '</div>' +
       '<div data-cart-view-panel="all" hidden><div class="shead" style="margin-top:4px"><div><h2>Your cart, ' + items.length + (items.length === 1 ? ' home' : ' homes') + '</h2><p>Every home below is in your cart. Remove any you do not want, or ask Darien about all of them at once.</p></div></div>' +
       '<ul class="cart-list">' + items.map((x) => {
-        const p = typeof propOfCard === 'function' ? propOfCard(x.k) : null;
-        const title = p ? propTitle(p, true) : x.t;
-        const price = p ? propPrice(p) : (x.p || '');
-        const facts = p ? [p.city, propFacts(p)].filter(Boolean).join(' · ') : '';
-        const inner = '<div><b>' + esc(title) + '</b><span class="cart-list-facts">' + esc([price, facts].filter(Boolean).join(' · ')) + '</span></div>';
-        const linked = p ? '<a href="#p/' + esc(p.key) + '">' + inner + '</a>' : inner;
-        return '<li>' + linked + '<button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></li>';
+        const e = cartEntryFor(x);
+        const inner = '<div><b>' + esc(e.title) + '</b><span class="cart-list-facts">' + esc([e.price, e.facts].filter(Boolean).join(' · ')) + '</span></div>';
+        const linked = e.link ? '<a href="' + esc(e.link) + '">' + inner + '</a>' : inner;
+        const photo = e.img ? '<img class="cart-list-photo" src="' + esc(e.img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '';
+        return '<li>' + photo + linked + '<button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></li>';
       }).join('') + '</ul></div>' +
       '<div data-cart-view-panel="next" hidden><div class="cart-next" data-cart-next></div></div>' +
       '<div class="panel accent" style="margin-top:16px;display:grid;gap:12px"><b>Get more info on these ' + plural(items.length, 'home') + '</b><p class="note">Tap below to see the details for these homes first, then answer one question about an agent.</p>' +
@@ -569,13 +594,11 @@ def('cart', {
       if (idx >= items.length) idx = items.length - 1;
       if (idx < 0) idx = 0;
       const x = items[idx];
-      const p = typeof propOfCard === 'function' ? propOfCard(x.k) : null;
-      const title = p ? propTitle(p, true) : x.t;
-      const price = p ? propPrice(p) : (x.p || '');
-      const facts = p ? [p.city, propFacts(p)].filter(Boolean).join(' · ') : '';
-      const inner = '<b>' + esc(title) + '</b>' + ((price || facts) ? '<span class="cart-list-facts">' + esc([price, facts].filter(Boolean).join(' · ')) + '</span>' : '');
+      const e = cartEntryFor(x);
+      const inner = '<b>' + esc(e.title) + '</b>' + ((e.price || e.facts) ? '<span class="cart-list-facts">' + esc([e.price, e.facts].filter(Boolean).join(' · ')) + '</span>' : '');
+      const photo = e.img ? '<img class="cart-next-photo" src="' + esc(e.img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (e.imgTag ? '<span class="cart-photo-tag">' + esc(e.imgTag) + '</span>' : '') : '';
       box.innerHTML = '<div class="cart-next-step"><button type="button" class="btn btn-line btn-sm" data-next-prev>← Prev</button><span>' + (idx + 1) + ' of ' + items.length + '</span><button type="button" class="btn btn-line btn-sm" data-next-next>Next →</button></div>' +
-        '<div class="cart-next-card">' + (p ? '<a href="#p/' + esc(p.key) + '">' + inner + '</a>' : inner) +
+        '<div class="cart-next-card">' + photo + (e.link ? '<a href="' + esc(e.link) + '">' + inner + '</a>' : inner) +
         '<div class="cart-pan-acts"><button type="button" class="btn btn-line btn-sm" data-remove-cart="' + esc(x.k) + '">Remove</button></div></div>';
       box.querySelector('[data-next-prev]').addEventListener('click', () => { idx = (idx - 1 + items.length) % items.length; drawNext(); });
       box.querySelector('[data-next-next]').addEventListener('click', () => { idx = (idx + 1) % items.length; drawNext(); });

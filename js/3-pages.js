@@ -63,7 +63,7 @@ def('home', {
   sub: 'Homes for sale in Placer, Sacramento, San Joaquin and Stanislaus, with real monthly costs and a local realtor who will walk you through them.',
   heroSearch: false,
   photoKey: () => HOME_BACKDROP_KEY,
-  heroNote: () => HOME_BACKDROP_NOTE,
+  heroNote: () => 'Hero photos cycle through the homes Darien toured, one at a time. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.',
   ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
@@ -117,41 +117,49 @@ function helpHtml() {
 }
 
 /* ===== Homes I toured =====
-   Only homes verified still for sale on Nov 7, 2026. Sheet listings (RIO,
-   SER, PALM, HAVEN) and the site-data Plan 7 quick move-in render from their
-   real property records. The Hazel quick move-in, three resales and two
-   Carlsberg quick move-ins are custom cards with real facts verified live the
-   same day; the Hazel and Carlsberg homes have no property page of their own
-   on this site (only Stockton homes and communities do), so those cards link
-   to the community page, and the resales link to their photos on Zillow
-   instead of showing a photo that is not the home. Left out: Candlewood (in
-   contract), Black Oak (pending), Glacier (Estates sold out), Plan 3 / Plan 6
-   / Plan 4 (availability unverified), Aspen and El Dorado (model only), 1905
-   Ralston (tour not confirmed), 2773 Via Fiori (sold). */
+   Only homes verified still for sale on Nov 7, 2026, plus BRADY, toured
+   Nov 9, 2026. Sheet listings (RIO, SER, PALM, HAVEN) and the site-data
+   Plan 7 quick move-in render from their real property records. The
+   Hazel quick move-in, three resales and one Carlsberg quick move-in
+   are custom cards with real facts verified live the same day; the
+   Hazel and Carlsberg homes have no property page of their own on this
+   site (only Stockton homes and communities do), so those cards link
+   to the community page, and the resales link to Zillow. Toured order
+   is by traction, not price: Ridge Park, Cornwall, SER, PALM, HAVEN,
+   Plan 7, Oak Rock, Hazel, Carlsberg 835 only, RIO, BRADY last.
+   Left out: Candlewood (in contract), Black Oak (pending), Glacier
+   (Estates sold out), Plan 3 / Plan 6 / Plan 4 (availability
+   unverified), Aspen and El Dorado (model only), 1905 Ralston (tour
+   not confirmed), 2773 Via Fiori (sold), and the second Carlsberg
+   quick move-in (same plan tour as 835, so only 835 is kept). */
 const TOURED_CUSTOM = [
-  { key: 't:ridge-park-loomis', title: '5-bedroom home in Loomis', addr: '5846 Ridge Park Dr, Loomis', price: '$2,980,000', facts: '5 bd · 4 ba · 3,877 sq ft · 5 acres', hook: 'Gated Sierra Ridge Estates on 5 acres with a pool.', city: 'Loomis, CA', z: 'https://www.zillow.com/homedetails/5846-Ridge-Park-Dr-Loomis-CA-95650/17676184_zpid/' },
-  { key: 't:cornwall-rocklin', title: '5-bedroom home in Rocklin', addr: '4022 Cornwall Ct, Rocklin', price: '$2,100,000', facts: '5 bd · 6 ba · 4,675 sq ft · 0.42 acre', hook: 'Frank Lloyd Wright Prairie style on an elevated lot, with a pool and putting green.', city: 'Rocklin, CA', z: 'https://www.zillow.com/homedetails/4022-Cornwall-Ct-Rocklin-CA-95677/188166793_zpid/' },
-  { key: 't:oak-rock-folsom', title: '4-bedroom home in Folsom', addr: '117 Oak Rock Cir, Folsom', price: '$1,040,000', facts: '4 bd · 2.5 ba · 2,657 sq ft · 0.39 acre', hook: 'Extensively remodeled single story in American River Canyon.', city: 'Folsom, CA', z: 'https://www.zillow.com/homedetails/117-Oak-Rock-Cir-Folsom-CA-95630/25988487_zpid/' },
-  { key: 'q:shawood-at-folsom-4681-dehone-circle', title: 'Hazel home in Folsom', addr: '4681 Dehone Circle, Folsom', price: '$1,797,888', facts: '5 bd · 5.5 ba · 4,346 sq ft', hook: 'SHAWOOD at Folsom, Homesite 52. Move-in ready, est. Nov 2026.', city: 'Folsom, CA', page: 'shawood-at-folsom', pageLabel: 'See SHAWOOD at Folsom' },
-  { key: 't:carlsberg-835-ridgeline-dr', title: 'Carlsberg home in Lincoln', addr: '835 Ridgeline Dr, Lincoln', price: '$1,345,000', facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in December.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' },
-  { key: 't:carlsberg-670-ridgeline-ct', title: 'Carlsberg home in Lincoln', addr: '670 Ridgeline Ct, Lincoln', price: '$1,506,000', facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in November.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' }
+  { key: 't:ridge-park-loomis', title: '5-bedroom home in Loomis', addr: '5846 Ridge Park Dr, Loomis', price: '$2,980,000', priceNum: 2980000, beds: 5, baths: 4, sqft: 3877, facts: '5 bd · 4 ba · 3,877 sq ft · 5 acres', hook: 'Gated Sierra Ridge Estates on 5 acres with a pool. Price shown is the live price, cut Oct 29, 2026. The stored price on file is still $3,099,000, Darien has not yet confirmed updating it.', city: 'Loomis, CA', z: 'https://www.zillow.com/homedetails/5846-Ridge-Park-Dr-Loomis-CA-95650/17676184_zpid/' },
+  { key: 't:cornwall-rocklin', title: '5-bedroom home in Rocklin', addr: '4022 Cornwall Ct, Rocklin', price: '$2,100,000', priceNum: 2100000, beds: 5, baths: 6, sqft: 4675, facts: '5 bd · 6 ba · 4,675 sq ft · 0.42 acre', hook: 'Frank Lloyd Wright Prairie style on an elevated lot, with a pool and putting green.', city: 'Rocklin, CA', z: 'https://www.zillow.com/homedetails/4022-Cornwall-Ct-Rocklin-CA-95677/188166793_zpid/' },
+  { key: 't:oak-rock-folsom', title: '4-bedroom home in Folsom', addr: '117 Oak Rock Cir, Folsom', price: '$1,040,000', priceNum: 1040000, beds: 4, baths: 2.5, sqft: 2657, facts: '4 bd · 2.5 ba · 2,657 sq ft · 0.39 acre', hook: 'Extensively remodeled single story in American River Canyon.', city: 'Folsom, CA', z: 'https://www.zillow.com/homedetails/117-Oak-Rock-Cir-Folsom-CA-95630/25988487_zpid/' },
+  { key: 'q:shawood-at-folsom-4681-dehone-circle', title: 'Hazel home in Folsom', addr: '4681 Dehone Circle, Folsom', price: '$1,797,888', priceNum: 1797888, beds: 5, baths: 5.5, sqft: 4346, facts: '5 bd · 5.5 ba · 4,346 sq ft', hook: 'SHAWOOD at Folsom, Homesite 52. Move-in ready, est. Nov 2026.', city: 'Folsom, CA', page: 'shawood-at-folsom', pageLabel: 'See SHAWOOD at Folsom' },
+  { key: 't:carlsberg-835-ridgeline-dr', title: 'Carlsberg home in Lincoln', addr: '835 Ridgeline Dr, Lincoln', price: '$1,345,000', priceNum: 1345000, beds: 4, baths: 4.5, sqft: 3328, facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in December.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' },
+  { key: 't:brady-modesto', title: '5-bedroom home in Modesto', addr: '829 Brady Ave, Modesto', price: '$1,299,950', priceNum: 1299950, beds: 5, baths: 3.5, sqft: 3150, facts: '5 bd · 3 full + 1 half ba · 3,150 sq ft · 10,794 sq ft lot', hook: 'Hyper modern new build, built 2026, with a detached ADU about 450 sq ft and paid solar. Tour filmed Nov 9, 2026, reel link to be added.', city: 'Modesto, CA', z: zillowFor('829 Brady Ave', 'Modesto', '95354') }
 ];
 /* ===== Toured cards: real photo + Darien's tour video, side by side =====
-   Only homes where BOTH were verified get a photo and video. Photos were
-   visually checked in the workspace on Nov 7, 2026. RIO was rejected: its
-   candidate photo shows only a garage/barn, not the house. Ridge Park was
-   rejected: its candidate photo shows only the pool and grounds, no house.
-   Cornwall has no verifiable photo URL at all. Those three get the tour
-   video on its own instead of a gold panel, and the card says so.
-   Oak Rock's photo is an aerial from the prior listing of the same
-   house, pre-remodel, and is labelled as such. Builder photos are labelled
-   as builder photos. Videos are Darien's own reels, verified Nov 7, 2026.
-   The Carlsberg video is one plan-level tour; its December move-in line
-   points to 835 Ridgeline Dr, so 670 Ridgeline Ct is labelled plan tour. */
+   Photos were visually checked in the workspace on Nov 7, 2026, and the
+   Zillow front photos for RIO, Ridge Park and Cornwall were verified live
+   Nov 9, 2026. RIO, Ridge Park and Cornwall show real Zillow listing
+   photos, labeled REAL PHOTO. Cornwall has four real photos, A, B, C and
+   D, mixed together as Darien picked Nov 9, with a Prev/Next carousel
+   on its card. Oak Rock's photo is an aerial from the prior listing of
+   the same house, pre-remodel, and is labelled as such. Builder photos
+   are labelled as builder photos. Videos are Darien's own reels,
+   verified Nov 7, 2026. BRADY has no verified front photo on file and
+   no reel link yet, so its card says so plainly instead of showing a
+   photo that is not the home. The Carlsberg video is one plan-level
+   tour; its December move-in line points to 835 Ridgeline Dr, the only
+   Carlsberg card kept. No card ever renders a gold panel: a home with
+   no photo shows its tour video link instead, and a home with no photo
+   and no video link yet shows a plain note. */
 const TOURED_MEDIA = {
-  'rio': { video: 'https://www.tiktok.com/embed/v2/7703266645698989326', watch: 'https://www.tiktok.com/@realtordarien/video/7703266645698989326', plat: 'TikTok', credit: 'Tour video only, no verified listing photo on file for this home' },
-  't:ridge-park-loomis': { video: 'https://www.instagram.com/reel/De7Q5GZyqYJ/embed/', watch: 'https://www.instagram.com/reel/De7Q5GZyqYJ/', plat: 'Instagram', credit: 'Tour video only, no verified listing photo on file for this home' },
-  't:cornwall-rocklin': { video: 'https://www.instagram.com/reel/DfbX0B1STYQ/embed/', watch: 'https://www.instagram.com/reel/DfbX0B1STYQ/', plat: 'Instagram', credit: 'Tour video only, no verified listing photo on file for this home' },
+  'rio': { photo: 'https://photos.zillowstatic.com/fp/02ffcbe525dd66aa93bba03512df8ce9-cc_ft_960.jpg', credit: 'REAL PHOTO, Zillow listing photo, dusk front view, Zillow photo 1', video: 'https://www.tiktok.com/embed/v2/7703266645698989326', watch: 'https://www.tiktok.com/@realtordarien/video/7703266645698989326', plat: 'TikTok' },
+  't:ridge-park-loomis': { photo: 'https://photos.zillowstatic.com/fp/cac6e1c31cfe3d7565b45a729b2028c0-d_d.jpg', credit: 'REAL PHOTO, Zillow listing photo, aerial front view, Zillow photo 3 of 86', video: 'https://www.instagram.com/reel/De7Q5GZyqYJ/embed/', watch: 'https://www.instagram.com/reel/De7Q5GZyqYJ/', plat: 'Instagram' },
+  't:cornwall-rocklin': { photo: 'https://photos.zillowstatic.com/fp/ac07c90610729589746756f36bd5036e-d_d.jpg', photos: ['https://photos.zillowstatic.com/fp/ac07c90610729589746756f36bd5036e-d_d.jpg', 'https://photos.zillowstatic.com/fp/5dc51bd67ab2fd8a30808208e84b1baa-d_d.jpg', 'https://photos.zillowstatic.com/fp/a60c046de98fbc09ac9fa05de42d9aaa-d_d.jpg', 'https://photos.zillowstatic.com/fp/eb319e25af0ccd3fe1fe5c255577ce18-d_d.jpg'], photoLabels: ['A dusk front elevated', 'B dusk front second angle', 'C daytime rear from pool', 'D dusk front best of 77-82'], credit: 'REAL PHOTO, Zillow listing photos. A: photo 1 of 83, dusk front, elevated. B: photo 2 of 83, dusk front, second angle. C: photo 28 of 83, daytime rear from pool. D: photo 82 of 83, dusk front, best of photos 77 to 82. Darien picked all four, mixed together, Nov 9.', video: 'https://www.instagram.com/reel/DfbX0B1STYQ/embed/', watch: 'https://www.instagram.com/reel/DfbX0B1STYQ/', plat: 'Instagram' },
   'ser': { photo: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/09/21/16a81d77-1658-4c22-b2b9-2c013064d826.jpg', credit: 'Listing photo via MetroList', video: 'https://www.instagram.com/reel/DfSUUIJyqGq/embed/', watch: 'https://www.instagram.com/reel/DfSUUIJyqGq/', plat: 'Instagram' },
   'palm': { photo: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/10/15/65fe65dd-29aa-41f2-ae83-a54e37dbf999.jpg', credit: 'Aerial listing photo via MetroList', video: 'https://www.instagram.com/reel/DfQIcvGyUNP/embed/', watch: 'https://www.instagram.com/reel/DfQIcvGyUNP/', plat: 'Instagram' },
   'haven': { photo: 'https://bluemountaincommunities.com/wp-content/uploads/2024/02/BMC_Oakhaven_-Plan2_B_CS_07-1600x1120.jpg', credit: 'Builder photo, Blue Mountain Communities', video: 'https://www.instagram.com/reel/DfQzh2jyHQo/embed/', watch: 'https://www.instagram.com/reel/DfQzh2jyHQo/', plat: 'Instagram' },
@@ -159,20 +167,54 @@ const TOURED_MEDIA = {
   't:oak-rock-folsom': { photo: 'https://pi.movoto.com/p/102/226095956_0_mu6iZv_p.webp', credit: 'Aerial photo from the prior listing of this home', video: 'https://www.instagram.com/reel/DfKiQROyqLb/embed/', watch: 'https://www.instagram.com/reel/DfKiQROyqLb/', plat: 'Instagram' },
   'q:shawood-at-folsom-4681-dehone-circle': { photo: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', credit: 'Builder photo, SHAWOOD', video: 'https://www.tiktok.com/embed/v2/7705246029641157902', watch: 'https://www.tiktok.com/@realtordarien/video/7705246029641157902', plat: 'TikTok' },
   't:carlsberg-835-ridgeline-dr': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_MODF_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Modern Farmhouse elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok' },
-  't:carlsberg-670-ridgeline-ct': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_CCON_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Contemporary Craftsman elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok, Carlsberg plan tour' }
+  't:brady-modesto': { video: '', watch: '', plat: 'Instagram', credit: 'Tour filmed Nov 9, 2026, reel link to be added. No verified front photo on file for this home yet' }
 };
 /* The video cell shows the home photo as its poster, with a big play
    button and no profile picture. There is no embedded player on the
    card: tapping the poster opens the exact tour on Instagram or TikTok
-   in a new tab, no login needed. Homes with no verified photo get a
-   warm panel as the poster instead of a gold panel. */
+   in a new tab, no login needed. A home with more than one verified
+   photo, Cornwall with its four Zillow photos A, B, C and D, gets a
+   Prev/Next photo carousel on the poster, starting with the first
+   photo. A home with no verified photo never gets a gold panel: its
+   poster is the tour video link itself, on a plain background, and a
+   home with no photo and no video link yet, BRADY, shows a plain note
+   saying the reel link is to be added. */
 function touredVideoCell(m, poster) {
-  const img = poster || m.photo;
-  const posterHtml = img ? '<img src="' + esc(img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<div class="lux-panel" aria-hidden="true"></div>';
-  return '<div class="lux-video">' +
-    '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + ', opens in a new tab">' + posterHtml +
-    '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(m.plat.split(',')[0]) + '</span></a></div>';
+  const photos = (m.photos && m.photos.length) ? m.photos : ((poster || m.photo) ? [poster || m.photo] : []);
+  const labels = m.photoLabels || [];
+  const plat = m.plat.split(',')[0];
+  if (!photos.length) {
+    const note = '<span class="lux-fallback-note">' + esc(m.credit || 'Tour video link to be added') + '</span>';
+    if (m.watch) return '<div class="lux-video"><a class="lux-video-poster lux-video-fallback" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(plat) + ', opens in a new tab"><span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(plat) + '</span>' + note + '</a></div>';
+    return '<div class="lux-video"><div class="lux-video-fallback">' + note + '</div></div>';
+  }
+  const nav = photos.length > 1 ? '<div class="photo-nav"><button type="button" data-photo-prev>Prev photo</button><span data-photo-count>Photo 1 of ' + photos.length + (labels[0] ? ', ' + esc(labels[0]) : '') + '</span><button type="button" data-photo-next>Next photo</button></div>' : '';
+  const posterHtml = '<img src="' + esc(photos[0]) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-tour-photo>';
+  const play = m.watch ? '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(plat) + '</span>' : '<span class="lux-play">' + esc(m.credit || 'Tour filmed Nov 9, 2026, reel link to be added') + '</span>';
+  const posterLink = m.watch
+    ? '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(plat) + ', opens in a new tab">' + posterHtml + play + '</a>'
+    : '<div class="lux-video-poster">' + posterHtml + play + '</div>';
+  return '<div class="lux-video" data-tour-photos="' + photos.map(esc).join('|') + '" data-tour-labels="' + labels.map(esc).join('|') + '" data-tour-idx="0">' + posterLink + nav + '</div>';
 }
+/* Prev/Next on a toured photo carousel, Cornwall only for now. Swaps
+   the poster photo and the Photo N of M label, and leaves the tour
+   video link alone. */
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest ? (e.target.closest('[data-photo-prev]') || e.target.closest('[data-photo-next]')) : null;
+  if (!btn) return;
+  const cell = btn.closest('[data-tour-photos]');
+  if (!cell) return;
+  const imgs = cell.dataset.tourPhotos.split('|');
+  const labels = (cell.dataset.tourLabels || '').split('|');
+  if (imgs.length < 2) return;
+  let idx = parseInt(cell.dataset.tourIdx || '0', 10);
+  idx = (idx + (btn.hasAttribute('data-photo-prev') ? -1 : 1) + imgs.length) % imgs.length;
+  cell.dataset.tourIdx = String(idx);
+  const imgEl = cell.querySelector('[data-tour-photo]');
+  if (imgEl) imgEl.src = imgs[idx];
+  const countEl = cell.querySelector('[data-photo-count]');
+  if (countEl) countEl.textContent = 'Photo ' + (idx + 1) + ' of ' + imgs.length + (labels[idx] ? ', ' + labels[idx] : '');
+});
 function touredCredit(m) { return '<p class="note">' + esc(m.credit) + '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>.</p>'; }
 /* A tap on a tour poster opens the reel in a new tab. The click is still
    tracked, best effort, so Darien can see which tours get watched. */
@@ -192,16 +234,19 @@ function touredPropCard(p, cartKey) {
   // The home's own photo when the sheet has one is the video poster;
   // otherwise the verified photo from TOURED_MEDIA is. No video means
   // the photo itself fills the right side, never a stock photo passed
-  // off as the home.
+  // off as the home. No photo and no video means a plain note, never
+  // a gold panel.
   const sheetPhoto = (p.img && /^https:\/\//i.test(p.img)) ? p.img : '';
   const media = m ? touredVideoCell(m, sheetPhoto) :
-    ((sheetPhoto || (p.img && ON_WEB)) ? '<a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + photoImg('home', false, p.img) + '</a>' : '<div class="lux-photo"><div class="lux-panel" aria-hidden="true"></div></div>');
+    ((sheetPhoto || (p.img && ON_WEB)) ? '<a class="lux-photo" href="#p/' + esc(p.key) + '" aria-label="' + esc(propTitle(p, true)) + '">' + photoImg('home', false, p.img) + '</a>' : '<div class="lux-photo"><div class="lux-video-fallback"><span class="lux-fallback-note">No verified photo on file for this home yet</span></div></div>');
   return '<article class="lux-card" data-grow><div class="lux-body">' +
     '<span class="lux-pill-static"><span class="pill ' + (p.kind === 'listing' ? 'ok' : 'pa') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + tour + '</span>' +
     '<h3>' + esc(propTitle(p, false)) + '</h3><p class="lux-hook">' + esc(p.hook || '') + '</p>' +
     (m ? touredCredit(m) : '') +
     '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
-    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div></div>' +
+    '<div class="actions">' + details(info) + cartBtn(cartKey, propTitle(p, true), propPrice(p)) + '<a class="btn btn-line btn-sm" href="#p/' + esc(p.key) + '">See this home</a></div>' +
+    '<div class="actions"><button type="button" class="btn btn-line btn-sm" data-toured-similar="' + esc(p.key) + '">Homes like this</button></div>' +
+    '<div class="similar-panel" data-similar-panel="' + esc(p.key) + '" hidden></div></div>' +
     '<div class="lux-media">' + media + '</div></article>';
 }
 function touredCustomCard(t) {
@@ -212,32 +257,127 @@ function touredCustomCard(t) {
   // and to the community page for the builder homes.
   const see = t.z ? '<a class="btn btn-line btn-sm" href="' + esc(track(t.z, { h: info.h, s: 'Zillow', p: info.p })) + '" target="_blank" rel="noopener">See this home</a>' : '<a class="btn btn-line btn-sm" href="#p/' + esc(t.page) + '">' + esc(t.pageLabel) + '</a>';
   const m = TOURED_MEDIA[t.key];
-  const media = m ? touredVideoCell(m, '') : '<div class="lux-photo"><div class="lux-panel" aria-hidden="true"></div></div>';
+  const media = m ? touredVideoCell(m, '') : '<div class="lux-photo"><div class="lux-video-fallback"><span class="lux-fallback-note">No verified photo on file for this home yet</span></div></div>';
   return '<article class="lux-card" data-grow><div class="lux-body">' +
     '<span class="lux-pill-static"><span class="pill ok">Toured</span><span class="pill">' + esc(t.city) + '</span></span>' +
     '<h3>' + esc(t.title) + '</h3><p class="lux-hook">' + esc(t.hook) + '</p>' +
     (m ? touredCredit(m) : '') + '<p class="note">Price, facts, photos and links for this home are behind one tap.</p>' +
-    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div></div>' +
+    '<div class="actions">' + details(info) + cartBtn(t.key, t.addr, t.price) + see + '</div>' +
+    '<div class="actions"><button type="button" class="btn btn-line btn-sm" data-toured-similar="' + esc(t.key) + '">Homes like this</button></div>' +
+    '<div class="similar-panel" data-similar-panel="' + esc(t.key) + '" hidden></div></div>' +
     '<div class="lux-media">' + media + '</div></article>';
 }
+/* ===== Homes like this, toured homes only =====
+   Every toured card has a Homes like this button that opens a panel
+   with the top 3 similar homes from the toured list only, scored by
+   same city, price within 25 to 50 percent, beds within 1, and sq ft
+   within 25 percent. No facts are invented: every number comes from
+   the property record or the verified custom card. Each similar home
+   shows its photo, price, city, beds, baths and sq ft, plus a Click
+   to get the details button that reuses the existing details() flow,
+   details first and the agent question at the end, unchanged. A home
+   with no verified photo, BRADY, shows the stock photo in the similar
+   card, labeled STOCK PHOTO, never as a real photo of the home. */
+function touredSimList() {
+  const list = [];
+  const pushProp = (key, cartKey) => {
+    const p = (typeof PROP_BY !== 'undefined') ? PROP_BY[key] : null;
+    if (!p) return;
+    const m = TOURED_MEDIA[p.key];
+    const img = (p.img && /^https:\/\//i.test(p.img)) ? p.img : (m ? (m.photo || (m.photos && m.photos[0]) || '') : '');
+    list.push({
+      id: p.key, title: propTitle(p, true), city: p.city || '', priceNum: p.price || 0, price: propPrice(p),
+      beds: parseFloat(p.beds) || 0, baths: parseFloat(p.baths) || 0, sqft: p.sqft || 0,
+      img, imgTag: img ? (m && m.credit ? m.credit : 'Listing photo') : '',
+      info: { h: propTitle(p, true), p: propPrice(p), b: propFacts(p), l: p.hook, city: p.city, z: p.addr && p.city ? zillowFor(p.addr, p.city, p.zip) : '', m: p.addr ? mapFor(p.addr + (p.city ? ', ' + p.city : '') + ', CA') : '' },
+      cartKey
+    });
+  };
+  const pushCustom = (t) => {
+    const m = TOURED_MEDIA[t.key];
+    const img = m ? (m.photo || (m.photos && m.photos[0]) || '') : '';
+    list.push({
+      id: t.key, title: t.addr, city: t.city || '', priceNum: t.priceNum || 0, price: t.price,
+      beds: t.beds || 0, baths: t.baths || 0, sqft: t.sqft || 0,
+      img, imgTag: img ? (m && m.credit ? m.credit : 'Listing photo') : '',
+      info: { h: t.addr, p: t.price, b: t.facts, l: t.hook, city: t.city, z: t.z || '', m: mapFor(t.addr + ', CA') },
+      cartKey: t.key
+    });
+  };
+  pushProp('rio', 'l:rio');
+  pushProp('ser', 'l:ser');
+  pushProp('palm', 'l:palm');
+  pushProp('haven', 'l:haven');
+  pushProp('10732-stevie-dr', 's:h39');
+  TOURED_CUSTOM.forEach(pushCustom);
+  return list;
+}
+function touredSimilarFor(entry) {
+  const scored = touredSimList().filter((o) => o.id !== entry.id).map((o) => {
+    let s = 0;
+    if (o.city && entry.city && o.city === entry.city) s += 3;
+    const pr = entry.priceNum ? Math.abs(o.priceNum - entry.priceNum) / entry.priceNum : 1;
+    if (pr <= 0.25) s += 2; else if (pr <= 0.5) s += 1;
+    if (Math.abs(o.beds - entry.beds) <= 1) s += 1;
+    if (entry.sqft && Math.abs(o.sqft - entry.sqft) / entry.sqft <= 0.25) s += 1;
+    return { o, s };
+  }).sort((a, b) => b.s - a.s).slice(0, 3);
+  return scored.map((x) => x.o);
+}
+function touredSimilarHtml(entry) {
+  const sims = touredSimilarFor(entry);
+  if (!sims.length) return '<p class="note">No similar toured home on file yet.</p>';
+  return '<div class="similar-grid">' + sims.map((o) => {
+    const img = o.img || TOUR_STOCK_IMG;
+    const tag = o.img ? o.imgTag : 'STOCK PHOTO, not a toured home';
+    return '<article class="similar-card">' +
+      '<img src="' + esc(img) + '" alt="' + esc(tag + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
+      '<div><span class="price">' + esc(o.price) + '</span><br><b>' + esc(o.title) + '</b><br>' + esc(o.city + ', ' + o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') +
+      '<br><span class="note">' + esc(tag) + '</span><br>' + details(o.info) + '</div></article>';
+  }).join('') + '</div>';
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest ? e.target.closest('[data-toured-similar]') : null;
+  if (!b) return;
+  const panel = document.querySelector('[data-similar-panel="' + b.dataset.touredSimilar + '"]');
+  if (!panel) return;
+  if (!panel.dataset.built) {
+    const entry = touredSimList().find((x) => x.id === b.dataset.touredSimilar);
+    if (!entry) return;
+    panel.innerHTML = '<h4>Homes like this</h4><p class="note">Similar by city, price, beds and size, from the toured homes on this page only. No prices or facts are invented.</p>' + touredSimilarHtml(entry);
+    panel.dataset.built = '1';
+  }
+  panel.hidden = !panel.hidden;
+  b.textContent = panel.hidden ? 'Homes like this' : 'Hide homes like this';
+});
 function touredHtml() {
   if (typeof PROPS === 'undefined') return '';
   if (typeof CARD_PROP !== 'undefined') {
-    if (PROP_BY['ridgeline-at-bickford-ranch']) {
-      CARD_PROP['t:carlsberg-835-ridgeline-dr'] = 'ridgeline-at-bickford-ranch';
-      CARD_PROP['t:carlsberg-670-ridgeline-ct'] = 'ridgeline-at-bickford-ranch';
-    }
+    if (PROP_BY['ridgeline-at-bickford-ranch']) CARD_PROP['t:carlsberg-835-ridgeline-dr'] = 'ridgeline-at-bickford-ranch';
     if (PROP_BY['shawood-at-folsom']) CARD_PROP['q:shawood-at-folsom-4681-dehone-circle'] = 'shawood-at-folsom';
   }
+  const customByKey = {};
+  TOURED_CUSTOM.forEach((t) => { customByKey[t.key] = t; });
   const items = [];
-  ['rio', 'ser', 'palm', 'haven'].forEach((k) => { const p = PROP_BY[k]; if (p) items.push({ price: p.price || 0, html: touredPropCard(p, 'l:' + p.key) }); });
-  const plan7 = PROP_BY['10732-stevie-dr'];
-  if (plan7) items.push({ price: plan7.price || 0, html: touredPropCard(plan7, 's:h39') });
-  TOURED_CUSTOM.forEach((t) => items.push({ price: Number(String(t.price).replace(/[^0-9]/g, '')) || 0, html: touredCustomCard(t) }));
+  const addProp = (key, cartKey) => { const p = PROP_BY[key]; if (p) items.push(touredPropCard(p, cartKey)); };
+  const addCustom = (key) => { const t = customByKey[key]; if (t) items.push(touredCustomCard(t)); };
+  // Traction order, Nov 9, 2026: Ridge Park first, then Cornwall, then
+  // the rest in their existing order, with BRADY last. Only one
+  // Carlsberg card is kept, 835 Ridgeline Dr, Dec 2026 move-in.
+  addCustom('t:ridge-park-loomis');
+  addCustom('t:cornwall-rocklin');
+  addProp('ser', 'l:ser');
+  addProp('palm', 'l:palm');
+  addProp('haven', 'l:haven');
+  addProp('10732-stevie-dr', 's:h39');
+  addCustom('t:oak-rock-folsom');
+  addCustom('q:shawood-at-folsom-4681-dehone-circle');
+  addCustom('t:carlsberg-835-ridgeline-dr');
+  addProp('rio', 'l:rio');
+  addCustom('t:brady-modesto');
   if (!items.length) return '';
-  items.sort((a, b) => a.price - b.price);
-  return '<section class="blk" id="toured"><div class="wrap"><div class="shead" data-grow><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here.</p></div></div>' +
-    '<div class="lux-list">' + items.map((x) => x.html).join('') + '</div></div></section>';
+  return '<section class="blk" id="toured"><div class="wrap"><div class="shead" data-grow><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market, except BRADY, toured Nov 9, 2026. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here. Only one Carlsberg card is kept, 835 Ridgeline Dr.</p></div></div>' +
+    '<div class="lux-list">' + items.join('') + '</div></div></section>';
 }
 
 /* ===== Assumable homes ===== */
