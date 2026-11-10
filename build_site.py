@@ -85,8 +85,8 @@ import hashlib as _h
 _pv = _h.md5(b"".join(p.read_bytes() for p in sorted((here / "img").glob("*.jpg")))).hexdigest()[:8]
 source = ("(() => {\n'use strict';\n" + "\n".join(parts) + "\n})();").replace("__PHOTO_V__", _pv)
 
-photo_keys = [k for k, rest in re.findall(r"^\s*'?([a-z-]+)'?: \{ pos: '(.*)$", open(here / "js" / "2b-photos.js", encoding="utf-8").read(), re.M) if "src:" not in rest and "optional:" not in rest]  # hotlinked or not-yet-added photos are skipped
-need = [k + s for k in photo_keys for s in ("-1920.jpg", "-960.jpg", "-tile.jpg")] + ["darien-card.jpg", "ask-darien.jpg", "ask-darien-wave.jpg"]
+photo_keys = [k for k, rest in re.findall(r"^\s*'?([a-z0-9-]+)'?: \{ pos: '(.*)$", open(here / "js" / "2b-photos.js", encoding="utf-8").read(), re.M) if "src:" not in rest and "optional:" not in rest]  # hotlinked or not-yet-added photos are skipped; keys may contain digits, e.g. assumable-home-2
+need = [k + s for k in photo_keys for s in ("-1920.jpg", "-960.jpg", "-tile.jpg")] + ["darien-card.jpg", "ask-darien.jpg", "ask-darien-wave.jpg", "og-keys-1920.jpg"]
 missing = [n for n in need if not (here / "img" / n).is_file()]
 if not photo_keys or missing:
     sys.exit("photos missing: " + (", ".join(missing) or "no photo keys found"))
@@ -118,6 +118,22 @@ head, body = web[:cut], web[cut:]
 head = re.sub(r"<title>.*?</title>\s*", "", head, count=1, flags=re.S)
 head = re.sub(r'<meta name="claude:[^"]*"[^>]*>\s*', "", head)
 SITE = "https://darienphillips.com"
+OG_SITE = "https://darien-phillips-homes.pages.dev"
+OG_IMAGE = OG_SITE + "/img/og-keys-1920.jpg"
+# Link preview, v10.1, Nov 10, 2026, Darien's direction: when the website link
+# is shared, the preview must show him handing the keys to the couple, not
+# a mansion/castle pic. og:image and twitter:image are the Finder hero keys
+# image he picked Nov 7 and re-confirmed Nov 9, source
+# workspace/user/media_library/image/Handing_Keys_AI.jpeg, resized to
+# 1920x1280 as img/og-keys-1920.jpg. It is AI-generated and is labelled
+# as such on the site (finder aiNote). It is hosted on the Pages build,
+# not on darienphillips.com, so it survives the domain move. The old
+# og:image was https://darienphillips.com/img/home-960.jpg, a generic
+# stock photo of an agent handing keys to a couple, not Darien and not
+# a castle; the castle pic he saw was most likely a cached preview
+# from an older og:image, or a share of an older deploy. Messaging
+# apps cache link previews, so the old image may keep showing for a
+# while even after this fix, until their cache refreshes.
 TITLE = "Darien Phillips, REALTOR® | Homes in Placer, Sacramento, San Joaquin and Stanislaus"
 DESC = ("Find homes with low-rate assumable loans, $0-down options, new builds and homes by monthly payment across "
         "Placer, Sacramento, San Joaquin and Stanislaus counties with Darien Phillips, REALTOR® at eXp Realty of Northern California.")
@@ -128,7 +144,7 @@ doc = ("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
        "<title>" + TITLE + "</title>\n<meta name=\"description\" content=\"" + DESC + "\">\n"
        "<meta name=\"google-site-verification\" content=\"hLjf4AQ-nnWe5trIb_zzT3FX1EEy1cJhcGrGFHrG3tk\" />\n<meta name=\"theme-color\" content=\"#0F2E44\">\n<meta property=\"og:type\" content=\"website\">\n"
        "<meta property=\"og:title\" content=\"Darien Phillips, REALTOR® | Looking for the right home? You're in the right place.\">\n"
-       "<meta property=\"og:description\" content=\"" + DESC + "\">\n<meta property=\"og:image\" content=\"" + SITE + "/img/home-960.jpg\">\n<meta property=\"og:url\" content=\"" + SITE + "/\">\n"
+       "<meta property=\"og:description\" content=\"" + DESC + "\">\n<meta property=\"og:image\" content=\"" + OG_IMAGE + "\">\n<meta property=\"og:image:width\" content=\"1920\">\n<meta property=\"og:image:height\" content=\"1280\">\n<meta property=\"og:image:alt\" content=\"Darien Phillips handing the keys to a couple in their new home.\">\n<meta property=\"og:url\" content=\"" + OG_SITE + "/\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">\n<meta name=\"twitter:title\" content=\"Darien Phillips, REALTOR\u00ae | Looking for the right home? You're in the right place.\">\n<meta name=\"twitter:description\" content=\"" + DESC + "\">\n<meta name=\"twitter:image\" content=\"" + OG_IMAGE + "\">\n<meta name=\"twitter:image:alt\" content=\"Darien Phillips handing the keys to a couple in their new home.\">\n"
        "<link rel=\"icon\" href=\"" + ICON + "\">\n"
        "<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>\n"
        + head.strip() + "\n</head>\n<body>\n" + body.strip() + "\n</body>\n</html>\n")
