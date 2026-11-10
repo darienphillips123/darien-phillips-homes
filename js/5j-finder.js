@@ -100,15 +100,33 @@ function finderToPortal() {
   save();
   go('portal', true);
 }
+/* ===== v5: Finder homes with photos, Nov 9, 2026 =====
+   The toured homes as Finder examples, each with a photo, price,
+   city, beds, baths, sq ft, Click to get the details and Add to cart.
+   The live Finder has 1,423 items; this section shows the toured set
+   so visitors can see the photo layout. */
+function finderPhotoHtml() {
+  if (typeof touredSimList !== 'function') return '';
+  const list = touredSimList().slice(0, 6);
+  if (!list.length) return '';
+  return '<section class="blk" style="padding-top:0"><div class="wrap"><div class="shead"><div><h2>Homes with photos</h2><p>Every home here has a photo, price, city, beds, baths and sq ft. These are the toured homes as Finder examples.</p></div></div>' +
+    '<div class="cards">' + list.map((o) => '<article class="card">' +
+      '<img src="' + esc(o.img || TOUR_STOCK_IMG) + '" alt="' + esc((o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:180px;object-fit:cover;border-radius:14px">' +
+      '<div><h3>' + esc(o.title) + '</h3><div class="sub">' + esc(o.city) + '</div></div>' +
+      '<div class="price num">' + esc(o.price) + '</div><div class="facts">' + esc(o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') + '</div>' +
+      '<span class="note">' + esc(o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + '</span>' +
+      '<div class="actions">' + details(o.info) + ' ' + cartBtn(o.cartKey, o.title, o.price) + '</div></article>').join('') +
+    '</div></div></section>';
+}
 def('finder', {
   nav: 'Find your home', scene: 'home', kicker: 'Find exactly what you are looking for', tileTitle: 'Find exactly what you are looking for',
   title: 'Find exactly what you are looking for',
   sub: 'Filter every home on this site at once: assumable loans, Placer homes, new builds and Stockton $0-down homes. Every filter uses only information published on this site.',
-  photoKey: () => 'keys',
+  photoKey: () => 'shopping-cart',
   html() {
     const F = sub('finder', FINDER_DEFAULTS);
     const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
-    return '<section class="blk"><div class="wrap">' +
+    return finderPhotoHtml() + '<section class="blk"><div class="wrap">' +
       '<p class="fd-intro">Answer four quick questions and see the homes that match. Change any answer, skip a step, or use Show all filters instead. You can look around without signing up.</p>' +
       '<p class="note">Want Darien to turn these filters into your own custom MLS portal, emailed to you? <button type="button" class="btn btn-line btn-sm" data-go="portal">Custom Portal</button></p>' +
       '<div class="panel accent guide-panel" id="fd-guide">' +

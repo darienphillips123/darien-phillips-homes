@@ -5,11 +5,14 @@
    photo ('payment') is only the fallback backdrop, labeled honestly
    in HOME_BACKDROP_NOTE and in the footer credit: a stock photo, not
    a home Darien toured. The AI-generated keys image lives on the
-   Finder instead: Finder photoKey is 'keys' in js/5j-finder.js, and
-   the Finder tile on the homepage uses the 'finder' PHOTOS entry
-   below, which points at the same keys image. To use a real tour-home
-   photo later, add it to img/ as <key>-1920.jpg, <key>-960.jpg and
-   <key>-tile.jpg, add a PHOTOS entry for it, and point this key at it. */
+   Finder instead: the AI shopping-cart image, "Dream Home Shopping
+   in the Suburbs", picked Nov 9, 2026. Finder photoKey is
+   'shopping-cart' in js/5j-finder.js and js/5k-portal.js, and the
+   Finder tile on the homepage uses the 'finder' PHOTOS entry below,
+   which points at the same shopping-cart image. The old keys image
+   was removed Nov 9, 2026. To use a real tour-home photo later, add
+   it to img/ as <key>-1920.jpg, <key>-960.jpg and <key>-tile.jpg,
+   add a PHOTOS entry for it, and point this key at it. */
 const HOME_BACKDROP_KEY = 'payment';
 const HOME_BACKDROP_NOTE = 'Hero photos cycle through the homes Darien toured, one at a time. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
@@ -17,9 +20,9 @@ const PHOTOS = {
   home: { pos: '30% 30%', ai: true },
   guide: { pos: '70% 30%', ai: true },
   search: { pos: '50% 50%', by: 'Kindel Media', id: '9716228', site: 'pexels', src: 'https://images.pexels.com/photos/9716228/pexels-photo-9716228.jpeg?auto=compress&cs=tinysrgb' },
-  assumable: { pos: '52% 53%', by: 'Roger Starnes Sr', id: '1XRV7Z4lhGo' },
+  assumable: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Assumable Home 2, not a real photo, not a real home. Sign text in the image is AI-generated.' },
   'zero-down': { pos: '52% 50%', by: 'Brian Zajac', id: 'g6LLnC-rn0E' },
-  payment: { pos: '48% 50%', by: 'Michael Brown', id: 'G48h926L2qo' },
+  payment: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Modern Home Search Showroom, not a real photo. Sales rep face based on Darien Phillips headshot, not an exact photographic likeness. Prices on the screen are AI-invented, not real homes.' },
   'new-builds': { pos: '56% 45%', by: 'Troy Mortier', id: '9GAdLexoV7U' },
   placer: { pos: '52% 55%', by: 'Roger Starnes Sr', id: 'pGH1-iHveX0' },
   stockton: { pos: '50% 50%', by: 'Cosmin Gurau', id: '3cDza1lTxCQ' },
@@ -28,13 +31,18 @@ const PHOTOS = {
   about: { pos: '50% 62%', by: 'Get Lost Mike', id: '6267516', site: 'pexels', src: 'https://images.pexels.com/photos/6267516/pexels-photo-6267516.jpeg?auto=compress&cs=tinysrgb' },
   alerts: { pos: '50% 50%', by: 'Roger Starnes Sr', id: 'LUdiEvMAyQ8' },
   adu: { pos: '50% 50%' },
-  cart: { pos: '50% 50%' },
-  /* Custom Portal tab picture: the same stock home-at-dusk photo as the
-     homepage backdrop, by Michael Brown on Unsplash. It is a stock photo,
-     not a home Darien toured, and photoCredit labels it as such. */
-  portal: { pos: '48% 50%', by: 'Michael Brown', id: 'G48h926L2qo' },
-  keys: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' },
-  finder: { pos: '45% 22%', ai: true, aiNote: 'Front photo: an AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' }
+  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Family Tour, not a real photo, not a real home. The FOR SALE sign reads $1,295,000, AI-invented, not a real home price.' },
+  /* Custom Portal and Finder picture, Nov 9, 2026: the AI shopping-cart
+     image, "Dream Home Shopping in the Suburbs", PICKED Nov 9, Darien
+     said "1 is better and use that one". AI-generated, not a real photo,
+     and photoCredit labels it as such. The old keys image is gone. */
+  portal: { pos: '48% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping in the Suburbs, not a real photo. PICKED Nov 9, Image 1.' },
+  'shopping-cart': { pos: '45% 22%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping in the Suburbs, not a real photo. PICKED Nov 9, Image 1.' },
+  finder: { pos: '45% 22%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping in the Suburbs, not a real photo. PICKED Nov 9, Image 1.' },
+  'assumable-home-2': { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Assumable Home 2, not a real photo, not a real home. Sign text in the image is AI-generated.' },
+  'assumable-home-1': { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Assumable Home 1, not a real photo, not a real home. Sign text in the image is AI-generated.' },
+  'family-shopping': { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Family Tour, not a real photo, not a real home. The FOR SALE sign reads $1,295,000, AI-invented, not a real home price.' },
+  'digital-screen': { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Modern Home Search Showroom, not a real photo. Sales rep face based on Darien Phillips headshot, not an exact photographic likeness. Prices on the screen are AI-invented, not real homes.' }
 };
 /* ===== Homepage hero slideshow, Nov 9, 2026 =====
    The home page hero cycles through the toured homes one by one,
@@ -48,6 +56,23 @@ const PHOTOS = {
    uses this slideshow, in js/6-boot.js; every other page keeps its
    own photo. */
 const TOUR_STOCK_IMG = 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=80&auto=format&fit=crop';
+/* ===== Photo options to pick from, v5, Nov 9, 2026 =====
+   High-quality photos only, no blurry photos. Every Unsplash photo
+   below is w=1800, q=80, checked live Nov 9. All are STOCK PHOTO,
+   not a toured home. The Castle photo is HGTV, not Unsplash. */
+const V5_PHOTO_OPTIONS = [
+  ['Luxury 1', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1800&q=80&auto=format&fit=crop', 'Modern luxury home at dusk. STOCK PHOTO, not a toured home.'],
+  ['Luxury 2', 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=80&auto=format&fit=crop', 'Modern home with pool at dusk. STOCK PHOTO, not a toured home.'],
+  ['Modern 1', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80&auto=format&fit=crop', 'Clean modern exterior. STOCK PHOTO, not a toured home.'],
+  ['Modern 2', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1800&q=80&auto=format&fit=crop', 'Modern interior and exterior. STOCK PHOTO, not a toured home.'],
+  ['Mid-century 1', 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1800&q=80&auto=format&fit=crop', 'Mid-century modern exterior. STOCK PHOTO, not a toured home.'],
+  ['Mid-century 2', 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1800&q=80&auto=format&fit=crop', 'Mid-century modern home, single story. STOCK PHOTO, not a toured home.'],
+  ['Modern pool', 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1800&q=80&auto=format&fit=crop', 'Modern home, pool at dusk. STOCK PHOTO, not a toured home.'],
+  ['Castle', 'https://hgtvhome.sndimg.com/content/dam/images/hgtv/fullset/2024/9/11/0/RX_HGMAG118_Castle-05.jpg.rend.hgtvcom.616.462.85.suffix/1726079226835.webp', 'Stone castle style house with Tudor accents. Source HGTV, not Unsplash, not a toured home.']
+];
+/* The second photo on an assumable card carousel, v5. A stock photo,
+   labelled as stock, never as the real home. */
+const V5_ASSUMABLE_SECOND_IMG = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1800&q=80&auto=format&fit=crop';
 function heroSlidesData() {
   const media = (typeof TOURED_MEDIA !== 'undefined') ? TOURED_MEDIA : {};
   const mediaPhoto = (k) => { const m = media[k]; return m ? (m.photo || (m.photos && m.photos[0]) || '') : ''; };

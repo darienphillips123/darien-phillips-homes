@@ -91,7 +91,7 @@ def('portal', {
   nav: 'Custom Portal', scene: 'alerts', kicker: 'Your own custom portal', tileTitle: 'Custom Portal',
   title: 'Custom Portal',
   sub: 'Tell Darien what you want once. He builds your own custom MLS portal with matching homes and emails it to you.',
-  photoKey: () => 'keys',
+  photoKey: () => 'shopping-cart',
   html() {
     const B = sub('portal', PORTAL_DEFAULTS);
     B.must = (B.must || []).slice();

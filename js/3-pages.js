@@ -67,7 +67,7 @@ def('home', {
   ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
-    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + helpHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() +
+    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + helpHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() + touredMarqueeHtml() + photoOptionsHtml() +
       sellerHtml() + '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Popular places</h2><p>Pick a town to see assumable homes, new builds, $0-down options and homes by payment there.</p></div></div>' +
       '<div class="places">' + POPULAR.map((n) => '<button type="button" class="chip" data-place="' + esc(n) + '">' + esc(n) + '</button>').join('') + '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="statrow">' +
@@ -350,6 +350,35 @@ document.addEventListener('click', (e) => {
   panel.hidden = !panel.hidden;
   b.textContent = panel.hidden ? 'Homes like this' : 'Hide homes like this';
 });
+/* ===== v5: full-width leftward marquee, Nov 9, 2026 =====
+   Toured homes only, scored the same way as Homes like this. The
+   strip is full width, not in a box, moves slowly left, loops to the
+   other side, pauses on hover, and each card has a photo, price,
+   city, beds, baths, sq ft, Click to get the details and Add to cart. */
+function touredMarqueeHtml() {
+  const list = touredSimList();
+  if (!list.length) return '';
+  const card = (o) => '<article class="card marquee-card">' +
+    '<img src="' + esc(o.img || TOUR_STOCK_IMG) + '" alt="' + esc((o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
+    '<div><span class="price">' + esc(o.price) + '</span><br><b>' + esc(o.title) + '</b><br>' + esc(o.city + ', ' + o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') +
+    '<br><span class="note">' + esc(o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + '</span><br>' + details(o.info) + ' ' + cartBtn(o.cartKey, o.title, o.price) + '</div></article>';
+  const cards = list.map(card).join('');
+  return '<section class="blk marquee-blk" aria-label="Homes I toured, scrolling"><div class="marquee-wrap"><div class="marquee-track">' + cards + cards + '</div></div></section>';
+}
+/* ===== v5: photos to pick from, high quality only ===== */
+function photoOptionsHtml() {
+  const ai = [
+    ['shopping-cart', 'PICKED Nov 9, Image 1, used as default: AI-generated image, ChatGPT, "Dream Home Shopping in the Suburbs", not a real photo. Smiling man pushing a shopping cart full of miniature luxury houses, pointing toward a modern home.'],
+    ['assumable-home-2', 'PICKED Nov 9, Assumable Home 2, used as the main assumable image: AI-generated image, ChatGPT, not a real photo, not a real home. Black yard sign reads "Assumable Home", smaller white sign reads "Low interest rate, low monthly payment". Alternate: Assumable Home 1.'],
+    ['family-shopping', 'PICKED Nov 9, Dream Home Family Tour, used as the Shop by Payment second image and the cart-click image: AI-generated image, ChatGPT, not a real photo, not a real home. The FOR SALE sign reads $1,295,000, AI-invented, not a real home price.'],
+    ['digital-screen', 'PICKED Nov 9, Modern Home Search Showroom, Shop by Payment main image: AI-generated image, ChatGPT, not a real photo, not a real home. A different man pressing the blue Monthly Payment button, sales rep face based on Darien Phillips headshot, not an exact likeness. Prices on the screen, $725,000, $849,000 and $1,195,000, are AI-invented, not real homes.']
+  ];
+  return '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Photos to pick from</p><h2>Photos to pick from, high quality only</h2><p>No blurry photos. Every Unsplash photo below is w=1800, q=80, checked live Nov 9. All are STOCK PHOTO, not a toured home. The Castle photo is HGTV, not Unsplash. The keys photo is gone, 0 images.</p></div></div>' +
+    '<div class="photo-opt-grid">' +
+    ai.map(([k, t]) => '<article class="card photo-opt"><img src="img/' + k + '-1920.jpg' + PV + '" alt="" loading="lazy"><div><b>' + esc(t.split(':')[0]) + ':</b> ' + esc(t) + '</div></article>').join('') +
+    V5_PHOTO_OPTIONS.map(([t, u, d]) => '<article class="card photo-opt"><img src="' + esc(u) + '" alt="' + esc(t + ', ' + d) + '" loading="lazy" referrerpolicy="no-referrer"><div><b>' + esc(t) + ':</b> ' + esc(d) + '</div></article>').join('') +
+    '</div></div></section>';
+}
 function touredHtml() {
   if (typeof PROPS === 'undefined') return '';
   if (typeof CARD_PROP !== 'undefined') {
@@ -380,6 +409,41 @@ function touredHtml() {
     '<div class="lux-list">' + items.join('') + '</div></div></section>';
 }
 
+/* ===== Assumable homes, v5, Nov 9, 2026 =====
+   Banner image is Assumable Home 2, AI-generated, not a real home.
+   The two example homes below are from the Nov 5 assumable list,
+   and their figures are flagged to verify before quoting. No tour
+   videos on this tab, just pictures in a carousel. */
+const ASSUMABLE_BANNER = '<section class="blk"><div class="wrap"><div class="panel" style="display:grid;gap:12px">' +
+  '<div class="v5-figure"><img src="img/assumable-home-2-1920.jpg' + PV + '" alt="AI-generated image, ChatGPT, mid-century modern luxury home with a black yard sign that reads Assumable Home and a smaller white sign that reads Low interest rate, low monthly payment" loading="lazy"></div>' +
+  '<div><span class="assumable-sign">Assumable Home</span><p><b>Low interest rate, low monthly payment.</b></p>' +
+  '<p>An assumable home lets you take over the seller\'s loan, often at a lower rate than a new loan today. Ask Darien to run exact numbers for you, he will not guess a payment.</p>' +
+  '<p class="note">AI-generated image, ChatGPT, Assumable Home 2, not a real photo, not a real home. The sign text in the image is AI-generated. Alternate: Assumable Home 1, a two story modern home with an "Assumable Home" sign.</p>' +
+  '<p class="note">Two recent examples, from the Nov 5 assumable list, verify before quoting: 9544 Mirandy Dr, Sacramento 95827, 4 bd, 2 ba, 2.89% rate, about $2,300 a month, about $136,000 down. 5461 28th St, Sacramento 95820, 3 bd, 1 ba, 6.81% rate, about $2,900 a month, about $43,000 down.</p></div>' +
+  '</div></div></section>';
+/* 2-photo carousel on a listing card, v5. First photo is the card photo,
+   second is a stock photo, labelled as stock. */
+function tabCarouselHtml(firstSrc, firstTag, secondSrc, secondTag) {
+  return '<div class="tab-carousel" data-tab-carousel data-tab-photos="' + esc(firstSrc + '|' + secondSrc) + '" data-tab-tags="' + esc(firstTag + '|' + secondTag) + '" data-tab-idx="0">' +
+    '<img src="' + esc(firstSrc) + '" alt="' + esc(firstTag) + '" loading="lazy" referrerpolicy="no-referrer" data-tab-photo>' +
+    '<div class="photo-nav"><button type="button" data-tab-prev>Prev photo</button><span data-tab-count>Photo 1 of 2, ' + esc(firstTag) + '</span><button type="button" data-tab-next>Next photo</button></div></div>';
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest ? (e.target.closest('[data-tab-prev]') || e.target.closest('[data-tab-next]')) : null;
+  if (!btn) return;
+  const cell = btn.closest('[data-tab-carousel]');
+  if (!cell) return;
+  const imgs = cell.dataset.tabPhotos.split('|');
+  const tags = (cell.dataset.tabTags || '').split('|');
+  if (imgs.length < 2) return;
+  let idx = parseInt(cell.dataset.tabIdx || '0', 10);
+  idx = (idx + (btn.hasAttribute('data-tab-prev') ? -1 : 1) + imgs.length) % imgs.length;
+  cell.dataset.tabIdx = String(idx);
+  const imgEl = cell.querySelector('[data-tab-photo]');
+  if (imgEl) { imgEl.src = imgs[idx]; imgEl.alt = tags[idx] || ''; }
+  const countEl = cell.querySelector('[data-tab-count]');
+  if (countEl) countEl.textContent = 'Photo ' + (idx + 1) + ' of ' + imgs.length + ', ' + (tags[idx] || '');
+});
 /* ===== Assumable homes ===== */
 def('assumable', {
   nav: 'Assumable', scene: 'assumable', kicker: 'Assumable loans', tileTitle: 'Assumable homes',
@@ -387,7 +451,7 @@ def('assumable', {
   sub: 'Some FHA, VA and USDA loans can move to the next buyer, rate and all. Here is how to find them, and the homes that have them now.',
   html() {
     const A = sub('assum', { type: 'all', max: 0, beds: 0, baths: 0, sqft: 0, lot: 0, sort: 'rate', text: '' });
-    return '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">How it works</p><h2>How to find an assumable home</h2></div></div>' +
+    return ASSUMABLE_BANNER + '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">How it works</p><h2>How to find an assumable home</h2></div></div>' +
       '<ol class="steps">' +
         '<li><b>Look for FHA, VA or USDA loans</b><span>Most conventional loans can\'t be taken over. FHA, VA and USDA loans usually can, with the lender\'s approval.</span></li>' +
         '<li><b>Search listings for "assumable"</b><span>Agents mention it in the listing remarks. This page, Roots and Darien\'s custom portal pull those homes for you.</span></li>' +
@@ -452,7 +516,7 @@ function assumableCard(h) {
   const tags = (h.tags || []).map(([k, t]) => '<span class="tag ' + (k === 'ok' ? 'ok' : k === 'credit' ? 'pa' : '') + '">' + esc(t) + '</span>').join('');
   const info = { h: title, p: money(h.price), b: facts, l: loan + ' assumable', r: h.mls ? 'MLS# ' + h.mls : '', city: h.city,
     z: zillowFor(h.street, h.city, h.zip), m: mapFor(h.street.replace(/#.*$/, '') + ', ' + h.city + ', CA ' + (h.zip || '')), x: rootsFor(h.city), xs: 'Assumable homes nearby on Roots' };
-  return '<article class="card"><div class="head"><span class="pill ' + pillCls + '">' + esc(loan) + '</span>' + heart('a:' + h.id, title, money(h.price)) + '</div>' +
+  return '<article class="card">' + tabCarouselHtml('img/assumable-home-2-1920.jpg' + PV, 'AI-generated image, ChatGPT, Assumable Home 2, not the real home', V5_ASSUMABLE_SECOND_IMG, 'STOCK PHOTO, not this home') + '<div class="head"><span class="pill ' + pillCls + '">' + esc(loan) + '</span>' + heart('a:' + h.id, title, money(h.price)) + '</div>' +
     '<div><h3>' + esc(h.street) + '</h3><div class="sub">' + esc(h.city + ' ' + (h.zip || '') + ' · ' + (h.county || '') + ' County') + '</div></div>' +
     '<div class="price num">' + money(h.price) + '</div><div class="facts">' + esc(facts) + '</div>' +
     '<div class="stats3"><div><span>Rate</span><b>' + esc(h.rate ? h.rate + '%' : h.rateText || 'Ask') + '</b><small>' + esc(h.type || 'Loan type not listed') + '</small></div>' +
@@ -558,7 +622,13 @@ def('payment', {
   html() {
     const Y = sub('pay', { budget: 3000, cash: 20000, loan: 'fha', rate: '', county: 'Sacramento', hoa: 0, price: 450000 });
     if (placeCounty() && MAIN_COUNTIES.includes(placeCounty())) Y.county = placeCounty();
-    return '<section class="blk"><div class="wrap"><div class="calc">' +
+    return '<section class="blk"><div class="wrap"><div class="panel" style="display:grid;gap:12px">' +
+      '<div class="v5-figure"><img src="img/digital-screen-1920.jpg' + PV + '" alt="AI-generated image, ChatGPT, Modern Home Search Showroom, a man pressing the Monthly Payment button on a large wall digital screen showing homes for sale, sales rep with a face based on Darien Phillips headshot" loading="lazy"></div>' +
+      '<div><b>Shop by Payment, on a big screen.</b><p class="note">AI-generated image, ChatGPT, "Modern Home Search Showroom", not a real photo, not a real home. A different man pressing the blue Monthly Payment button on the middle home on a large wall digital screen. The sales rep beside him has a face based on Darien Phillips headshot, not an exact photographic likeness. Prices on the screen, $725,000, $849,000 and $1,195,000, are AI-invented screen text only, not real homes, do not quote them as real. Ask Darien to run exact monthly numbers, no payment is guessed here.</p></div>' +
+      '<div class="v5-figure"><img src="img/family-shopping-1920.jpg' + PV + '" alt="AI-generated image, ChatGPT, Dream Home Family Tour, happy family of four in front of a modern luxury home, dad pointing at the home" loading="lazy"></div>' +
+      '<div><b>Shop by Payment, with your family.</b><p class="note">AI-generated image, ChatGPT, "Dream Home Family Tour", not a real photo, not a real home. The FOR SALE sign in this image reads $1,295,000, AI-invented, not a real home price, do not quote it as real. This family image is also the cart-click preview image.</p></div>' +
+      '</div></div></section>' +
+      '<section class="blk"><div class="wrap"><div class="calc">' +
       '<div class="panel accent" style="display:grid;gap:12px"><div class="fields">' +
         moneyField('py-budget', 'Monthly budget', Y.budget, 'Everything: loan, tax, insurance, HOA') +
         moneyField('py-cash', 'Cash for the down payment', Y.cash, 'Keep closing costs aside, often 2% to 3%') +
