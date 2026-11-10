@@ -16,7 +16,7 @@
    <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry for it, and
    point this key at it. */
 const HOME_BACKDROP_KEY = 'payment';
-const HOME_BACKDROP_NOTE = 'Hero photos flip through 11 homes, one at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
+const HOME_BACKDROP_NOTE = 'Hero photos flip through 12 homes, two at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', aiNote: 'Stock photo, a realtor handing keys to a couple, Pexels. Not Darien, not a real closing.' },
@@ -45,37 +45,52 @@ const PHOTOS = {
   portal: { pos: '48% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, homes popping out of a large computer screen in 3D, family and couple smiling, no prices on screen. Not a real photo. Custom Portal header only.' },
   finder: { pos: '50% 40%', ai: true, aiNote: 'AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' },
 };
-/* ===== Homepage hero slideshow, v8, Nov 10, 2026 =====
-   Hero v8, mix of G and D, picked Nov 9: 3D card flip stack plus
-   parallax scroll, no plain fade. 11 slides, Darien picks Nov 9,
-   6:24 PM. Base order, front/back in order: Hazel front, Ridge Park
-   back, RIO front, Cornwall back, SER front, Haven front, PALM
-   aerial, Plan 7 front, Oak Rock front, Carlsberg front, BRADY
-   front. Beginning alternates front, back, front, back, front.
-   Only 2 back views exist, so front views follow in a row after
-   the backs are used, the allowed exception. Never 2 backs in a
-   row. Random start on every load, see js/6-boot.js, so a refresh
-   shows another home first. Keepers Hazel, RIO, SER, PALM keep
-   real photos. Stock slides are labeled STOCK PHOTO, no home name.
-   BRADY is the real Brady photo, Homes of Greater Sacramento /
-   MetroList, confirmed by Darien Nov 9, 6:15 PM, not the South
-   Florida Unsplash stock photo and not the white modern 1-story
-   Unsplash placeholder. Only the home page uses this slideshow,
-   in js/6-boot.js; every other page keeps its own photo. */
-const TOUR_STOCK_IMG = 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=80&auto=format&fit=crop';
+/* ===== Homepage hero slideshow, v9, Nov 10, 2026 =====
+   Hero v9, mix of G and D plus dual-card pan, picked Nov 9. 3D card
+   flip stack plus parallax scroll, no plain fade. Two homes are
+   visible at once, left and right, both coming into the screen, the
+   left home pans left and the right home pans right over the 8
+   second hold, so you see more of each home, and they rotate with
+   the cards. 12 slides. Base order, front/back in order: Hazel
+   front, Home in Loomis back, Home in Folsom front, Home in Rocklin
+   back, Home in Rescue front, Home in Stockton back, Home in
+   Stockton front, Home in Modesto back, Home in Folsom front, Home
+   in Modesto front, Home in Lincoln front, Home in Folsom front.
+   Beginning alternates front, back, front, back, front, back,
+   front, back, front. Only 4 back views exist, so front views
+   follow in a row at the end, the allowed exception. Never 2 backs
+   in a row. Random start on every load, see js/6-boot.js, so a
+   refresh shows another home first. SER, BRADY, PALM and RIO are
+   out of the hero in v9. 4641 Dehone Cir, Folsom, is in, as a stock
+   placeholder, SHAWOOD at Folsom, Birch to-be-built, $1,399,990,
+   not move-in ready, no real front photo exists yet, not the Hazel
+   photo. The 4 new slots use Unsplash fallbacks, because the real
+   listing Photo 1 direct URLs could not be pulled in a text fetch
+   from Zillow or Instagram, a live browser pull is still needed:
+   Slot 1 ex-SER, Hyman House, 603 Figueroa St, Folsom, closed Mar
+   3, 2026, sold $1,340,000, fallback 1583608205776; Slot 2
+   ex-BRADY, 2561 Ladd Rd, Modesto, $1,550,000, active, fallback
+   1600596542815; Slot 3 ex-PALM, 2503 Breaker Way, Stockton,
+   $549,000, active Nov 5, 2026, fallback 1580587771525, labeled
+   Stockton, not Oakdale; Slot 4 ex-RIO, 7434 River Nine Dr,
+   Modesto, $2,099,000, active, fallback 1600566753190. Stock
+   slides are labeled by city only, no home or plan names. Only
+   the home page uses this slideshow, in js/6-boot.js; every other
+   page keeps its own photo. */
 function heroSlidesData() {
   return [
     { label: 'Hazel', city: 'Folsom', src: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', tag: 'REAL PHOTO, Builder photo, SHAWOOD, front view', view: 'front' },
-    { label: 'Ridge Park', city: 'Loomis', src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
-    { label: 'RIO', city: 'Modesto', src: 'https://photos.zillowstatic.com/fp/02ffcbe525dd66aa93bba03512df8ce9-cc_ft_960.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front view', view: 'front' },
-    { label: 'Cornwall', city: 'Rocklin', src: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
-    { label: 'SER', city: 'Folsom', src: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/09/21/16a81d77-1658-4c22-b2b9-2c013064d826.jpg', tag: 'REAL PHOTO, Listing photo via MetroList, front view', view: 'front' },
-    { label: 'Haven', city: 'Rescue', src: 'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'PALM', city: 'Oakdale', src: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/10/15/65fe65dd-29aa-41f2-ae83-a54e37dbf999.jpg', tag: 'REAL PHOTO, Aerial listing photo via MetroList', view: 'aerial' },
-    { label: 'Plan 7', city: 'Stockton', src: 'https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Oak Rock', city: 'Folsom', src: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Carlsberg, 835 Ridgeline Dr', city: 'Lincoln', src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'BRADY', city: 'Modesto', src: 'https://ph.cincmedia.com/casacra/57fb251bbf2f334c015617f8a3aec649.jpg?width=1024', tag: 'REAL PHOTO, Listing photo via Homes of Greater Sacramento / MetroList, front view', view: 'front' }
+    { label: 'Home in Loomis', city: 'Loomis', src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
+    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Home in Rocklin', city: 'Rocklin', src: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
+    { label: 'Home in Rescue', city: 'Rescue', src: 'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Home in Stockton', city: 'Stockton', src: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
+    { label: 'Home in Stockton', city: 'Stockton', src: 'https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Home in Modesto', city: 'Modesto', src: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
+    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Home in Modesto', city: 'Modesto', src: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Home in Lincoln', city: 'Lincoln', src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, SHAWOOD at Folsom, front view', view: 'front' }
   ];
 }
 function photoImg(key, tile, url) {

@@ -709,8 +709,10 @@ footer a { color: var(--brand-ink); }
 .hero-scroll { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 2; background: none; border: 0; color: rgba(255, 255, 255, 0.92); font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; cursor: pointer; padding: 6px 10px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
 .hero-scroll span { display: block; font-size: 1rem; line-height: 1; margin-top: 2px; }
 .hero-note { margin-top: 28px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.78); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
-/* Homepage hero slideshow, v8, Nov 10, 2026: mix of G and D, picked
-   Nov 9. 3D card flip stack plus parallax scroll, no plain fade.
+/* Homepage hero slideshow, v9, Nov 10, 2026: mix of G and D plus
+   dual-card pan, picked Nov 9. 3D card flip stack plus parallax
+   scroll, no plain fade. Two homes visible at once, left pans left,
+   right pans right over the 8 second hold, rotating with the cards.
    The top card flips away with a slight tilt to reveal the next
    home, and the hero photo moves slower than the page as you scroll.
    Auto-advance is slow, 8 seconds, scroll down also flips to the
@@ -722,11 +724,15 @@ footer a { color: var(--brand-ink); }
 :root[data-page="home"] .hero-in { transform: translateY(var(--headlineY, 0px)); }
 .hero-stack { position: absolute; inset: 0; transform-style: preserve-3d; }
 .hero-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transform: translateZ(-140px) rotateY(-18deg) rotate(-2deg) scale(0.94); transform-origin: left center; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s linear 0.9s; border-radius: 18px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,0.35); will-change: transform, opacity; }
-.hero-slide.behind { opacity: 1; visibility: visible; transform: translateZ(-90px) rotateY(-9deg) rotate(-1deg) scale(0.97); z-index: 2; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
+.hero-slide.behind { opacity: 1; visibility: visible; transform: translateZ(-90px) rotateY(-9deg) rotate(-1deg) translateX(16%) scale(0.97); z-index: 2; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide.active { opacity: 1; visibility: visible; transform: translateZ(0) rotateY(0deg) rotate(0deg) scale(1); z-index: 3; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide.flipping { opacity: 0; visibility: visible; transform: translateX(-105%) rotateY(-58deg) rotate(-5deg) scale(0.96); z-index: 4; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
-.hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: translateY(var(--parallaxY, 0px)) scale(1.08); }
-@media (prefers-reduced-motion: reduce) { .hero-slide, .hero-slide.behind, .hero-slide.active, .hero-slide.flipping { transition: none; transform: none; } .hero-slide img { transform: none; } }
+.hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: translateY(var(--parallaxY, 0px)) scale(1.12); }
+@keyframes heroPanLeft { from { object-position: 68% 50%; } to { object-position: 32% 50%; } }
+@keyframes heroPanRight { from { object-position: 32% 50%; } to { object-position: 68% 50%; } }
+.hero-slide.active img { animation: heroPanLeft 8s ease-in-out infinite alternate; }
+.hero-slide.behind img { animation: heroPanRight 8s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .hero-slide, .hero-slide.behind, .hero-slide.active, .hero-slide.flipping { transition: none; transform: none; } .hero-slide img { transform: none; animation: none; } }
 .hero-slide-tag { position: absolute; left: 16px; bottom: 64px; z-index: 3; background: rgba(6, 12, 20, 0.72); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; }
 .hero-dots { position: absolute; right: 16px; top: 14px; z-index: 4; display: flex; gap: 8px; }
 .hero-dots button { width: 36px; height: 12px; border-radius: 999px; border: 2px solid #fff; background: transparent; cursor: pointer; padding: 0; }

@@ -63,7 +63,7 @@ def('home', {
   sub: 'Homes for sale in Placer, Sacramento, San Joaquin and Stanislaus, with real monthly costs and a local realtor who will walk you through them.',
   heroSearch: false,
   photoKey: () => HOME_BACKDROP_KEY,
-  heroNote: () => 'Hero photos flip through 11 homes, one at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.',
+  heroNote: () => 'Hero photos flip through 12 homes, two at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.',
   ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');

@@ -203,8 +203,9 @@ function heroSlidesHtml() {
     '<div class="hero-dots" role="group" aria-label="Hero photos">' + slides.map((s, i) => '<button type="button" data-hero-dot="' + i + '" aria-label="Show ' + esc(s.label + ', ' + s.city) + '"' + (i === 0 ? ' class="on"' : '') + '></button>').join('') + '</div>' +
     '<div class="hero-progress" id="heroProgress"></div><div class="hero-flip-hint">Top card flips away to reveal the next home</div>';
 }
-/* Home page only: v8 hero, mix of G and D, picked Nov 9. 3D card flip
-   stack plus parallax scroll, no plain fade. The top card flips away
+/* Home page only: v9 hero, mix of G and D plus dual-card pan, picked Nov 9. 3D card flip
+   stack plus parallax scroll, no plain fade. Two homes visible at once, left pans left,
+   right pans right over the 8 second hold, rotating with the cards. The top card flips away
    with a slight tilt to reveal the next home, and the hero photo
    moves slower than the page as you scroll. Auto-advance is slow,
    8 seconds, scroll down also flips to the next home, throttled,
