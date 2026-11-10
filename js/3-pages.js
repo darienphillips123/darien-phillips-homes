@@ -149,9 +149,12 @@ const TOURED_CUSTOM = [
    on its card. Oak Rock's photo is an aerial from the prior listing of
    the same house, pre-remodel, and is labelled as such. Builder photos
    are labelled as builder photos. Videos are Darien's own reels,
-   verified Nov 7, 2026. BRADY has no verified front photo on file and
-   no reel link yet, so its card says so plainly instead of showing a
-   photo that is not the home. The Carlsberg video is one plan-level
+   verified Nov 7, 2026. BRADY now has a real front photo, Homes of
+   Greater Sacramento IDX Image 38, confirmed by Darien Nov 9, 2026
+   ("That one is brady"), added Nov 10, 2026 on his yes. Its reel link
+   is still to be added, so its card says so plainly. Never use the
+   Unsplash 1613490493576 South Florida stock photo as Brady, and never
+   use TOUR_STOCK_IMG for Brady. The Carlsberg video is one plan-level
    tour; its December move-in line points to 835 Ridgeline Dr, the only
    Carlsberg card kept. No card ever renders a gold panel: a home with
    no photo shows its tour video link instead, and a home with no photo
@@ -167,7 +170,7 @@ const TOURED_MEDIA = {
   't:oak-rock-folsom': { photo: 'https://pi.movoto.com/p/102/226095956_0_mu6iZv_p.webp', credit: 'Aerial photo from the prior listing of this home', video: 'https://www.instagram.com/reel/DfKiQROyqLb/embed/', watch: 'https://www.instagram.com/reel/DfKiQROyqLb/', plat: 'Instagram' },
   'q:shawood-at-folsom-4681-dehone-circle': { photo: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', credit: 'Builder photo, SHAWOOD', video: 'https://www.tiktok.com/embed/v2/7705246029641157902', watch: 'https://www.tiktok.com/@realtordarien/video/7705246029641157902', plat: 'TikTok' },
   't:carlsberg-835-ridgeline-dr': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_MODF_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Modern Farmhouse elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok' },
-  't:brady-modesto': { video: '', watch: '', plat: 'Instagram', credit: 'Tour filmed Nov 9, 2026, reel link to be added. No verified front photo on file for this home yet' }
+  't:brady-modesto': { photo: 'https://ph.cincmedia.com/casacra/57fb251bbf2f334c015617f8a3aec649.jpg?width=1024', credit: 'REAL PHOTO, Homes of Greater Sacramento IDX, Image 38, front view, dusk, confirmed by Darien Nov 9, 2026', video: '', watch: '', plat: 'Instagram', tourNote: 'Tour filmed Nov 9, 2026, reel link to be added' }
 };
 /* The video cell shows the home photo as its poster, with a big play
    button and no profile picture. There is no embedded player on the
@@ -176,9 +179,9 @@ const TOURED_MEDIA = {
    photo, Cornwall with its four Zillow photos A, B, C and D, gets a
    Prev/Next photo carousel on the poster, starting with the first
    photo. A home with no verified photo never gets a gold panel: its
-   poster is the tour video link itself, on a plain background, and a
-   home with no photo and no video link yet, BRADY, shows a plain note
-   saying the reel link is to be added. */
+   poster is the tour video link itself, on a plain background. A home
+   with a photo but no video link yet, BRADY, shows its real photo
+   with a plain note saying the reel link is to be added. */
 function touredVideoCell(m, poster) {
   const photos = (m.photos && m.photos.length) ? m.photos : ((poster || m.photo) ? [poster || m.photo] : []);
   const labels = m.photoLabels || [];
@@ -190,7 +193,7 @@ function touredVideoCell(m, poster) {
   }
   const nav = photos.length > 1 ? '<div class="photo-nav"><button type="button" data-photo-prev>Prev photo</button><span data-photo-count>Photo 1 of ' + photos.length + (labels[0] ? ', ' + esc(labels[0]) : '') + '</span><button type="button" data-photo-next>Next photo</button></div>' : '';
   const posterHtml = '<img src="' + esc(photos[0]) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-tour-photo>';
-  const play = m.watch ? '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(plat) + '</span>' : '<span class="lux-play">' + esc(m.credit || 'Tour filmed Nov 9, 2026, reel link to be added') + '</span>';
+  const play = m.watch ? '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(plat) + '</span>' : '<span class="lux-play">' + esc(m.tourNote || 'Tour filmed Nov 9, 2026, reel link to be added') + '</span>';
   const posterLink = m.watch
     ? '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(plat) + ', opens in a new tab">' + posterHtml + play + '</a>'
     : '<div class="lux-video-poster">' + posterHtml + play + '</div>';
@@ -215,7 +218,7 @@ document.addEventListener('click', (e) => {
   const countEl = cell.querySelector('[data-photo-count]');
   if (countEl) countEl.textContent = 'Photo ' + (idx + 1) + ' of ' + imgs.length + (labels[idx] ? ', ' + labels[idx] : '');
 });
-function touredCredit(m) { return '<p class="note">' + esc(m.credit) + '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>.</p>'; }
+function touredCredit(m) { return '<p class="note">' + esc(m.credit) + (m.watch ? '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>' : '. ' + esc(m.tourNote || 'Tour filmed Nov 9, 2026, reel link to be added')) + '.</p>'; }
 /* A tap on a tour poster opens the reel in a new tab. The click is still
    tracked, best effort, so Darien can see which tours get watched. */
 document.addEventListener('click', (e) => {
@@ -275,9 +278,9 @@ function touredCustomCard(t) {
    the property record or the verified custom card. Each similar home
    shows its photo, price, city, beds, baths and sq ft, plus a Click
    to get the details button that reuses the existing details() flow,
-   details first and the agent question at the end, unchanged. A home
-   with no verified photo, BRADY, shows the stock photo in the similar
-   card, labeled STOCK PHOTO, never as a real photo of the home. */
+   details first and the agent question at the end, unchanged. BRADY
+   now has a verified real photo, so it shows that photo in the similar
+   card, labeled REAL PHOTO, never a stock photo passed off as the home. */
 function touredSimList() {
   const list = [];
   const pushProp = (key, cartKey) => {
