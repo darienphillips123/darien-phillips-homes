@@ -10,7 +10,8 @@
    Custom Portal is the homes-popping-out-of-a-screen image, Shop by
    Payment is the digital-screen image with Darien as the helper, Cart
    is the family-with-cart image, Assumable is Assumable Home 2 as its
-   header only, and ADU is the Ridge Park Zillow listing photo. To use
+   header only, and ADU is a stock modern home with a backyard from
+   Unsplash, not Ridge Park and not a Home hero slide. To use
    a real tour-home photo later, add it to img/ as <key>-1920.jpg,
    <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry for it, and
    point this key at it. */
@@ -31,8 +32,9 @@ const PHOTOS = {
   build: { pos: '74% 53%', by: 'Lili Kovac', id: 'BSQq5dRT_KU' },
   about: { pos: '50% 62%', by: 'Get Lost Mike', id: '6267516', site: 'pexels', src: 'https://images.pexels.com/photos/6267516/pexels-photo-6267516.jpeg?auto=compress&cs=tinysrgb' },
   alerts: { pos: '50% 50%', by: 'Roger Starnes Sr', id: 'LUdiEvMAyQ8' },
-  adu: { pos: '50% 50%', aiNote: 'Front photo: Zillow listing photo, Ridge Park, 5846 Ridge Park Dr, Loomis, 5 acres. Real listing photo, not stock.' },
-  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Family Tour, not a real photo, not a real home. A family with a shopping cart full of miniature homes in front of a modern luxury home, dad pointing at the home. The FOR SALE sign reads $1,295,000, AI-invented, not a real home price, do not quote it as real. Cart tab header only, removed from Shop by Payment.' },
+  adu: { pos: '50% 50%', aiNote: 'Stock photo, modern home with a backyard, Unsplash. Not a real ADU, not a home Darien toured.' },
+  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping Adventure, not a real photo, not a real home. A happy family, dad, mom and two kids, pushing a shopping cart full of miniature luxury houses down a sunny suburban street, mom pointing at a modern luxury home. Cart tab header only.' },
+  'family-cart': { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping Adventure, not a real photo, not a real home. A happy family, dad, mom and two kids, pushing a shopping cart full of miniature luxury houses down a sunny suburban street, mom pointing at a modern luxury home. Cart tab header only.' },
   /* Headers, Nov 10, 2026, Darien's direction: one unique header photo
      per tab, top only, no header image used twice. Finder is the keys
      photo, Darien handing keys to a couple. Custom Portal is the new
