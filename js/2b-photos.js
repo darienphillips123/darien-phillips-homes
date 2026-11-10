@@ -7,16 +7,31 @@
    a home Darien toured. Headers, Nov 10, 2026, Darien's direction:
    one unique header photo per tab, top only, no header image used
    twice, no giant photo inside a tab. Finder is the keys photo,
-   Custom Portal is the homes-popping-out-of-a-screen image, Shop by
-   Payment is the digital-screen image with Darien as the helper, Cart
-   is the family-with-cart image, Assumable is Assumable Home 2 as its
-   header only, and ADU is a stock modern home with a backyard from
-   Unsplash, not Ridge Park and not a Home hero slide. To use
-   a real tour-home photo later, add it to img/ as <key>-1920.jpg,
-   <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry for it, and
-   point this key at it. */
+   Custom Portal is a real Unsplash photo of a modern home with a
+   pool, not the AI screen image, Shop by Payment is the digital-screen
+   image with Darien as the helper in a black suit, looking at the
+   screen, Cart is the Dream Home Shopping in the Suburbs image, a man
+   pushing a shopping cart full of miniature houses, Assumable is
+   Assumable Home 2 as its header only, and ADU is a stock modern home
+   with a backyard from Unsplash, not Ridge Park and not a Home hero
+   slide. To use a real tour-home photo later, add it to img/ as
+   <key>-1920.jpg, <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry
+   for it, and point this key at it. */
 const HOME_BACKDROP_KEY = 'payment';
-const HOME_BACKDROP_NOTE = 'Hero photos flip through 12 homes, two at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
+const HOME_BACKDROP_NOTE = 'Hero photos flip through 12 homes, two at a time, in a freshly shuffled order on every visit to the home page. All 12 are Unsplash stock photos, 3840 pixels wide, labeled STOCK PHOTO, never as a real photo of a home.';
+/* ===== Stock fallback, v10, Nov 10, 2026 =====
+   TOUR_STOCK_IMG was deleted in an earlier cleanup, which crashed the
+   home page: touredMarqueeHtml, touredSimilarHtml, finderPhotoHtml
+   and cartPhotoFor all read it, so render() threw a ReferenceError
+   and the whole home page below the hero stayed blank. It is defined
+   again here. It is a real Unsplash photo, a small house by a lake,
+   3840 pixels wide, never a toured home, and everywhere it renders
+   it is labeled STOCK PHOTO, not this home. It is NOT the old
+   1613490493576 photo, which was wrongly shown as Brady and must
+   never be used as Brady again. The toured marquee and similar-homes
+   lists now only include homes with a verified real photo, so this
+   fallback almost never renders for a toured home. */
+const TOUR_STOCK_IMG = 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&q=80&auto=format&fit=crop';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', aiNote: 'Stock photo, a realtor handing keys to a couple, Pexels. Not Darien, not a real closing.' },
@@ -24,7 +39,7 @@ const PHOTOS = {
   search: { pos: '50% 50%', by: 'Kindel Media', id: '9716228', site: 'pexels', src: 'https://images.pexels.com/photos/9716228/pexels-photo-9716228.jpeg?auto=compress&cs=tinysrgb' },
   assumable: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Assumable Home 2, not a real photo, not a real home. Sign text in the image is AI-generated.' },
   'zero-down': { pos: '52% 50%', by: 'Brian Zajac', id: 'g6LLnC-rn0E' },
-  payment: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Modern Home Search Showroom, not a real photo. Darien is the helper in the navy suit, front and center, showing the customer the screen. A different man presses the Monthly Payment button. Prices on the screen, $725,000, $849,000 and $1,195,000, are AI-invented, not real homes, do not quote them as real.' },
+  payment: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Modern Home Search Showroom, not a real photo. Darien is the helper in the black suit, looking at the screen with the customer, showing homes by monthly payment. A different man presses the Monthly Payment button. Prices on the screen, $725,000, $849,000 and $1,195,000, are AI-invented, not real homes, do not quote them as real.' },
   'new-builds': { pos: '56% 45%', by: 'Troy Mortier', id: '9GAdLexoV7U' },
   placer: { pos: '52% 55%', by: 'Roger Starnes Sr', id: 'pGH1-iHveX0' },
   stockton: { pos: '50% 50%', by: 'Cosmin Gurau', id: '3cDza1lTxCQ' },
@@ -33,74 +48,57 @@ const PHOTOS = {
   about: { pos: '50% 62%', by: 'Get Lost Mike', id: '6267516', site: 'pexels', src: 'https://images.pexels.com/photos/6267516/pexels-photo-6267516.jpeg?auto=compress&cs=tinysrgb' },
   alerts: { pos: '50% 50%', by: 'Roger Starnes Sr', id: 'LUdiEvMAyQ8' },
   adu: { pos: '50% 50%', aiNote: 'Stock photo, modern home with a backyard, Unsplash. Not a real ADU, not a home Darien toured.' },
-  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping Adventure, not a real photo, not a real home. A happy family, dad, mom and two kids, pushing a shopping cart full of miniature luxury houses down a sunny suburban street, mom pointing at a modern luxury home. Cart tab header only.' },
-  'family-cart': { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping Adventure, not a real photo, not a real home. A happy family, dad, mom and two kids, pushing a shopping cart full of miniature luxury houses down a sunny suburban street, mom pointing at a modern luxury home. Cart tab header only.' },
+  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping in the Suburbs, not a real photo, not a real home. A man pushes a shopping cart full of miniature houses down a suburban street, pointing at a modern home. Cart tab header only.' },
   /* Headers, Nov 10, 2026, Darien's direction: one unique header photo
      per tab, top only, no header image used twice. Finder is the keys
-     photo, Darien handing keys to a couple. Custom Portal is the new
-     homes-popping-out-of-a-screen image, family and couple smiling, no
-     prices on screen. Both are AI-generated, not real photos, and
-     photoCredit labels them as such. The shopping-cart street image is
-     gone from headers. */
-  portal: { pos: '48% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, homes popping out of a large computer screen in 3D, family and couple smiling, no prices on screen. Not a real photo. Custom Portal header only.' },
+     photo, Darien handing keys to a couple. Custom Portal is now a
+     real Unsplash photo, a modern home with a swimming pool, not the
+     AI homes-popping-out-of-a-screen image. The old Dream Home
+     Shopping Adventure family-pushing-cart image is retired from
+     headers, a backup copy is in ~/workspace/preview-v10/. */
+  portal: { pos: '50% 50%', src: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop', aiNote: 'Stock photo, modern home with a swimming pool, Unsplash. Not a real home Darien toured, not a Custom Portal listing. Custom Portal header only.' },
   finder: { pos: '50% 40%', ai: true, aiNote: 'AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' },
 };
-/* ===== Homepage hero slideshow, v9, Nov 10, 2026 =====
-   Hero v9, mix of G and D plus dual-card pan, picked Nov 9. 3D card
+/* ===== Homepage hero slideshow, v10, Nov 10, 2026 =====
+   Hero v10, mix of G and D plus dual-card pan, picked Nov 9. 3D card
    flip stack plus parallax scroll, no plain fade. Two homes are
    visible at once, left and right, both coming into the screen, the
    left home pans left and the right home pans right over the 8
    second hold, so you see more of each home, and they rotate with
-   the cards. 12 slides. Base order, front/back in order: Hazel
-   front, Home in Loomis back, Home in Folsom front, Home in Rocklin
-   back, Home in Rescue front, Home in Stockton front, Home in
-   Stockton front, Home in Modesto back, Home in Folsom front, Home
-   in Modesto front, Home in Lincoln front, Home in Folsom front.
-   Beginning alternates front, back, front, back, front. Only 3 back
-   views exist now, so front views follow in a row at the end, the
-   allowed exception. Never 2 backs in a row. Random start on every
-   load, see js/6-boot.js, so a refresh shows another home first.
-   SER, BRADY, PALM and RIO are out of the hero in v9. 4641 Dehone
-   Cir, Folsom, is in, as a stock placeholder, SHAWOOD at Folsom,
-   Birch to-be-built, $1,399,990, not move-in ready, no real front
-   photo exists yet, not the Hazel photo. Real Zillow photos swapped
-   in Nov 10, 2026, live browser pull Nov 9, 7:07 to 7:15 PM PST,
-   re-checked Nov 9, 7:15 PM, all HEAD 200: Slot 2 ex-BRADY, 2561
-   Ladd Rd, Modesto, ACTIVE $1,550,000, back Photo 8, wooden deck
-   with two white chairs overlooking pool, served 800x532, upscales
-   about 2.4x in the wide hero, its dusk Photo 1 front is not used,
-   this slot is a back slot; Slot 3 ex-PALM, 2503 Breaker Way,
-   Stockton, ACTIVE $549,000, Photo 1 front, daytime, sunny, served
-   960x720, upscales about 2x, no back or pool photo exists, so its
-   flag changed from back to front; Slot 4 ex-RIO, 7434 River Nine
-   Dr, Modesto, FOR SALE $2,099,000, Photo 1 front, daytime, served
-   960x720, upscales about 2x, its back Photo 12 is not used, this
-   slot is front. Slot 1 ex-SER keeps the Unsplash fallback
-   1583608205776, labeled Home in Folsom, STOCK PHOTO, not a toured
-   home: the live browser pull Nov 9, 7:07 to 7:15 PM could not
-   extract a direct CDN URL for Hyman House, 603 Figueroa St,
-   Folsom, and its Instagram slide 1 front carries a large c. 1881
-   text overlay in the lower third. Do not use a guessed CDN URL
-   for Hyman House. Note: the two unused Zillow URLs from that pull
-   returned 404 on re-check Nov 10, 3:15 AM, Ladd Rd Photo 1 front
-   and Breaker Way Photo 3 second front/side, so neither is used
-   anywhere. Stock and real slides are labeled by city only, no home
-   or plan names. Only the home page uses this slideshow, in
-   js/6-boot.js; every other page keeps its own photo. */
+   the cards. 12 slides, ALL Unsplash only, all w=3840, every one
+   visually checked Nov 10, 2026 as a sharp daytime or dusk house
+   exterior, no interiors, no cars, no portraits. Darien's Nov 10
+   direction: only Unsplash in the hero, because Unsplash is the only
+   source that is 4K. The v9 Zillow photos (2561 Ladd Rd, 2503
+   Breaker Way, 7434 River Nine Dr, 960x720 and 800x532, blurry
+   upscaled) are OUT, Hazel the SHAWOOD builder photo is OUT, and
+   SER, BRADY, PALM and RIO stay OUT. Base order, front/back in
+   order: front, back, front, back, front, back, front, back, front,
+   front, front, front. Only 4 back views exist, so front views
+   follow in a row at the end, the allowed exception. Never 2 backs
+   in a row. The order is reshuffled on every home page mount, see
+   heroShuffleOrder in js/6-boot.js, fronts shuffle among front slots
+   and backs among back slots, so the pattern above always holds and
+   a click on Home never shows the same starting pair. Random start
+   on every load, never the same start twice in a row, stored in
+   sessionStorage. Labels are city only, no home or plan names,
+   except slide 12, the Birch placeholder: Home in Folsom, SHAWOOD
+   at Folsom, 4641 Dehone Cir, to-be-built, no real front photo
+   exists yet, not the Hazel photo. */
 function heroSlidesData() {
   return [
-    { label: 'Hazel', city: 'Folsom', src: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', tag: 'REAL PHOTO, Builder photo, SHAWOOD, front view', view: 'front' },
-    { label: 'Home in Loomis', city: 'Loomis', src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
-    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Home in Rocklin', city: 'Rocklin', src: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
-    { label: 'Home in Rescue', city: 'Rescue', src: 'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Home in Stockton', city: 'Stockton', src: 'https://photos.zillowstatic.com/fp/485a93068adf09e0d306a372f1e63ce0-cc_ft_960.jpg', tag: 'REAL PHOTO, Zillow listing photo, not a toured home, front view', view: 'front' },
-    { label: 'Home in Stockton', city: 'Stockton', src: 'https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Home in Modesto', city: 'Modesto', src: 'https://photos.zillowstatic.com/fp/d76bef5a565ae73d4ef1894c9df66732-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, not a toured home, back view', view: 'back' },
-    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Home in Modesto', city: 'Modesto', src: 'https://photos.zillowstatic.com/fp/1dbf404656db92687ef3531b67ae7abe-cc_ft_960.jpg', tag: 'REAL PHOTO, Zillow listing photo, not a toured home, front view', view: 'front' },
-    { label: 'Home in Lincoln', city: 'Lincoln', src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
-    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, SHAWOOD at Folsom, front view', view: 'front' }
+    { label: 'Home in Sacramento', city: 'Sacramento', src: 'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in Rocklin', city: 'Rocklin', src: 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'back' },
+    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1560184897-ae75f418493e?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in Modesto', city: 'Modesto', src: 'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'back' },
+    { label: 'Home in Lincoln', city: 'Lincoln', src: 'https://images.unsplash.com/photo-1600585153490-76fb20a32601?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in Stockton', city: 'Stockton', src: 'https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'back' },
+    { label: 'Home in Loomis', city: 'Loomis', src: 'https://images.unsplash.com/photo-1571055107559-3e67626fa8be?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in Oakdale', city: 'Oakdale', src: 'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'back' },
+    { label: 'Home in Roseville', city: 'Roseville', src: 'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in El Dorado Hills', city: 'El Dorado Hills', src: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in Lodi', city: 'Lodi', src: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home', view: 'front' },
+    { label: 'Home in Folsom', city: 'Folsom', src: 'https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?w=3840&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, SHAWOOD at Folsom, Birch placeholder, 4641 Dehone Cir', view: 'front' }
   ];
 }
 function photoImg(key, tile, url) {

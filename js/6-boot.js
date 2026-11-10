@@ -196,28 +196,41 @@ let heroTimer = null;
 let heroSlides = [], heroDots = [], heroIndex = 0, heroFlipping = false, heroPaused = false, heroLastFlip = 0;
 const HERO_START_KEY = 'dp-hero-last-start';
 function heroSlidesHtml() {
-  const slides = heroSlidesData();
+  const slides = heroShuffleOrder(heroSlidesData());
   return '<div class="hero-stack" id="heroStack">' + slides.map((s, i) => '<div class="hero-slide' + (i === 0 ? ' active' : (i === 1 ? ' behind' : '')) + '" data-slide="' + i + '" data-homes="' + esc(s.label) + '" data-view="' + esc(s.view || 'front') + '">' +
     '<img src="' + esc(s.src) + '" alt="' + esc(s.label + ', ' + s.city + ', ' + s.tag + ', ' + (s.view || 'front') + ' view') + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" referrerpolicy="no-referrer">' +
     '<span class="hero-slide-tag">' + esc(s.label + ', ' + s.city + ' · ' + s.tag + ' · ' + (s.view || 'front') + ' view') + '</span></div>').join('') + '</div>' +
     '<div class="hero-dots" role="group" aria-label="Hero photos">' + slides.map((s, i) => '<button type="button" data-hero-dot="' + i + '" aria-label="Show ' + esc(s.label + ', ' + s.city) + '"' + (i === 0 ? ' class="on"' : '') + '></button>').join('') + '</div>' +
     '<div class="hero-progress" id="heroProgress"></div><div class="hero-flip-hint">Top card flips away to reveal the next home</div>';
 }
-/* Home page only: v9 hero, mix of G and D plus dual-card pan, picked Nov 9. 3D card flip
+/* Home page only: v10 hero, mix of G and D plus dual-card pan, picked Nov 9. 3D card flip
    stack plus parallax scroll, no plain fade. Two homes visible at once, left pans left,
    right pans right over the 8 second hold, rotating with the cards. The top card flips away
    with a slight tilt to reveal the next home, and the hero photo
    moves slower than the page as you scroll. Auto-advance is slow,
    8 seconds, scroll down also flips to the next home, throttled,
-   pause on hover and focus, dots are pills. Random start: every
-   load starts on a different home, never the same start twice in
-   a row, stored in sessionStorage, then it rotates in order from
-   there. Front/back order in heroSlidesData() is front, back,
-   front, back, front at the start, then front, front, back, front,
-   front, front, front. Only 3 back views exist, so front views
-   follow in a row at the end, the allowed exception, and no 2 back
-   views are ever in a row. Other pages keep their
-   own hero photo, untouched. */
+   pause on hover and focus, dots are pills. All 12 slides are
+   Unsplash only, 3840 pixels wide. Random start: every load starts
+   on a different home, never the same start twice in a row, stored
+   in sessionStorage, then it rotates in order from there. Reshuffle,
+   Nov 10, 2026: every time the home page mounts, the order itself
+   is reshuffled, so a click on Home never shows the same starting
+   pair. Fronts shuffle among front slots and backs among back slots,
+   so the front/back pattern in heroSlidesData() always holds: front,
+   back, front, back, front, back, front, back, then fronts, and no 2
+   back views are ever in a row. Other pages keep their own hero
+   photo, untouched. */
+function heroShuffleOrder(slides) {
+  const frontSlots = [0, 2, 4, 6, 8, 9, 10, 11], backSlots = [1, 3, 5, 7];
+  const fronts = slides.filter((s) => (s.view || 'front') !== 'back');
+  const backs = slides.filter((s) => (s.view || 'front') === 'back');
+  const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+  shuffle(fronts); shuffle(backs);
+  const out = new Array(slides.length);
+  frontSlots.forEach((slot, i) => { if (i < fronts.length) out[slot] = fronts[i]; });
+  backSlots.forEach((slot, i) => { if (i < backs.length) out[slot] = backs[i]; });
+  return out.filter(Boolean);
+}
 function heroPickStart(n) {
   let last = -1;
   try { last = parseInt(sessionStorage.getItem(HERO_START_KEY) || '-1', 10); } catch (e) { last = -1; }
@@ -227,23 +240,28 @@ function heroPickStart(n) {
   try { sessionStorage.setItem(HERO_START_KEY, String(pick)); } catch (e) { /* private mode, start is random anyway */ }
   return pick;
 }
+/* Pill fix, Nov 10, 2026: the old version rotated the slide DOM order so the random start
+   became index 0, then relabeled the dots 0 to 11 in rotated order. The first pill was
+   therefore always on no matter which home was left, and clicking pill 6 showed rotated
+   slide 5, which is original slide 3 when the start was 10. This version never rotates
+   anything. Slides and dots stay in original order, heroIndex is the original start index,
+   the pill with that same index lights up, and a pill click shows that slide as the left
+   card with the next slide on the right. */
 function heroApplyRandomStart(scene) {
   const stack = scene.querySelector('#heroStack');
   if (!stack) return;
   const ordered = [...stack.querySelectorAll('.hero-slide')];
   if (!ordered.length) return;
   const start = heroPickStart(ordered.length);
-  const rotated = ordered.slice(start).concat(ordered.slice(0, start));
-  rotated.forEach((sl, i) => {
+  ordered.forEach((sl, i) => {
     sl.classList.remove('active', 'behind', 'flipping');
-    if (i === 0) sl.classList.add('active');
-    if (i === 1) sl.classList.add('behind');
-    stack.appendChild(sl);
+    if (i === start) sl.classList.add('active');
+    if (i === (start + 1) % ordered.length) sl.classList.add('behind');
   });
-  heroSlides = rotated;
-  heroIndex = 0;
+  heroSlides = ordered;
+  heroIndex = start;
   heroDots = [...scene.querySelectorAll('[data-hero-dot]')];
-  heroDots.forEach((d, j) => { d.classList.toggle('on', j === 0); d.dataset.heroDot = String(j); });
+  heroDots.forEach((d, j) => d.classList.toggle('on', j === start));
 }
 function startHeroSlideshow() {
   const scene = document.querySelector('#hero .scene');
@@ -387,7 +405,12 @@ window.addEventListener('hashchange', () => {
   if (admin) { adminHash(); return; }
   if (client) { CLIENT = client; store.set('dp-client', client); }
   if (page === 'property') { if (prop !== PROP_KEY || CURRENT !== 'property') { PROP_KEY = prop; render('property'); } return; }
-  if (page !== CURRENT || !$('view').innerHTML) render(page);
+  /* v10, Nov 10, 2026: going to Home always re-renders, even when
+     already on Home. Clicking Home from a fresh load only changes
+     the hash from empty to home, so without this the click did
+     nothing and the hero showed the same starting pair. A re-render
+     reshuffles the hero order and picks a new random start. */
+  if (page !== CURRENT || page === 'home' || !$('view').innerHTML) render(page);
 });
 
 /* ===== Footer and start ===== */

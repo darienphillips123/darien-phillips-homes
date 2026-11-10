@@ -107,14 +107,14 @@ function finderToPortal() {
    so visitors can see the photo layout. */
 function finderPhotoHtml() {
   if (typeof touredSimList !== 'function') return '';
-  const list = touredSimList().slice(0, 6);
+  const list = touredSimList().filter((o) => o.img).slice(0, 6);
   if (!list.length) return '';
   return '<section class="blk" style="padding-top:0"><div class="wrap"><div class="shead"><div><h2>Homes with photos</h2><p>Every home here has a photo, price, city, beds, baths and sq ft. These are the toured homes as Finder examples.</p></div></div>' +
     '<div class="cards">' + list.map((o) => '<article class="card">' +
-      '<img src="' + esc(o.img || TOUR_STOCK_IMG) + '" alt="' + esc((o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:180px;object-fit:cover;border-radius:14px">' +
+      '<img src="' + esc(o.img) + '" alt="' + esc(o.imgTag + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:180px;object-fit:cover;border-radius:14px">' +
       '<div><h3>' + esc(o.title) + '</h3><div class="sub">' + esc(o.city) + '</div></div>' +
       '<div class="price num">' + esc(o.price) + '</div><div class="facts">' + esc(o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') + '</div>' +
-      '<span class="note">' + esc(o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + '</span>' +
+      '<span class="note">' + esc(o.imgTag) + '</span>' +
       '<div class="actions">' + details(o.info) + ' ' + cartBtn(o.cartKey, o.title, o.price) + '</div></article>').join('') +
     '</div></div></section>';
 }

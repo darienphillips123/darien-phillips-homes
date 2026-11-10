@@ -728,17 +728,34 @@ footer a { color: var(--brand-ink); }
 .hero-slide.active { opacity: 1; visibility: visible; transform: translateZ(0) rotateY(0deg) rotate(0deg) scale(1); z-index: 3; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide.flipping { opacity: 0; visibility: visible; transform: translateX(-105%) rotateY(-58deg) rotate(-5deg) scale(0.96); z-index: 4; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: translateY(var(--parallaxY, 0px)) scale(1.12); }
-@keyframes heroPanLeft { from { object-position: 68% 50%; } to { object-position: 32% 50%; } }
-@keyframes heroPanRight { from { object-position: 32% 50%; } to { object-position: 68% 50%; } }
-.hero-slide.active img { animation: heroPanLeft 8s ease-in-out infinite alternate; }
-.hero-slide.behind img { animation: heroPanRight 8s ease-in-out infinite alternate; }
+/* Pan fix, Nov 10, 2026: the old keyframes animated object-position, which cannot move
+   left or right in this wide hero. With object-fit cover the image fills the slide width
+   exactly, so there is no horizontal slack for object-position to use, and frames 4 seconds
+   apart were pixel-identical in the live check. These keyframes animate transform
+   translateX instead, which moves the rendered image itself. Scale 1.12 leaves 6 percent
+   slack on each side, so plus or minus 4.5 percent never shows an edge. Left card pans
+   left, right card pans right, over the 8 second hold, rotating with the cards. */
+@keyframes heroPanLeft { from { transform: translateY(var(--parallaxY, 0px)) translateX(4.5%) scale(1.12); } to { transform: translateY(var(--parallaxY, 0px)) translateX(-4.5%) scale(1.12); } }
+@keyframes heroPanRight { from { transform: translateY(var(--parallaxY, 0px)) translateX(-4.5%) scale(1.12); } to { transform: translateY(var(--parallaxY, 0px)) translateX(4.5%) scale(1.12); } }
+.hero-slide.active img { animation: heroPanLeft 8s linear infinite alternate; }
+.hero-slide.behind img { animation: heroPanRight 8s linear infinite alternate; }
 @media (prefers-reduced-motion: reduce) { .hero-slide, .hero-slide.behind, .hero-slide.active, .hero-slide.flipping { transition: none; transform: none; } .hero-slide img { transform: none; animation: none; } }
-.hero-slide-tag { position: absolute; left: 16px; bottom: 64px; z-index: 3; background: rgba(6, 12, 20, 0.72); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; }
+/* Caption fix, Nov 10, 2026: the tag used to sit on every slide with no right bound, so the
+   behind card's tag started hidden behind the active card and long tags ran off the right
+   edge. The active card shows its tag bottom left, bounded so the full text stays readable.
+   The behind card, the right card, shows a smaller tag bottom right, on its visible side,
+   so both cards are labelled. The flipping card hides its tag while it flips away. */
+.hero-slide-tag { position: absolute; left: 16px; right: 16px; bottom: 64px; z-index: 5; display: inline-block; max-width: 560px; white-space: normal; line-height: 1.45; background: rgba(6, 12, 20, 0.72); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; }
+.hero-slide.behind .hero-slide-tag { display: inline-block; left: auto; right: 16px; bottom: 64px; max-width: 300px; font-size: 0.7rem; opacity: 0.95; }
+.hero-slide.flipping .hero-slide-tag { display: none; }
 .hero-dots { position: absolute; right: 16px; top: 14px; z-index: 4; display: flex; gap: 8px; }
 .hero-dots button { width: 36px; height: 12px; border-radius: 999px; border: 2px solid #fff; background: transparent; cursor: pointer; padding: 0; }
 .hero-dots button.on { background: #fff; width: 48px; }
 .hero-progress { position: absolute; left: 0; bottom: 0; height: 6px; background: #ffd34d; width: 0%; z-index: 7; }
-.hero-flip-hint { position: absolute; right: 16px; bottom: 18px; z-index: 6; background: rgba(6, 12, 20, 0.82); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
+/* Flip-hint fix, Nov 10, 2026: it sat at bottom right, partly covered by the Ask Darien
+   button. It now sits at top right, below the pill dots, clear of the captions, the
+   scroll button and Ask Darien. */
+.hero-flip-hint { position: absolute; right: 16px; top: 56px; z-index: 6; max-width: 320px; text-align: right; line-height: 1.4; background: rgba(6, 12, 20, 0.82); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
 /* v5: full-width leftward marquee, photo options, tab carousels */
 .marquee-blk { overflow: hidden; }
 .marquee-wrap { width: 100%; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; }

@@ -63,7 +63,7 @@ def('home', {
   sub: 'Homes for sale in Placer, Sacramento, San Joaquin and Stanislaus, with real monthly costs and a local realtor who will walk you through them.',
   heroSearch: false,
   photoKey: () => HOME_BACKDROP_KEY,
-  heroNote: () => 'Hero photos flip through 12 homes, two at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.',
+  heroNote: () => 'Hero photos flip through 12 homes, two at a time, in a freshly shuffled order every time you open the home page. All 12 are Unsplash stock photos, labeled STOCK PHOTO, never as a real photo of a home.',
   ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
@@ -325,11 +325,11 @@ function touredSimilarFor(entry) {
   return scored.map((x) => x.o);
 }
 function touredSimilarHtml(entry) {
-  const sims = touredSimilarFor(entry);
-  if (!sims.length) return '<p class="note">No similar toured home on file yet.</p>';
+  const sims = touredSimilarFor(entry).filter((o) => o.img);
+  if (!sims.length) return '<p class="note">No similar toured home with a photo on file yet.</p>';
   return '<div class="similar-grid">' + sims.map((o) => {
-    const img = o.img || TOUR_STOCK_IMG;
-    const tag = o.img ? o.imgTag : 'STOCK PHOTO, not a toured home';
+    const img = o.img;
+    const tag = o.imgTag;
     return '<article class="similar-card">' +
       '<img src="' + esc(img) + '" alt="' + esc(tag + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
       '<div><span class="price">' + esc(o.price) + '</span><br><b>' + esc(o.title) + '</b><br>' + esc(o.city + ', ' + o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') +
@@ -356,12 +356,12 @@ document.addEventListener('click', (e) => {
    other side, pauses on hover, and each card has a photo, price,
    city, beds, baths, sq ft, Click to get the details and Add to cart. */
 function touredMarqueeHtml() {
-  const list = touredSimList();
+  const list = touredSimList().filter((o) => o.img);
   if (!list.length) return '';
   const card = (o) => '<article class="card marquee-card">' +
-    '<img src="' + esc(o.img || TOUR_STOCK_IMG) + '" alt="' + esc((o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
+    '<img src="' + esc(o.img) + '" alt="' + esc(o.imgTag + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
     '<div><span class="price">' + esc(o.price) + '</span><br><b>' + esc(o.title) + '</b><br>' + esc(o.city + ', ' + o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') +
-    '<br><span class="note">' + esc(o.img ? o.imgTag : 'STOCK PHOTO, not a toured home') + '</span><br>' + details(o.info) + ' ' + cartBtn(o.cartKey, o.title, o.price) + '</div></article>';
+    '<br><span class="note">' + esc(o.imgTag) + '</span><br>' + details(o.info) + ' ' + cartBtn(o.cartKey, o.title, o.price) + '</div></article>';
   const cards = list.map(card).join('');
   return '<section class="blk marquee-blk" aria-label="Homes I toured, scrolling"><div class="marquee-wrap"><div class="marquee-track">' + cards + cards + '</div></div></section>';
 }
