@@ -1,6 +1,6 @@
 /* ===== Homepage backdrop =====
    HOME_BACKDROP_KEY is the photo key in PHOTOS below. The home page
-   hero itself is now the fading slideshow in heroSlidesData() below,
+   hero itself is now the 3D card flip stack in heroSlidesData() below,
    cycling through the toured homes one by one; the stock home-at-dusk
    photo ('payment') is only the fallback backdrop, labeled honestly
    in HOME_BACKDROP_NOTE and in the footer credit: a stock photo, not
@@ -16,7 +16,7 @@
    <key>-960.jpg and <key>-tile.jpg, add a PHOTOS entry for it, and
    point this key at it. */
 const HOME_BACKDROP_KEY = 'payment';
-const HOME_BACKDROP_NOTE = 'Hero photos cycle through the homes Darien toured, one at a time. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
+const HOME_BACKDROP_NOTE = 'Hero photos flip through 11 homes, one at a time, starting on a different home each visit. Real listing photos are labeled REAL PHOTO, builder and listing photos are labeled as such, and stock photos are labeled STOCK PHOTO, never as a real photo of the home.';
 const PV = '?v=__PHOTO_V__'; // changes whenever a photo changes, so browsers never show an old cached one
 const PHOTOS = {
   home: { pos: '30% 30%', aiNote: 'Stock photo, a realtor handing keys to a couple, Pexels. Not Darien, not a real closing.' },
@@ -45,36 +45,37 @@ const PHOTOS = {
   portal: { pos: '48% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, homes popping out of a large computer screen in 3D, family and couple smiling, no prices on screen. Not a real photo. Custom Portal header only.' },
   finder: { pos: '50% 40%', ai: true, aiNote: 'AI-generated image of Darien handing over the keys to a couple. It is not a photo of a real closing.' },
 };
-/* ===== Homepage hero slideshow, Nov 9, 2026 =====
-   The home page hero cycles through the toured homes one by one,
-   crossfading every 6 seconds, in traction order: Ridge Park first,
-   then Cornwall photos A, B, C and D, then SER, PALM, HAVEN, Plan 7,
-   Oak Rock, Hazel, Carlsberg 835, RIO and BRADY last. Real Zillow
-   listing photos are labeled REAL PHOTO. Builder and listing photos
-   from TOURED_MEDIA are labeled as builder or listing photos, never
-   as real photos. A home with no verified photo uses the stock
-   home-at-dusk photo below, labeled STOCK PHOTO. Only the home page
-   uses this slideshow, in js/6-boot.js; every other page keeps its
-   own photo. */
+/* ===== Homepage hero slideshow, v8, Nov 10, 2026 =====
+   Hero v8, mix of G and D, picked Nov 9: 3D card flip stack plus
+   parallax scroll, no plain fade. 11 slides, Darien picks Nov 9,
+   6:24 PM. Base order, front/back in order: Hazel front, Ridge Park
+   back, RIO front, Cornwall back, SER front, Haven front, PALM
+   aerial, Plan 7 front, Oak Rock front, Carlsberg front, BRADY
+   front. Beginning alternates front, back, front, back, front.
+   Only 2 back views exist, so front views follow in a row after
+   the backs are used, the allowed exception. Never 2 backs in a
+   row. Random start on every load, see js/6-boot.js, so a refresh
+   shows another home first. Keepers Hazel, RIO, SER, PALM keep
+   real photos. Stock slides are labeled STOCK PHOTO, no home name.
+   BRADY is the real Brady photo, Homes of Greater Sacramento /
+   MetroList, confirmed by Darien Nov 9, 6:15 PM, not the South
+   Florida Unsplash stock photo and not the white modern 1-story
+   Unsplash placeholder. Only the home page uses this slideshow,
+   in js/6-boot.js; every other page keeps its own photo. */
 const TOUR_STOCK_IMG = 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=80&auto=format&fit=crop';
 function heroSlidesData() {
-  const media = (typeof TOURED_MEDIA !== 'undefined') ? TOURED_MEDIA : {};
-  const mediaPhoto = (k) => { const m = media[k]; return m ? (m.photo || (m.photos && m.photos[0]) || '') : ''; };
   return [
-    { label: 'Ridge Park', city: 'Loomis', src: 'https://photos.zillowstatic.com/fp/cac6e1c31cfe3d7565b45a729b2028c0-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo' },
-    { label: 'Cornwall, Photo A', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/ac07c90610729589746756f36bd5036e-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front, elevated' },
-    { label: 'Cornwall, Photo B', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/5dc51bd67ab2fd8a30808208e84b1baa-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front, second angle' },
-    { label: 'Cornwall, Photo C', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/a60c046de98fbc09ac9fa05de42d9aaa-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, daytime rear from pool' },
-    { label: 'Cornwall, Photo D', city: 'Rocklin', src: 'https://photos.zillowstatic.com/fp/eb319e25af0ccd3fe1fe5c255577ce18-d_d.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front, best of 77 to 82' },
-    { label: 'SER', city: 'Folsom', src: mediaPhoto('ser') || TOUR_STOCK_IMG, tag: mediaPhoto('ser') ? 'Listing photo via MetroList' : 'STOCK PHOTO, not a toured home' },
-    { label: 'PALM', city: 'Oakdale', src: mediaPhoto('palm') || TOUR_STOCK_IMG, tag: mediaPhoto('palm') ? 'Aerial listing photo via MetroList' : 'STOCK PHOTO, not a toured home' },
-    { label: 'HAVEN', city: 'Rescue', src: mediaPhoto('haven') || TOUR_STOCK_IMG, tag: mediaPhoto('haven') ? 'Builder photo, Blue Mountain Communities' : 'STOCK PHOTO, not a toured home' },
-    { label: 'Plan 7', city: 'Stockton', src: mediaPhoto('10732-stevie-dr') || TOUR_STOCK_IMG, tag: mediaPhoto('10732-stevie-dr') ? 'Builder photo, Century Communities' : 'STOCK PHOTO, not a toured home' },
-    { label: 'Oak Rock', city: 'Folsom', src: mediaPhoto('t:oak-rock-folsom') || TOUR_STOCK_IMG, tag: mediaPhoto('t:oak-rock-folsom') ? 'Aerial photo from the prior listing of this home' : 'STOCK PHOTO, not a toured home' },
-    { label: 'Hazel', city: 'Folsom', src: mediaPhoto('q:shawood-at-folsom-4681-dehone-circle') || TOUR_STOCK_IMG, tag: mediaPhoto('q:shawood-at-folsom-4681-dehone-circle') ? 'Builder photo, SHAWOOD' : 'STOCK PHOTO, not a toured home' },
-    { label: 'Carlsberg, 835 Ridgeline Dr', city: 'Lincoln', src: mediaPhoto('t:carlsberg-835-ridgeline-dr') || TOUR_STOCK_IMG, tag: mediaPhoto('t:carlsberg-835-ridgeline-dr') ? 'Builder photo, Toll Brothers' : 'STOCK PHOTO, not a toured home' },
-    { label: 'RIO', city: 'Modesto', src: 'https://photos.zillowstatic.com/fp/02ffcbe525dd66aa93bba03512df8ce9-cc_ft_960.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front view' },
-    { label: 'BRADY', city: 'Modesto', src: TOUR_STOCK_IMG, tag: 'STOCK PHOTO, not a toured home, no verified front photo on file yet' }
+    { label: 'Hazel', city: 'Folsom', src: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', tag: 'REAL PHOTO, Builder photo, SHAWOOD, front view', view: 'front' },
+    { label: 'Ridge Park', city: 'Loomis', src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
+    { label: 'RIO', city: 'Modesto', src: 'https://photos.zillowstatic.com/fp/02ffcbe525dd66aa93bba03512df8ce9-cc_ft_960.jpg', tag: 'REAL PHOTO, Zillow listing photo, dusk front view', view: 'front' },
+    { label: 'Cornwall', city: 'Rocklin', src: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, back view', view: 'back' },
+    { label: 'SER', city: 'Folsom', src: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/09/21/16a81d77-1658-4c22-b2b9-2c013064d826.jpg', tag: 'REAL PHOTO, Listing photo via MetroList, front view', view: 'front' },
+    { label: 'Haven', city: 'Rescue', src: 'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'PALM', city: 'Oakdale', src: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2026/10/15/65fe65dd-29aa-41f2-ae83-a54e37dbf999.jpg', tag: 'REAL PHOTO, Aerial listing photo via MetroList', view: 'aerial' },
+    { label: 'Plan 7', city: 'Stockton', src: 'https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Oak Rock', city: 'Folsom', src: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'Carlsberg, 835 Ridgeline Dr', city: 'Lincoln', src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80&auto=format&fit=crop', tag: 'STOCK PHOTO, not a toured home, front view', view: 'front' },
+    { label: 'BRADY', city: 'Modesto', src: 'https://ph.cincmedia.com/casacra/57fb251bbf2f334c015617f8a3aec649.jpg?width=1024', tag: 'REAL PHOTO, Listing photo via Homes of Greater Sacramento / MetroList, front view', view: 'front' }
   ];
 }
 function photoImg(key, tile, url) {

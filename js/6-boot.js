@@ -193,33 +193,112 @@ let lastView = { p: '', t: 0 }, firstView = true;
 /* Homepage hero slideshow timer, Nov 9, 2026. Cleared on every
    render, so leaving the home page stops the slideshow. */
 let heroTimer = null;
+let heroSlides = [], heroDots = [], heroIndex = 0, heroFlipping = false, heroPaused = false, heroLastFlip = 0;
+const HERO_START_KEY = 'dp-hero-last-start';
 function heroSlidesHtml() {
   const slides = heroSlidesData();
-  return slides.map((s, i) => '<div class="hero-slide' + (i === 0 ? ' active' : '') + '" data-slide="' + i + '">' +
-    '<img src="' + esc(s.src) + '" alt="' + esc(s.label + ', ' + s.city + ', ' + s.tag) + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" referrerpolicy="no-referrer">' +
-    '<span class="hero-slide-tag">' + esc(s.label + ', ' + s.city + ' · ' + s.tag) + '</span></div>').join('') +
-    '<div class="hero-dots" role="group" aria-label="Hero photos">' + slides.map((s, i) => '<button type="button" data-hero-dot="' + i + '" aria-label="Show ' + esc(s.label + ', ' + s.city) + '"' + (i === 0 ? ' class="on"' : '') + '></button>').join('') + '</div>';
+  return '<div class="hero-stack" id="heroStack">' + slides.map((s, i) => '<div class="hero-slide' + (i === 0 ? ' active' : (i === 1 ? ' behind' : '')) + '" data-slide="' + i + '" data-homes="' + esc(s.label) + '" data-view="' + esc(s.view || 'front') + '">' +
+    '<img src="' + esc(s.src) + '" alt="' + esc(s.label + ', ' + s.city + ', ' + s.tag + ', ' + (s.view || 'front') + ' view') + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" referrerpolicy="no-referrer">' +
+    '<span class="hero-slide-tag">' + esc(s.label + ', ' + s.city + ' · ' + s.tag + ' · ' + (s.view || 'front') + ' view') + '</span></div>').join('') + '</div>' +
+    '<div class="hero-dots" role="group" aria-label="Hero photos">' + slides.map((s, i) => '<button type="button" data-hero-dot="' + i + '" aria-label="Show ' + esc(s.label + ', ' + s.city) + '"' + (i === 0 ? ' class="on"' : '') + '></button>').join('') + '</div>' +
+    '<div class="hero-progress" id="heroProgress"></div><div class="hero-flip-hint">Top card flips away to reveal the next home</div>';
 }
-/* Home page only: replace the single hero backdrop with the fading
-   slideshow from heroSlidesData(), one toured home at a time,
-   crossfading every 6 seconds with a slow pan, dots to jump slides.
-   Other pages keep their own hero photo, untouched. */
+/* Home page only: v8 hero, mix of G and D, picked Nov 9. 3D card flip
+   stack plus parallax scroll, no plain fade. The top card flips away
+   with a slight tilt to reveal the next home, and the hero photo
+   moves slower than the page as you scroll. Auto-advance is slow,
+   8 seconds, scroll down also flips to the next home, throttled,
+   pause on hover and focus, dots are pills. Random start: every
+   load starts on a different home, never the same start twice in
+   a row, stored in sessionStorage, then it rotates in order from
+   there. Front/back order in heroSlidesData() alternates front,
+   back, front, back, front at the start. Other pages keep their
+   own hero photo, untouched. */
+function heroPickStart(n) {
+  let last = -1;
+  try { last = parseInt(sessionStorage.getItem(HERO_START_KEY) || '-1', 10); } catch (e) { last = -1; }
+  if (n <= 1) return 0;
+  let pick = Math.floor(Math.random() * n), guard = 0;
+  while (pick === last && guard < 20) { pick = Math.floor(Math.random() * n); guard++; }
+  try { sessionStorage.setItem(HERO_START_KEY, String(pick)); } catch (e) { /* private mode, start is random anyway */ }
+  return pick;
+}
+function heroApplyRandomStart(scene) {
+  const stack = scene.querySelector('#heroStack');
+  if (!stack) return;
+  const ordered = [...stack.querySelectorAll('.hero-slide')];
+  if (!ordered.length) return;
+  const start = heroPickStart(ordered.length);
+  const rotated = ordered.slice(start).concat(ordered.slice(0, start));
+  rotated.forEach((sl, i) => {
+    sl.classList.remove('active', 'behind', 'flipping');
+    if (i === 0) sl.classList.add('active');
+    if (i === 1) sl.classList.add('behind');
+    stack.appendChild(sl);
+  });
+  heroSlides = rotated;
+  heroIndex = 0;
+  heroDots = [...scene.querySelectorAll('[data-hero-dot]')];
+  heroDots.forEach((d, j) => { d.classList.toggle('on', j === 0); d.dataset.heroDot = String(j); });
+}
 function startHeroSlideshow() {
   const scene = document.querySelector('#hero .scene');
   if (!scene || typeof heroSlidesData !== 'function') return;
   scene.innerHTML = heroSlidesHtml();
-  const slides = [...scene.querySelectorAll('.hero-slide')];
-  const dots = [...scene.querySelectorAll('[data-hero-dot]')];
-  if (!slides.length) return;
-  let idx = 0;
+  heroSlides = [...scene.querySelectorAll('.hero-slide')];
+  heroDots = [...scene.querySelectorAll('[data-hero-dot]')];
+  heroFlipping = false; heroPaused = false; heroLastFlip = 0;
+  heroApplyRandomStart(scene);
+  heroSlides = [...scene.querySelectorAll('.hero-slide')];
+  heroDots = [...scene.querySelectorAll('[data-hero-dot]')];
   const show = (i) => {
-    idx = (i + slides.length) % slides.length;
-    slides.forEach((s, j) => s.classList.toggle('active', j === idx));
-    dots.forEach((d, j) => d.classList.toggle('on', j === idx));
+    if (heroFlipping || i === heroIndex) return;
+    heroFlipping = true;
+    const oldIdx = heroIndex;
+    const old = heroSlides[oldIdx];
+    const nextIdx = (i + heroSlides.length) % heroSlides.length;
+    const next = heroSlides[nextIdx];
+    const behind = heroSlides[(nextIdx + 1) % heroSlides.length];
+    heroIndex = nextIdx;
+    old.classList.remove('active', 'behind');
+    old.classList.add('flipping');
+    next.classList.remove('flipping', 'behind');
+    next.classList.add('active');
+    behind.classList.remove('flipping', 'active');
+    behind.classList.add('behind');
+    heroSlides.forEach((sl, j) => { if (j !== oldIdx && j !== heroIndex && sl !== behind) sl.classList.remove('active', 'behind', 'flipping'); });
+    heroDots.forEach((d, j) => d.classList.toggle('on', j === heroIndex));
+    setTimeout(() => { old.classList.remove('flipping'); heroFlipping = false; }, 950);
   };
-  const restart = () => { clearInterval(heroTimer); heroTimer = setInterval(() => show(idx + 1), 6000); };
-  dots.forEach((d) => d.addEventListener('click', () => { show(+d.dataset.heroDot); restart(); }));
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const restart = () => { clearInterval(heroTimer); heroTimer = setInterval(() => { if (!heroPaused) show(heroIndex + 1); }, 8000); };
+  heroDots.forEach((d) => d.addEventListener('click', () => { show(+d.dataset.heroDot); restart(); }));
+  const heroEl = $('hero');
+  heroEl.addEventListener('mouseenter', () => { heroPaused = true; });
+  heroEl.addEventListener('mouseleave', () => { heroPaused = false; });
+  heroEl.addEventListener('focusin', () => { heroPaused = true; });
+  heroEl.addEventListener('focusout', () => { heroPaused = false; });
+  if (!window.__heroParallaxBound) {
+    window.__heroParallaxBound = true;
+    window.addEventListener('scroll', () => {
+      if (CURRENT !== 'home') return;
+      const el = $('hero');
+      const sc = document.querySelector('#hero .scene');
+      if (!el || !sc || !sc.querySelector('.hero-slide')) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 800;
+      if (rect.bottom < 0 || rect.top > vh) return;
+      const scrolled = Math.max(0, -rect.top);
+      const total = rect.height + vh;
+      const progress = Math.min(1, Math.max(0, (vh - rect.top) / total));
+      el.style.setProperty('--parallaxY', Math.round(scrolled * 0.25) + 'px');
+      el.style.setProperty('--headlineY', Math.round(scrolled * 0.12) + 'px');
+      const bar = document.getElementById('heroProgress');
+      if (bar) bar.style.width = Math.round(progress * 100) + '%';
+      const now = Date.now();
+      if (scrolled > 120 && now - heroLastFlip > 1200 && !heroPaused) { heroLastFlip = now; show(heroIndex + 1); }
+    }, { passive: true });
+  }
   restart();
 }
 /* ===== Scroll-grow: elements marked data-grow start small and grow to
