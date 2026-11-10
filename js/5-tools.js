@@ -20,7 +20,7 @@ def('refinance', {
       '<div class="result" aria-live="polite"><span class="lbl">New monthly loan payment</span><div class="big num" id="rf-new-pi">$0</div><div id="rf-out"></div><p class="note" id="rf-note"></p></div>' +
       '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Your refinance options</h2><p>Options that fit the loan you entered are outlined in green. A lender confirms what you qualify for.</p></div></div><div class="opts" id="rf-opts"></div>' +
-      '<div class="panel bar" style="margin-top:14px"><div><b>Want a lender\'s real numbers?</b><p class="note">Darien can connect you with lenders for refinances, VA and FHA streamlines, and cash-out loans.</p></div><a class="btn btn-pa" href="sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, can you connect me with a lender about refinancing?') + '">Text Darien</a></div></div></section>';
+      '<div class="panel bar" style="margin-top:14px"><div><b>Want a lender\'s real numbers?</b><p class="note">Darien can connect you with lenders for refinances, VA and FHA streamlines, and cash-out loans.</p></div><a class="btn btn-pa" href="sms:+12098826469?&body=' + encodeURIComponent('Hi Darien, can you connect me with a lender about refinancing?') + '">Text Darien</a></div></div></section>' + touredStripHtml();
   },
   mount() {
     const R = S.refi;
@@ -129,7 +129,7 @@ def('build', {
         '<li><b>Design and price it</b><span>Pick plans, then get bids from two or three licensed builders.</span></li>' +
         '<li><b>Line up the loan</b><span>A construction loan pays the builder in stages, then turns into your mortgage.</span></li>' +
         '<li><b>Build and move in</b><span>Permits, inspections and construction usually take many months, so plan your timeline with your builder.</span></li>' +
-      '</ol>' + buildVendorsHtml() + '<div class="panel bar" style="margin-top:14px"><div><b>Looking for a lot?</b><p class="note">Tell Darien where you want to build and he\'ll send land listings that fit.</p></div><button type="button" class="btn btn-pa" id="bd-lots">Find me a lot</button></div></div></section>';
+      '</ol>' + buildVendorsHtml() + '<div class="panel bar" style="margin-top:14px"><div><b>Looking for a lot?</b><p class="note">Tell Darien where you want to build and he\'ll send land listings that fit.</p></div><button type="button" class="btn btn-pa" id="bd-lots">Find me a lot</button></div></div></section>' + touredStripHtml();
   },
   mount(root) {
     const B = S.bld;
@@ -228,7 +228,7 @@ def('about', {
       '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>What I can help with</h2></div></div><div class="tiles">' +
         ['assumable', 'zero-down', 'new-builds', 'payment', 'refinance', 'build'].map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('') +
-      '</div></div></section>';
+      '</div></div></section>' + touredStripHtml();
   },
   mount(root) {
     const G = S.goals;
@@ -336,7 +336,7 @@ def('alerts', {
           '<div class="actions"><a class="btn btn-pa" id="al-email-btn" href="#">Email it to Darien</a><a class="btn btn-line" id="al-text-btn" href="#">Text it</a><button type="button" class="btn btn-line" id="al-copy">Copy</button></div>' +
           '<p class="toast" id="al-toast" role="status"></p><p class="fine">This opens your own email or text app with your request filled in. If nothing opens, copy it and send it to darienphillips45@gmail.com or text 209.882.6469.</p>') +
         '<p class="fine">Your custom portal with homes from the MLS lets you save or pass on each home, and Darien sees what you save so he can send better matches. Unsubscribe anytime.</p>' +
-      '</div></form></div></section>';
+      '</div></form></div></section>' + touredStripHtml();
   },
   mount(root) {
     const A = S.alerts;
@@ -432,15 +432,14 @@ def('alerts', {
   }
 });
 
-/* ===== Your cart, v5: click a home to see it in the preview =====
-   The preview image is the AI family shopping photo, "Dream Home
-   Family Tour". Clicking a home in the cart updates the preview text
+/* ===== Your cart: click a home to see it in the preview =====
+   Nov 10, 2026: the family shopping image is the Cart tab header only,
+   so the preview inside the tab is text only now, no duplicate of the
+   header photo. Clicking a home in the cart updates the preview text
    with that home's name, address and price. */
 function cartClickPreviewHtml() {
   return '<div class="panel" id="cartClickPreview" style="display:grid;gap:12px;margin-bottom:16px">' +
-    '<div class="v5-figure"><img src="img/family-shopping-1920.jpg' + PV + '" alt="AI-generated image, ChatGPT, Dream Home Family Tour, happy family of four in front of a modern luxury home, dad pointing at the home" loading="lazy"></div>' +
-    '<div><b>Shopping for a home, together.</b> <span id="cartClickText">Click a home in your cart to see it here.</span> ' +
-    '<span class="note">AI-generated image, ChatGPT, "Dream Home Family Tour", not a real photo, not a real home. The FOR SALE sign in this image reads $1,295,000, AI-invented, not a real home price, do not quote it as real.</span></div></div>';
+    '<div><b>Shopping for a home, together.</b> <span id="cartClickText">Click a home in your cart to see it here.</span></div></div>';
 }
 document.addEventListener('click', (e) => {
   const a = e.target.closest ? e.target.closest('.cart-pan-card h3 a, .cart-list a, .cart-next-card a') : null;

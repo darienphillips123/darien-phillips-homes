@@ -91,7 +91,7 @@ def('portal', {
   nav: 'Custom Portal', scene: 'alerts', kicker: 'Your own custom portal', tileTitle: 'Custom Portal',
   title: 'Custom Portal',
   sub: 'Tell Darien what you want once. He builds your own custom MLS portal with matching homes and emails it to you.',
-  photoKey: () => 'shopping-cart',
+  photoKey: () => 'portal',
   html() {
     const B = sub('portal', PORTAL_DEFAULTS);
     B.must = (B.must || []).slice();
@@ -119,7 +119,7 @@ def('portal', {
       '</div></form>' +
       '<div id="pb-summary" hidden></div>' +
       '<p class="note" style="margin-top:14px">Want to browse first? <button type="button" class="btn btn-line btn-sm" data-go="finder">Open the Finder</button></p>' +
-      '</div></section>';
+      '</div></section>' + touredStripHtml();
   },
   mount(root) {
     const B = S.portal;

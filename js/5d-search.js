@@ -1,5 +1,5 @@
 /* ===== Map search: every MLS home, through Darien's BoldTrail IDX site =====
-   The map, filters, sign-in, favorites and saved searches run on darienphillips.exprealty.com,
+   The map, filters, sign-in, favorites and saved searches run on Darien's BoldTrail IDX site,
    so every visitor's views and likes land in Darien's BoldTrail CRM. */
 const IDX = 'https://darienphillips.exprealty.com';
 // Darien's whole service area. BoldTrail's map handles up to 20 towns at once, so these are the 20 biggest across his 4 counties
@@ -67,7 +67,7 @@ def('search', {
       '</form>' +
       '<div class="ms-frame" style="margin-top:14px;border-radius:16px;overflow:hidden;border:1px solid var(--line, rgba(0,0,0,.12));background:var(--card, #fff)">' +
         '<iframe id="ms-iframe" title="Map of homes for sale" loading="lazy" style="display:block;width:100%;height:min(1100px,85vh);border:0" allow="geolocation; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>' +
-      '</div></div></section>' + sellerHtml();
+      '</div></div></section>' + touredStripHtml() + sellerHtml();
   },
   mount(root) {
     const F = searchFilters();

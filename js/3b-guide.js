@@ -125,7 +125,7 @@ def('guide', {
         '<p class="note" id="g-none" hidden>No matching words. Text Darien and he\'ll explain it.</p>' +
         '<p class="fine" style="margin-top:14px">This guide is general information, not legal, tax or lending advice. Your contract, lender and escrow officer set the actual deadlines and costs.</p>' +
       '</div></section>' +
-      '<section class="blk"><div class="wrap"><div class="panel accent bar"><div><b>Ready for the first step?</b><p class="note">Darien can connect you with a lender for pre-approval and walk you through every step on this page.</p></div><a class="btn btn-pa" href="sms:+12098826469">Text Darien</a><button type="button" class="btn btn-line" data-go="search">Search every home</button></div></div></section>';
+      '<section class="blk"><div class="wrap"><div class="panel accent bar"><div><b>Ready for the first step?</b><p class="note">Darien can connect you with a lender for pre-approval and walk you through every step on this page.</p></div><a class="btn btn-pa" href="sms:+12098826469">Text Darien</a><button type="button" class="btn btn-line" data-go="search">Search every home</button></div></div></section>' + touredStripHtml();
   },
   mount(root) {
     const f = root.querySelector('#g-find');

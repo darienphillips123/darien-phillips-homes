@@ -53,18 +53,25 @@ def('zero-down', {
       '<div class="field wide"><label for="zd-city">Find $0-down homes in a city</label><input id="zd-city" type="search" autocomplete="off" value="' + esc(Z.city || '') + '" placeholder="Type any city, like Modesto, Folsom or Lodi"></div>' +
       '<p class="note" id="zd-city-note"></p>' +
       '<div class="compare" id="zd-limits"></div></div></section>' +
-      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Zero-down homes, with photos</h2><p>Build to order, from prices plus solar. Photos are STOCK PHOTO, not the plans.</p></div></div>' +
+      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Zero-down homes</h2><p>Build to order, from prices plus solar. No photo of these build-to-order plans is on file, so no stock photo is shown as the plan. Ask Darien for model photos.</p></div></div>' +
       '<div class="cards">' +
-      [['Plan 1468, Autumnwood at Tivoli, Modesto', 'From $490,990 plus solar, 3 bd, 2 ba, 1,468 sq ft, 1 story, 2-car. ENERGY STAR with solar.', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80&auto=format&fit=crop'],
-       ['Plan 2259, Hayden at Tivoli, Modesto', 'From $531,990 plus solar, 3 to 4 bd, 2.5 to 3 ba, 2,259 sq ft, 2 stories, 2-car.', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1800&q=80&auto=format&fit=crop'],
-       ['Plan 2069, Autumnwood at Tivoli, Modesto', 'From $555,990 plus solar, 3 to 5 bd, 2.5 to 3 ba, 2,069 sq ft, 2 stories, 2-car. QMI at 2609 Umbria Ct, $594,990.', 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=80&auto=format&fit=crop']].map(([t, d, u]) =>
-        '<article class="card"><img src="' + u + '" alt="STOCK PHOTO, not the plan" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:180px;object-fit:cover;border-radius:14px"><div><h3>' + t + '</h3><div class="sub">' + d + '</div></div><span class="note">STOCK PHOTO, not the plan.</span><div class="actions"><button type="button" class="btn btn-line btn-sm" data-go="finder">Find this plan</button></div></article>').join('') +
+      [['Plan 1468, Autumnwood at Tivoli, Modesto', 'From $490,990 plus solar, 3 bd, 2 ba, 1,468 sq ft, 1 story, 2-car. ENERGY STAR with solar.', 'm:autumnwood-at-tivoli-plan-1468', 'https://www.kbhome.com/new-homes-central-valley/autumnwood-at-tivoli'],
+       ['Plan 2259, Hayden at Tivoli, Modesto', 'From $531,990 plus solar, 3 to 4 bd, 2.5 to 3 ba, 2,259 sq ft, 2 stories, 2-car.', 'm:hayden-at-tivoli-plan-2259', 'https://www.kbhome.com/new-homes-central-valley/hayden-at-tivoli'],
+       ['Plan 2069, Autumnwood at Tivoli, Modesto', 'From $555,990 plus solar, 3 to 5 bd, 2.5 to 3 ba, 2,069 sq ft, 2 stories, 2-car. QMI at 2609 Umbria Ct, $594,990.', 'm:autumnwood-at-tivoli-plan-2069', 'https://www.kbhome.com/new-homes-central-valley/autumnwood-at-tivoli']].map(([t, d, key, url]) => {
+        const name = t.split(', ')[1], plan = t.split(', ')[0];
+        const info = { h: plan + ' at ' + name, p: d.split(',')[0], b: d, r: 'KB Home', city: 'Modesto', x: url, xs: 'Builder floor plan', m: mapFor(name + ', Modesto, CA') };
+        return '<article class="card"><div class="head"><span class="pill pa">Floor plan</span></div>' +
+          '<div><h3>' + esc(plan) + '</h3><div class="sub">' + esc(name + ', Modesto') + '</div></div>' +
+          '<div class="price num">' + esc(d.split(',')[0]) + '</div><div class="facts">' + esc(d.split(', ').slice(1).join(', ')) + '</div>' +
+          '<span class="note">No photo of this build-to-order plan on file. Ask Darien for model photos.</span>' +
+          '<div class="actions">' + details(info) + ' ' + cartBtn(key, plan + ' at ' + name, d.split(',')[0]) + ' ' + askBtn(key, plan + ' at ' + name, d.split(',')[0]) + '</div></article>';
+      }).join('') +
       '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Ways to get to $0 down</h2><p>Two loans cover the whole down payment. Builder offers and other programs can help with closing costs.</p></div></div><div class="opts" id="zd-opts"></div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Compare $0-down payments</h2></div></div><div class="calc"><div class="panel"><div class="fields">' + moneyField('zd-price', 'Home price', Z.price) + '</div><p class="note" style="margin-top:8px">Uses about 7% rates, property tax at 1.1% and insurance at 0.35% of the price. Builder rate specials can be lower.</p></div><div class="compare" id="zd-compare"></div></div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="shead"><div><h2 id="zd-nb-h">New builds that work with $0 down</h2><p>Communities whose starting price fits under the county\'s FHA limit, priced with FHA plus MyHome. A VA loan can go higher.</p></div></div>' +
       '<div class="cards" id="zd-nb"></div><div class="more-row"><button type="button" class="btn btn-line" id="zd-more" hidden></button></div></div></section>' +
-      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Search every $0-down-friendly home</h2><p>Resale homes qualify too. These open Zillow up to the most a $0-down FHA loan covers in each town.</p></div></div><div class="tiles" id="zd-live"></div></div></section>';
+      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Search every $0-down-friendly home</h2><p>Resale homes qualify too. These open Zillow up to the most a $0-down FHA loan covers in each town.</p></div></div><div class="tiles" id="zd-live"></div></div></section>' + touredStripHtml();
   },
   mount(root) {
     const Z = S.zero;
@@ -146,7 +153,7 @@ def('new-builds', {
       '<div class="shead" style="margin-top:26px"><div><p class="mono eyebrow">Every community</p><h2>All new-home communities</h2></div></div>' +
       '<p class="count" id="nb-count" aria-live="polite"></p>' +
       '<div class="cards" id="nb-list"></div><div class="more-row"><button type="button" class="btn btn-line" id="nb-more" hidden></button></div>' +
-      '<p class="src" style="margin-top:14px">Communities and starting prices from Homes.com, HomeFinder and builder websites, checked ' + esc(DATA.checked) + '. Prices are the base home; lots, options and upgrades add to them.</p></div></section>';
+      '<p class="src" style="margin-top:14px">Communities and starting prices from Homes.com, HomeFinder and builder websites, checked ' + esc(DATA.checked) + '. Prices are the base home; lots, options and upgrades add to them.</p></div></section>' + touredStripHtml();
   },
   mount(root) {
     const N = S.nb;
@@ -210,7 +217,7 @@ def('stockton', {
         '<label class="check" id="sk-fits-wrap"><input type="checkbox" id="sk-fits"' + (K.fits ? ' checked' : '') + '> Only homes FHA can cover (up to about ' + short(LIMITS['San Joaquin'].fha / 0.965) + ')</label>' +
         '<p class="count" id="sk-count" aria-live="polite"></p></div>' +
       '<div class="cards" id="sk-list"></div><div class="more-row"><button type="button" class="btn btn-line" id="sk-more" hidden></button></div></div></section>' +
-      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Stockton builders</h2><p>Starting prices are for the base home. Text Darien before you visit so he can register you.</p></div></div><div class="scroll"><table class="tbl" id="sk-comms"></table></div></div></section>';
+      '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Stockton builders</h2><p>Starting prices are for the base home. Text Darien before you visit so he can register you.</p></div></div><div class="scroll"><table class="tbl" id="sk-comms"></table></div></div></section>' + touredStripHtml();
   },
   mount(root) {
     const K = S.stk;

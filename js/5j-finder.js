@@ -122,7 +122,7 @@ def('finder', {
   nav: 'Find your home', scene: 'home', kicker: 'Find exactly what you are looking for', tileTitle: 'Find exactly what you are looking for',
   title: 'Find exactly what you are looking for',
   sub: 'Filter every home on this site at once: assumable loans, Placer homes, new builds and Stockton $0-down homes. Every filter uses only information published on this site.',
-  photoKey: () => 'shopping-cart',
+  photoKey: () => 'finder',
   html() {
     const F = sub('finder', FINDER_DEFAULTS);
     const cities = Array.from(new Set(finderItems().map((it) => it.city).filter(Boolean))).sort();
