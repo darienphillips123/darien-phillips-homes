@@ -212,8 +212,11 @@ function heroSlidesHtml() {
    pause on hover and focus, dots are pills. Random start: every
    load starts on a different home, never the same start twice in
    a row, stored in sessionStorage, then it rotates in order from
-   there. Front/back order in heroSlidesData() alternates front,
-   back, front, back, front at the start. Other pages keep their
+   there. Front/back order in heroSlidesData() is front, back,
+   front, back, front at the start, then front, front, back, front,
+   front, front, front. Only 3 back views exist, so front views
+   follow in a row at the end, the allowed exception, and no 2 back
+   views are ever in a row. Other pages keep their
    own hero photo, untouched. */
 function heroPickStart(n) {
   let last = -1;
