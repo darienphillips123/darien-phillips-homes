@@ -107,43 +107,38 @@ body { background: var(--paper); color: var(--ink); font-family: var(--f-body); 
   :root[data-page="home"]:not([data-theme="dark"]) .stats3 .wide { color: #111111; }
   :root[data-page="home"]:not([data-theme="dark"]) .price small { color: #111111; }
 }
-/* Home page supporting text, v11.6, Nov 11, 2026. Darien said the solid
-   black supporting text is still hard to read over the green veins, and
-   asked for a light coloring behind it. So the supporting text that sits
-   directly on the granite now gets a soft semi-transparent white backing,
-   rgba(255,255,255,0.85), with a little padding and a small rounded
-   corner, subtle, not a heavy card or a big box. The backing hugs the
-   text (width fit-content), it does not stretch full width. Text color
-   stays #111111, font is unchanged, section titles are untouched, and
-   the v11.3 emerald granite tile is unchanged. Backing applies only to
-   text on the backdrop: section intros (.shead p), the help lines
-   (.help-label, .help-close), and notes (.note) on the backdrop. Text
-   already inside a white card or panel (.card, .panel, .result,
-   .lux-body, .help-opt, .break li.note) keeps no backing, it already
-   sits on solid white. */
+/* Home page supporting text, v11.7, Nov 11, 2026. Darien said the v11.6
+   white backing read as one square box around the whole paragraph, and
+   asked for it bubbled around the letters instead, to the end of each
+   sentence. So the backing is now an inline highlight, not a block box:
+   the text is display inline, so the background fragments line by line
+   and each line gets its own soft rounded bubble, with
+   box-decoration-break clone so every fragment keeps its rounded ends.
+   Same soft white fill rgba(255,255,255,0.85), same black #111111 text,
+   same font, section titles untouched, v11.3 emerald granite tile
+   unchanged. The backing applies only to text on the backdrop: section
+   intros (.shead p), the help lines (.help-label, .help-close), and
+   notes that are direct children of a section wrapper (.wrap > .note).
+   Text already inside a white card or panel, and notes in dialogs or
+   drawers, keep no backing and keep their natural display. An inline
+   intro has no max-width of its own, so the section-head wrapper keeps
+   the old 72ch cap, which still fits the widest heading on one line.
+   The 26px gap
+   above the help closing line is kept by moving it to the scenarios
+   block below it, since an inline element ignores a top margin. */
 :root[data-page="home"][data-theme="light"] .shead p,
 :root[data-page="home"][data-theme="light"] .help-label,
 :root[data-page="home"][data-theme="light"] .help-close,
-:root[data-page="home"][data-theme="light"] .note { background: rgba(255, 255, 255, 0.85); padding: 2px 8px; border-radius: 6px; width: fit-content; max-width: 100%; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-:root[data-page="home"][data-theme="light"] .shead p { max-width: 72ch; }
-:root[data-page="home"][data-theme="light"] .panel .note,
-:root[data-page="home"][data-theme="light"] .card .note,
-:root[data-page="home"][data-theme="light"] .result .note,
-:root[data-page="home"][data-theme="light"] .lux-body .note,
-:root[data-page="home"][data-theme="light"] .help-opt .note,
-:root[data-page="home"][data-theme="light"] .break li.note { background: transparent; padding: 0; width: auto; }
+:root[data-page="home"][data-theme="light"] .wrap > .note { display: inline; background: rgba(255, 255, 255, 0.85); padding: 2px 10px; border-radius: 999px; line-height: 2; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+:root[data-page="home"][data-theme="light"] .shead > div { max-width: 72ch; }
+:root[data-page="home"][data-theme="light"] .help-scen { margin-bottom: 26px; }
 @media (prefers-color-scheme: light) {
   :root[data-page="home"]:not([data-theme="dark"]) .shead p,
   :root[data-page="home"]:not([data-theme="dark"]) .help-label,
   :root[data-page="home"]:not([data-theme="dark"]) .help-close,
-  :root[data-page="home"]:not([data-theme="dark"]) .note { background: rgba(255, 255, 255, 0.85); padding: 2px 8px; border-radius: 6px; width: fit-content; max-width: 100%; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-  :root[data-page="home"]:not([data-theme="dark"]) .shead p { max-width: 72ch; }
-  :root[data-page="home"]:not([data-theme="dark"]) .panel .note,
-  :root[data-page="home"]:not([data-theme="dark"]) .card .note,
-  :root[data-page="home"]:not([data-theme="dark"]) .result .note,
-  :root[data-page="home"]:not([data-theme="dark"]) .lux-body .note,
-  :root[data-page="home"]:not([data-theme="dark"]) .help-opt .note,
-  :root[data-page="home"]:not([data-theme="dark"]) .break li.note { background: transparent; padding: 0; width: auto; }
+  :root[data-page="home"]:not([data-theme="dark"]) .wrap > .note { display: inline; background: rgba(255, 255, 255, 0.85); padding: 2px 10px; border-radius: 999px; line-height: 2; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  :root[data-page="home"]:not([data-theme="dark"]) .shead > div { max-width: 72ch; }
+  :root[data-page="home"]:not([data-theme="dark"]) .help-scen { margin-bottom: 26px; }
 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--brand); }
 a { color: var(--link); }
