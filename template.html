@@ -58,15 +58,16 @@ __THEMES__
 * { box-sizing: border-box; }
 html { scroll-padding-top: 120px; }
 body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-/* Emerald and white granite background, v11.2, Nov 11, 2026. v11.1 tile
-   was a mirrored geometric/diamond pattern that read as arrows, so it
-   was replaced with a clean natural granite countertop texture: white
-   granite with clearer, slightly stronger emerald streaks, no arrows,
-   no geometric or diamond pattern, seamless 1024x1024 tile in
-   img/granite-tile.jpg, rebuilt from the approved clean texture.
-   Light mode, home page only. Cards keep solid white backgrounds. */
-:root[data-page="home"][data-theme="light"] body { background-color: #F7F9F7; background-image: url("img/granite-tile.jpg?v=11.2"); background-size: 1024px 1024px; background-repeat: repeat; }
-@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #F7F9F7; background-image: url("img/granite-tile.jpg?v=11.2"); background-size: 1024px 1024px; background-repeat: repeat; } }
+/* Emerald and white granite background, v11.3, Nov 11, 2026. v11.2 tile
+   was a heavy speckled granite countertop look, so it was replaced with
+   a much whiter field: clean bright white with thin natural emerald
+   streaks crossing in both diagonal directions and intersecting, no
+   arrows, no geometric or diamond pattern, seamless 1024x1024 tile in
+   img/granite-tile.jpg, rebuilt from the approved crossing-streaks
+   texture. Light mode, home page only. Cards keep solid white
+   backgrounds, and the whiter field keeps text on the backdrop readable. */
+:root[data-page="home"][data-theme="light"] body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.3"); background-size: 1024px 1024px; background-repeat: repeat; }
+@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.3"); background-size: 1024px 1024px; background-repeat: repeat; } }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--brand); }
 a { color: var(--link); }
 button, input, select, textarea { font: inherit; }
