@@ -58,16 +58,21 @@ __THEMES__
 * { box-sizing: border-box; }
 html { scroll-padding-top: 120px; }
 body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-/* Emerald and white granite background, v11.3, Nov 11, 2026. v11.2 tile
-   was a heavy speckled granite countertop look, so it was replaced with
-   a much whiter field: clean bright white with thin natural emerald
-   streaks crossing in both diagonal directions and intersecting, no
-   arrows, no geometric or diamond pattern, seamless 1024x1024 tile in
-   img/granite-tile.jpg, rebuilt from the approved crossing-streaks
-   texture. Light mode, home page only. Cards keep solid white
-   backgrounds, and the whiter field keeps text on the backdrop readable. */
-:root[data-page="home"][data-theme="light"] body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.3"); background-size: 1024px 1024px; background-repeat: repeat; }
-@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.3"); background-size: 1024px 1024px; background-repeat: repeat; } }
+/* Emerald and white granite background, v11.4, Nov 11, 2026. v11.3 tile
+   measured even overall but its main vein band ran diagonally
+   bottom-left to top-right, so the right side looked denser and bolder
+   in several sections and some veins were bold dark emerald. v11.4
+   rebuilds the tile so vein density is uniform left to right in every
+   horizontal band: thin emerald hairlines, each vein its own angle
+   around +/-45 degrees, crossing in both diagonal directions and
+   intersecting, spread evenly across the whole tile, no diagonal band,
+   no arrows, no geometric or diamond pattern, no regular grid, no
+   straight parallel lines. Seamless 1024x1024 tile in
+   img/granite-tile.jpg. Light mode, home page only. Cards keep solid
+   white backgrounds, and the whiter field keeps text on the backdrop
+   readable. */
+:root[data-page="home"][data-theme="light"] body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.4"); background-size: 1024px 1024px; background-repeat: repeat; }
+@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.4"); background-size: 1024px 1024px; background-repeat: repeat; } }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--brand); }
 a { color: var(--link); }
 button, input, select, textarea { font: inherit; }
