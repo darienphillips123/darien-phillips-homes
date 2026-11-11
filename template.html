@@ -58,6 +58,17 @@ __THEMES__
 * { box-sizing: border-box; }
 html { scroll-padding-top: 120px; }
 body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+/* Emerald and white granite background, v11, Nov 11, 2026, approved by
+   Darien Nov 11 ("Yes, use the emerald and white granite"). White
+   granite with emerald veins, from the approved visual, made into a
+   seamless 1024x1024 tile in img/granite-tile.jpg. No home cards or
+   prices from the mockup are used, it is only the granite texture.
+   Light mode, home page only: the tile replaces the plain #F4F6F8
+   background under every home page section. Cards and panels keep
+   their solid white background, so text stays easy to read. Dark mode
+   keeps its dark background, the light granite is not used there. */
+:root[data-page="home"][data-theme="light"] body { background-color: #F7F9F7; background-image: url("img/granite-tile.jpg?v=11"); background-size: 1024px 1024px; background-repeat: repeat; }
+@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #F7F9F7; background-image: url("img/granite-tile.jpg?v=11"); background-size: 1024px 1024px; background-repeat: repeat; } }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--brand); }
 a { color: var(--link); }
 button, input, select, textarea { font: inherit; }
@@ -701,7 +712,15 @@ footer a { color: var(--brand-ink); }
 :root[data-page="home"] .hero-text::before { background: radial-gradient(ellipse at 50% 50%, rgba(6, 12, 20, 0.30), rgba(6, 12, 20, 0) 70%); }
 :root[data-page="home"] .hero h1, :root[data-page="home"] .hero .sub, :root[data-page="home"] .hero .kicker { text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65), 0 1px 4px rgba(0, 0, 0, 0.6); }
 :root[data-page="home"] .hero-in { padding-block: 72px 72px; text-align: center; }
-:root[data-page="home"] .hero h1 { margin-inline: auto; max-width: 22ch; font-family: var(--f-serif); font-weight: 500; font-stretch: normal; letter-spacing: 0; }
+:root[data-page="home"] .hero h1 { margin-inline: auto; max-width: 22ch; padding-inline: 16px; box-sizing: border-box; font-family: var(--f-serif); font-weight: 500; font-stretch: normal; letter-spacing: 0; }
+/* Hero cut-off fix, v11, Nov 11, 2026: the behind card used to sit 16
+   percent to the right, so its right edge was clipped by the scene,
+   and the "Come on in." headline had no side padding of its own. The
+   behind card now keeps a 10 percent right inset and only 6 percent
+   shift, so its right edge stays inside the hero, and the headline
+   has safe padding on both sides in every state, including mid-flip. */
+:root[data-page="home"] .hero-text { max-width: 100%; min-width: 0; }
+:root[data-page="home"] .hero .scene { overflow: hidden; }
 :root[data-page="home"] .hero h1 .t2 { font-family: var(--f-serif); font-style: italic; font-weight: 400; color: #FFFFFF; }
 :root[data-page="home"] .hero .sub { margin-inline: auto; max-width: 56ch; }
 :root[data-page="home"] .hero .ctas { justify-content: center; align-items: center; }
@@ -724,7 +743,7 @@ footer a { color: var(--brand-ink); }
 :root[data-page="home"] .hero-in { transform: translateY(var(--headlineY, 0px)); }
 .hero-stack { position: absolute; inset: 0; transform-style: preserve-3d; }
 .hero-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transform: translateZ(-140px) rotateY(-18deg) rotate(-2deg) scale(0.94); transform-origin: left center; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s linear 0.9s; border-radius: 18px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,0.35); will-change: transform, opacity; }
-.hero-slide.behind { opacity: 1; visibility: visible; transform: translateZ(-90px) rotateY(-9deg) rotate(-1deg) translateX(16%) scale(0.97); z-index: 2; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
+.hero-slide.behind { opacity: 1; visibility: visible; right: 10%; transform: translateZ(-90px) rotateY(-9deg) rotate(-1deg) translateX(6%) scale(0.97); z-index: 2; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide.active { opacity: 1; visibility: visible; transform: translateZ(0) rotateY(0deg) rotate(0deg) scale(1); z-index: 3; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide.flipping { opacity: 0; visibility: visible; transform: translateX(-105%) rotateY(-58deg) rotate(-5deg) scale(0.96); z-index: 4; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.9s ease, visibility 0s; }
 .hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: translateY(var(--parallaxY, 0px)) scale(1.12); }

@@ -107,6 +107,63 @@ function setPlace(p) {
 }
 function placeCounty() { return !S.place ? null : S.place.k === 'county' ? S.place.n : S.place.c; }
 
+/* ===== Location filter, v11, Nov 11, 2026 =====
+   Session only, never saved to localStorage: the visitor picks a city
+   on the home page and the Homes I toured, marquee and similar-homes
+   lists show that area only until the tab closes or they clear it.
+   The emerald and white granite background is applied on the home
+   page only, in template.html, from img/granite-tile.jpg, approved
+   by Darien Nov 11. Earlier granite and dark green/blue mockups
+   were shown to him Nov 11 and rejected; they are not used. */
+function locCity() { return sess.get('dp-location', null); }
+function setLocCity(n) { if (n) sess.set('dp-location', String(n)); else sess.del('dp-location'); }
+function cityNameOf(v) { return String(v || '').replace(/,\s*CA\s*$/i, '').trim(); }
+/* Coordinates for a city, from the towns already in data.json. Also
+   matches an aka, so Del Rio resolves to Modesto. Returns null when
+   the town has no lat/lng on file, and no coordinates are invented.
+   Towns with no lat/lng on file: Chico, Colusa, Copperopolis, Hilmar,
+   Ione, Linda, Olivehurst, Rescue, Sutter Creek, Winters. */
+function townCoords(city) {
+  const name = cityNameOf(city).toLowerCase();
+  if (!name) return null;
+  const direct = TOWN[name];
+  if (direct && direct.lat != null && direct.lng != null) return { lat: direct.lat, lng: direct.lng };
+  const aka = Object.values(TOWN).find((t) => (t.aka || []).some((a) => String(a).toLowerCase() === name));
+  if (aka && aka.lat != null && aka.lng != null) return { lat: aka.lat, lng: aka.lng };
+  return null;
+}
+function milesBetween(a, b) {
+  const A = townCoords(a), B = townCoords(b);
+  if (!A || !B) return null;
+  const rad = (d) => d * Math.PI / 180;
+  const dLat = rad(B.lat - A.lat), dLng = rad(B.lng - A.lng);
+  const h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(A.lat)) * Math.cos(rad(B.lat)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  return 3959 * 2 * Math.asin(Math.sqrt(h));
+}
+/* Similar homes, v11, Nov 11, 2026: within 30 miles of the home and
+   within 30 percent of its price first. If fewer than 3 qualify, widen
+   the price band to 50 percent before widening distance, then allow up
+   to 60 miles only to reach 3, and only those homes are marked with
+   their distance. Never show a random far home. Items keep their
+   distance in _distMi and their tier in _tier for the section note.
+   list is an array of objects with priceNum and city fields. */
+function nearbySimilar(base, list) {
+  const basePrice = base.priceNum || base.price || 0;
+  if (!base || !basePrice) return [];
+  const priceOf = (o) => o.priceNum || o.price || 0;
+  const scored = list.filter((o) => o !== base && priceOf(o) > 0).map((o) => {
+    const dist = milesBetween(base.city, o.city);
+    const pr = Math.abs(priceOf(o) - basePrice) / basePrice;
+    return { o, dist, pr };
+  });
+  const pick = (maxPrice, maxDist) => scored.filter((x) => x.dist != null && x.dist <= maxDist && x.pr <= maxPrice)
+    .sort((a, b) => (a.dist - b.dist) || (a.pr - b.pr));
+  let tier = pick(0.30, 30), tierName = '30 miles, within 30 percent of the price';
+  if (tier.length < 3) { const t2 = pick(0.50, 30); if (t2.length > tier.length) { tier = t2; tierName = '30 miles, within 50 percent of the price'; } }
+  if (tier.length < 3) { const t3 = pick(0.50, 60); if (t3.length > tier.length) { tier = t3; tierName = '60 miles, within 50 percent of the price'; } }
+  return tier.slice(0, 12).map((x) => { x.o._distMi = Math.round(x.dist); x.o._tier = tierName; return x.o; });
+}
+
 /* ===== Visitor and client code ===== */
 let CLIENT = String(store.get('dp-client', '') || '');
 function clientName() {
@@ -669,8 +726,15 @@ document.addEventListener('click', (e) => {
     go('alerts');
     return;
   }
+  const lc = e.target.closest('[data-loc]');
+  if (lc) { setLocCity(lc.dataset.loc || null); if (typeof render === 'function') render(CURRENT, true); return; }
   const pl = e.target.closest('[data-place]');
-  if (pl) { choosePlace(pl.dataset.place); return; }
+  if (pl) {
+    // Home page only, v11: a city tile filters the home page lists to
+    // that area for this visit, instead of opening the tab chooser.
+    if (typeof CURRENT !== 'undefined' && CURRENT === 'home') { setLocCity(pl.dataset.place || null); if (typeof render === 'function') render('home', true); const el = document.getElementById('location'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    choosePlace(pl.dataset.place); return;
+  }
   const fk = e.target.closest('[data-finder-kind]');
   if (fk) { Object.assign(sub('finder', FINDER_DEFAULTS), { kind: fk.dataset.finderKind }); go('finder', true); return; }
   const sk = e.target.closest('[data-skip-to]');

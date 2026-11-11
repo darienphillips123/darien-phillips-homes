@@ -10,8 +10,10 @@
    Custom Portal is a real Unsplash photo of a modern home with a
    pool, not the AI screen image, Shop by Payment is the digital-screen
    image with Darien as the helper in a black suit, looking at the
-   screen, Cart is the Dream Home Shopping in the Suburbs image, a man
-   pushing a shopping cart full of miniature houses, Assumable is
+   screen, Cart is the Dream Home Shopping in the Suburbs image, v11
+   Nov 11, 2026: a Caucasian dad and an Asian mom with their two kids,
+   a girl and a boy, pushing a shopping cart full of miniature houses
+   down a sunny suburban street, Assumable is
    Assumable Home 2 as its header only, and ADU is a stock modern home
    with a backyard from Unsplash, not Ridge Park and not a Home hero
    slide. To use a real tour-home photo later, add it to img/ as
@@ -48,7 +50,7 @@ const PHOTOS = {
   about: { pos: '50% 62%', by: 'Get Lost Mike', id: '6267516', site: 'pexels', src: 'https://images.pexels.com/photos/6267516/pexels-photo-6267516.jpeg?auto=compress&cs=tinysrgb' },
   alerts: { pos: '50% 50%', by: 'Roger Starnes Sr', id: 'LUdiEvMAyQ8' },
   adu: { pos: '50% 50%', aiNote: 'Stock photo, modern home with a backyard, Unsplash. Not a real ADU, not a home Darien toured.' },
-  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping in the Suburbs, not a real photo, not a real home. A man pushes a shopping cart full of miniature houses down a suburban street, pointing at a modern home. Cart tab header only.' },
+  cart: { pos: '50% 50%', ai: true, aiNote: 'AI-generated image, ChatGPT, Dream Home Shopping in the Suburbs, not a real photo, not a real home. A Caucasian dad and an Asian mom with their two kids, a girl and a boy, push a shopping cart full of miniature houses down a sunny suburban street. Cart tab header only.' },
   /* Headers, Nov 10, 2026, Darien's direction: one unique header photo
      per tab, top only, no header image used twice. Finder is the keys
      photo, Darien handing keys to a couple. Custom Portal is now a

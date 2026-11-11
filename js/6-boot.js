@@ -364,8 +364,9 @@ function render(page, keep) {
   if (page === 'home') {
     const sc = document.createElement('button');
     sc.type = 'button'; sc.className = 'hero-scroll';
+    sc.setAttribute('aria-label', 'Scroll to how Darien can help you');
     sc.innerHTML = 'SCROLL<span aria-hidden="true">↓</span>';
-    sc.addEventListener('click', () => { const t = document.getElementById('toured'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    sc.addEventListener('click', () => { const t = document.getElementById('help') || document.getElementById('toured'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('hero').appendChild(sc);
     startHeroSlideshow();
   }

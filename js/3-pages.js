@@ -67,7 +67,7 @@ def('home', {
   ctas: () => '<button type="button" class="btn btn-pa" data-go="finder">Find your home</button><button type="button" class="hero-quiet" data-go="search">Search every home</button>',
   html() {
     const tiles = Object.keys(TILE_TEXT).map((k) => '<button type="button" class="tile" data-go="' + k + '" style="--tc:' + PAGES[k].color + '">' + thumbBox(k) + '<div class="body"><b>' + esc(PAGES[k].tileTitle || PAGES[k].nav) + '</b><span>' + esc(TILE_TEXT[k]) + '</span></div></button>').join('');
-    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + helpHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() + touredMarqueeHtml() +
+    return '<section class="blk g-start"><div class="wrap"><button type="button" class="panel g-banner" data-go="guide"><span class="g-banner-k">New to buying a home?</span><b>Start with the beginner\'s guide</b><span>Every step from pre-qualification to closing, what EMD, escrow and closing costs mean, and a chart of the whole process.</span><span class="g-banner-go">Read the guide →</span></button></div></section>' + helpHtml() + locationBarHtml() + '<section class="blk" id="tiles"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Start here</p><h2>What are you looking for?</h2></div></div><div class="tiles">' + tiles + '</div></div></section>' + touredHtml() + touredMarqueeHtml() +
       sellerHtml() + '<section class="blk"><div class="wrap"><div class="shead"><div><h2>Popular places</h2><p>Pick a town to see assumable homes, new builds, $0-down options and homes by payment there.</p></div></div>' +
       '<div class="places">' + POPULAR.map((n) => '<button type="button" class="chip" data-place="' + esc(n) + '">' + esc(n) + '</button>').join('') + '</div></div></section>' +
       '<section class="blk"><div class="wrap"><div class="statrow">' +
@@ -138,7 +138,7 @@ const TOURED_CUSTOM = [
   { key: 't:oak-rock-folsom', title: '4-bedroom home in Folsom', addr: '117 Oak Rock Cir, Folsom', price: '$1,040,000', priceNum: 1040000, beds: 4, baths: 2.5, sqft: 2657, facts: '4 bd · 2.5 ba · 2,657 sq ft · 0.39 acre', hook: 'Extensively remodeled single story in American River Canyon.', city: 'Folsom, CA', z: 'https://www.zillow.com/homedetails/117-Oak-Rock-Cir-Folsom-CA-95630/25988487_zpid/' },
   { key: 'q:shawood-at-folsom-4681-dehone-circle', title: 'Hazel home in Folsom', addr: '4681 Dehone Circle, Folsom', price: '$1,797,888', priceNum: 1797888, beds: 5, baths: 5.5, sqft: 4346, facts: '5 bd · 5.5 ba · 4,346 sq ft', hook: 'SHAWOOD at Folsom, Homesite 52. Move-in ready, est. Nov 2026.', city: 'Folsom, CA', page: 'shawood-at-folsom', pageLabel: 'See SHAWOOD at Folsom' },
   { key: 't:carlsberg-835-ridgeline-dr', title: 'Carlsberg home in Lincoln', addr: '835 Ridgeline Dr, Lincoln', price: '$1,345,000', priceNum: 1345000, beds: 4, baths: 4.5, sqft: 3328, facts: '4 bd · 4.5 ba · 3,328 sq ft · 1 story', hook: 'One-story Carlsberg at Ridgeline at Bickford, ready in December.', city: 'Lincoln, CA', page: 'ridgeline-at-bickford-ranch', pageLabel: 'See Ridgeline at Bickford' },
-  { key: 't:brady-modesto', title: '5-bedroom home in Modesto', addr: '829 Brady Ave, Modesto', price: '$1,299,950', priceNum: 1299950, beds: 5, baths: 3.5, sqft: 3150, facts: '5 bd · 3 full + 1 half ba · 3,150 sq ft · 10,794 sq ft lot', hook: 'Hyper modern new build, built 2026, with a detached ADU about 450 sq ft and paid solar. Tour filmed Nov 9, 2026, reel link to be added.', city: 'Modesto, CA', z: zillowFor('829 Brady Ave', 'Modesto', '95354') }
+  { key: 't:brady-modesto', title: '5-bedroom home in Modesto', addr: '829 Brady Ave, Modesto', price: '$1,299,950', priceNum: 1299950, beds: 5, baths: 3.5, sqft: 3150, facts: '5 bd · 3 full + 1 half ba · 3,150 sq ft · 10,794 sq ft lot', hook: 'Hyper modern new build, built 2026, with a detached ADU about 450 sq ft and paid solar. Tour filmed Nov 9, 2026.', city: 'Modesto, CA', z: zillowFor('829 Brady Ave', 'Modesto', '95354') }
 ];
 /* ===== Toured cards: real photo + Darien's tour video, side by side =====
    Photos were visually checked in the workspace on Nov 7, 2026, and the
@@ -170,7 +170,7 @@ const TOURED_MEDIA = {
   't:oak-rock-folsom': { photo: 'https://pi.movoto.com/p/102/226095956_0_mu6iZv_p.webp', credit: 'Aerial photo from the prior listing of this home', video: 'https://www.instagram.com/reel/DfKiQROyqLb/embed/', watch: 'https://www.instagram.com/reel/DfKiQROyqLb/', plat: 'Instagram' },
   'q:shawood-at-folsom-4681-dehone-circle': { photo: 'https://shawood.com/wp-content/uploads/2025/03/SHAWOOD-at-Folsom-Hazel-Web-1-scaled.jpg', credit: 'Builder photo, SHAWOOD', video: 'https://www.tiktok.com/embed/v2/7705246029641157902', watch: 'https://www.tiktok.com/@realtordarien/video/7705246029641157902', plat: 'TikTok' },
   't:carlsberg-835-ridgeline-dr': { photo: 'https://cdn.tollbrothers.com/communities/14457/plans/265600/exteriors-resized/CLSBG_MODF_CA-SAC_3FE_1_920.jpg', credit: 'Builder photo, Toll Brothers, Modern Farmhouse elevation', video: 'https://www.tiktok.com/embed/v2/7704918374584732941', watch: 'https://www.tiktok.com/@realtordarien/video/7704918374584732941', plat: 'TikTok' },
-  't:brady-modesto': { photo: 'https://ph.cincmedia.com/casacra/57fb251bbf2f334c015617f8a3aec649.jpg?width=1024', credit: 'REAL PHOTO, Homes of Greater Sacramento IDX, Image 38, front view, dusk, confirmed by Darien Nov 9, 2026', video: '', watch: '', plat: 'Instagram', tourNote: 'Tour filmed Nov 9, 2026, reel link to be added' }
+  't:brady-modesto': { photo: 'https://ph.cincmedia.com/casacra/57fb251bbf2f334c015617f8a3aec649.jpg?width=1024', credit: 'REAL PHOTO, Homes of Greater Sacramento IDX, Image 38, front view, dusk, confirmed by Darien Nov 9, 2026', video: '', watch: '', plat: 'Instagram', tourNote: 'Watch the tour on Instagram, TikTok or Facebook, links below', tourLinks: [['Instagram', 'https://www.instagram.com/p/DfiRKrTPFNh/'], ['TikTok', 'https://www.tiktok.com/@realtordarien/video/7706285147615726862'], ['Facebook', 'https://www.facebook.com/reel/1177862484565559/']] }
 };
 /* The video cell shows the home photo as its poster, with a big play
    button and no profile picture. There is no embedded player on the
@@ -193,7 +193,7 @@ function touredVideoCell(m, poster) {
   }
   const nav = photos.length > 1 ? '<div class="photo-nav"><button type="button" data-photo-prev>Prev photo</button><span data-photo-count>Photo 1 of ' + photos.length + (labels[0] ? ', ' + esc(labels[0]) : '') + '</span><button type="button" data-photo-next>Next photo</button></div>' : '';
   const posterHtml = '<img src="' + esc(photos[0]) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-tour-photo>';
-  const play = m.watch ? '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(plat) + '</span>' : '<span class="lux-play">' + esc(m.tourNote || 'Tour filmed Nov 9, 2026, reel link to be added') + '</span>';
+  const play = m.watch ? '<span class="lux-play"><span aria-hidden="true">▶</span> Watch the tour on ' + esc(plat) + '</span>' : '<span class="lux-play">' + esc(m.tourNote || 'Tour filmed Nov 9, 2026') + '</span>';
   const posterLink = m.watch
     ? '<a class="lux-video-poster" href="' + esc(m.watch) + '" target="_blank" rel="noopener" aria-label="Watch Darien\'s tour on ' + esc(plat) + ', opens in a new tab">' + posterHtml + play + '</a>'
     : '<div class="lux-video-poster">' + posterHtml + play + '</div>';
@@ -218,7 +218,10 @@ document.addEventListener('click', (e) => {
   const countEl = cell.querySelector('[data-photo-count]');
   if (countEl) countEl.textContent = 'Photo ' + (idx + 1) + ' of ' + imgs.length + (labels[idx] ? ', ' + labels[idx] : '');
 });
-function touredCredit(m) { return '<p class="note">' + esc(m.credit) + (m.watch ? '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>' : '. ' + esc(m.tourNote || 'Tour filmed Nov 9, 2026, reel link to be added')) + '.</p>'; }
+function touredCredit(m) {
+  const links = (m.tourLinks && m.tourLinks.length) ? '<p class="note">Watch the tour: ' + m.tourLinks.map(([label, url]) => '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(label) + '</a>').join(' · ') + '</p>' : '';
+  return '<p class="note">' + esc(m.credit) + (m.watch ? '. Video: <a href="' + esc(m.watch) + '" target="_blank" rel="noopener">Watch Darien\'s tour on ' + esc(m.plat.split(',')[0]) + '</a>' : '. ' + esc(m.tourNote || 'Tour filmed Nov 9, 2026')) + '.</p>' + links;
+}
 /* A tap on a tour poster opens the reel in a new tab. The click is still
    tracked, best effort, so Darien can see which tours get watched. */
 document.addEventListener('click', (e) => {
@@ -315,27 +318,35 @@ function touredSimList() {
   TOURED_CUSTOM.forEach(pushCustom);
   return list;
 }
+/* v11, Nov 11, 2026: within 30 miles and within 30 percent of the
+   price first, widening the price band to 50 percent before widening
+   distance, never a random far home. See nearbySimilar in
+   js/1-core.js. Distance comes from the towns already in data.json,
+   so a home whose city has no lat/lng on file cannot be placed and
+   is left out rather than guessed. If the visitor picked a location
+   on the home page, similar homes stay in that area only. */
 function touredSimilarFor(entry) {
-  const scored = touredSimList().filter((o) => o.id !== entry.id).map((o) => {
-    let s = 0;
-    if (o.city && entry.city && o.city === entry.city) s += 3;
-    const pr = entry.priceNum ? Math.abs(o.priceNum - entry.priceNum) / entry.priceNum : 1;
-    if (pr <= 0.25) s += 2; else if (pr <= 0.5) s += 1;
-    if (Math.abs(o.beds - entry.beds) <= 1) s += 1;
-    if (entry.sqft && Math.abs(o.sqft - entry.sqft) / entry.sqft <= 0.25) s += 1;
-    return { o, s };
-  }).sort((a, b) => b.s - a.s).slice(0, 3);
-  return scored.map((x) => x.o);
+  const loc = locCity();
+  let pool = touredSimList().filter((o) => o.id !== entry.id);
+  // A picked location keeps similar homes in that area: within 30
+  // miles of the picked city, not only homes in that exact city, so
+  // a Modesto pick still shows Stockton homes about 22 miles away
+  // instead of an empty panel when only one toured home is in Modesto.
+  if (loc) pool = pool.filter((o) => { const d = milesBetween(loc, o.city); return d == null ? cityNameOf(o.city) === cityNameOf(loc) : d <= 30; });
+  const near = nearbySimilar(entry, pool);
+  near.sort((a, b) => (a._distMi - b._distMi) || (Math.abs(a.beds - entry.beds) - Math.abs(b.beds - entry.beds)));
+  return near.slice(0, 3);
 }
 function touredSimilarHtml(entry) {
-  const sims = touredSimilarFor(entry).filter((o) => o.img);
-  if (!sims.length) return '<p class="note">No similar toured home with a photo on file yet.</p>';
-  return '<div class="similar-grid">' + sims.map((o) => {
-    const img = o.img;
-    const tag = o.imgTag;
+  const sims = touredSimilarFor(entry);
+  if (!sims.length) return '<p class="note">No similar toured home within 30 miles in this price range yet' + (locCity() ? ' in ' + esc(locCity()) : '') + '.</p>';
+  const tier = sims[0]._tier || '30 miles, within 30 percent of the price';
+  return '<p class="note">Within ' + esc(tier) + ' of ' + esc(cityNameOf(entry.city)) + '. Distances are from the towns on file.</p><div class="similar-grid">' + sims.map((o) => {
+    const img = o.img || TOUR_STOCK_IMG;
+    const tag = o.img ? o.imgTag : 'STOCK PHOTO, not this home';
     return '<article class="similar-card">' +
       '<img src="' + esc(img) + '" alt="' + esc(tag + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
-      '<div><span class="price">' + esc(o.price) + '</span><br><b>' + esc(o.title) + '</b><br>' + esc(o.city + ', ' + o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') +
+      '<div><span class="price">' + esc(o.price) + '</span><br><b>' + esc(o.title) + '</b><br>' + esc(o.city + ', ' + o.beds + ' bd, ' + o.baths + ' ba, ' + comma(o.sqft) + ' sq ft') + (o._distMi != null ? '<br><span class="note">About ' + o._distMi + ' miles away</span>' : '') +
       '<br><span class="note">' + esc(tag) + '</span><br>' + details(o.info) + '</div></article>';
   }).join('') + '</div>';
 }
@@ -347,7 +358,7 @@ document.addEventListener('click', (e) => {
   if (!panel.dataset.built) {
     const entry = touredSimList().find((x) => x.id === b.dataset.touredSimilar);
     if (!entry) return;
-    panel.innerHTML = '<h4>Homes like this</h4><p class="note">Similar by city, price, beds and size, from the toured homes on this page only. No prices or facts are invented.</p>' + touredSimilarHtml(entry);
+    panel.innerHTML = '<h4>Homes like this</h4><p class="note">Homes within 30 miles, in a similar price range, from the toured homes on this page only. No prices or facts are invented.</p>' + touredSimilarHtml(entry);
     panel.dataset.built = '1';
   }
   panel.hidden = !panel.hidden;
@@ -358,8 +369,29 @@ document.addEventListener('click', (e) => {
    strip is full width, not in a box, moves slowly left, loops to the
    other side, pauses on hover, and each card has a photo, price,
    city, beds, baths, sq ft, Click to get the details and Add to cart. */
+/* ===== Where are you looking, v11, Nov 11, 2026 =====
+   Session only, see locCity in js/1-core.js. Cities are drawn from
+   the toured homes on file first, then the other cities Darien named.
+   Picking a city filters Homes I toured, the marquee, the photo strip
+   and similar homes to that area only. All areas clears it. */
+function locationCities() {
+  const out = [];
+  touredSimList().map((o) => cityNameOf(o.city)).concat(['Modesto', 'Folsom', 'Roseville', 'Sacramento', 'Rocklin', 'Lincoln', 'Loomis', 'El Dorado Hills', 'Stockton', 'Galt']).forEach((n) => { if (n && !out.includes(n)) out.push(n); });
+  return out;
+}
+function locationBarHtml() {
+  const cur = locCity();
+  return '<section class="blk" id="location"><div class="wrap"><div class="panel" style="display:grid;gap:10px"><div><p class="mono eyebrow">Where are you looking?</p><h2 style="font-size:1.25rem">Pick a city, see homes there only</h2><p class="note">This filters the Homes I toured list, the scrolling strip and similar homes below, for this visit only. Pick All areas to see everything again.</p></div>' +
+    '<div class="chips" role="group" aria-label="City">' + '<button type="button" class="chip" data-loc="" aria-pressed="' + (!cur) + '">All areas</button>' + locationCities().map((n) => '<button type="button" class="chip" data-loc="' + esc(n) + '" aria-pressed="' + (cur === n) + '">' + esc(n) + '</button>').join('') + '</div>' +
+    (cur ? '<p class="note">Showing homes in ' + esc(cur) + ' only. <button type="button" class="linkbtn" data-loc="">Show all areas</button></p>' : '') +
+    '</div></div></section>';
+}
+function locFiltered(list) {
+  const cur = locCity();
+  return cur ? list.filter((o) => cityNameOf(o.city) === cityNameOf(cur)) : list;
+}
 function touredMarqueeHtml() {
-  const list = touredSimList().filter((o) => o.img);
+  const list = locFiltered(touredSimList().filter((o) => o.img));
   if (!list.length) return '';
   const card = (o) => '<article class="card marquee-card">' +
     '<img src="' + esc(o.img) + '" alt="' + esc(o.imgTag + ', ' + o.title) + '" loading="lazy" referrerpolicy="no-referrer">' +
@@ -377,7 +409,7 @@ function touredMarqueeHtml() {
    shown with a stock or AI photo passed off as the home. */
 function touredStripHtml() {
   if (typeof touredSimList !== 'function') return '';
-  const list = touredSimList().filter((o) => o.img).slice(0, 6);
+  const list = locFiltered(touredSimList().filter((o) => o.img)).slice(0, 6);
   if (!list.length) return '';
   return '<section class="blk"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, with photos</h2><p>Every home here has a real photo, price, city, beds, baths and sq ft. Tap Click to get the details for the full rundown, or Add to cart to save it.</p></div></div>' +
     '<div class="cards">' + list.map((o) => '<article class="card">' +
@@ -397,8 +429,8 @@ function touredHtml() {
   const customByKey = {};
   TOURED_CUSTOM.forEach((t) => { customByKey[t.key] = t; });
   const items = [];
-  const addProp = (key, cartKey) => { const p = PROP_BY[key]; if (p) items.push(touredPropCard(p, cartKey)); };
-  const addCustom = (key) => { const t = customByKey[key]; if (t) items.push(touredCustomCard(t)); };
+  const addProp = (key, cartKey) => { const p = PROP_BY[key]; if (p) items.push({ city: p.city, html: touredPropCard(p, cartKey) }); };
+  const addCustom = (key) => { const t = customByKey[key]; if (t) items.push({ city: t.city, html: touredCustomCard(t) }); };
   // Traction order, Nov 9, 2026: Ridge Park first, then Cornwall, then
   // the rest in their existing order, with BRADY last. Only one
   // Carlsberg card is kept, 835 Ridgeline Dr, Dec 2026 move-in.
@@ -413,9 +445,12 @@ function touredHtml() {
   addCustom('t:carlsberg-835-ridgeline-dr');
   addProp('rio', 'l:rio');
   addCustom('t:brady-modesto');
+  const loc = locCity();
+  const shown = loc ? items.filter((i) => cityNameOf(i.city) === cityNameOf(loc)) : items;
+  if (!shown.length) return '<section class="blk" id="toured"><div class="wrap"><div class="shead" data-grow><div><p class="mono eyebrow">Homes I toured</p><h2>No toured homes in ' + esc(loc) + ' yet</h2><p>Darien has not filmed a tour in ' + esc(loc) + ' yet. Pick another city above, or show all areas to see every toured home.</p></div></div><div class="actions"><button type="button" class="btn btn-pa" data-loc="">Show all areas</button></div></div></section>';
   if (!items.length) return '';
-  return '<section class="blk" id="toured"><div class="wrap"><div class="shead" data-grow><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market, except BRADY, toured Nov 9, 2026. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here. Only one Carlsberg card is kept, 835 Ridgeline Dr.</p></div></div>' +
-    '<div class="lux-list">' + items.join('') + '</div></div></section>';
+  return '<section class="blk" id="toured"><div class="wrap"><div class="shead" data-grow><div><p class="mono eyebrow">Homes I toured</p><h2>Homes I toured, still for sale' + (loc ? ' in ' + esc(loc) : '') + '</h2><p>Every home here was checked on Nov 7, 2026 and is still on the market, except BRADY, toured Nov 9, 2026. Prices and status change, so ask Darien to confirm before you visit. Homes I toured that went pending or sold since filming are not listed here. Only one Carlsberg card is kept, 835 Ridgeline Dr.</p></div></div>' +
+    '<div class="lux-list">' + shown.map((i) => i.html).join('') + '</div></div></section>';
 }
 
 /* ===== Assumable homes, v5, Nov 9, 2026 =====

@@ -353,42 +353,60 @@ function unlockedHtml(p) {
       '<div class="optlist">' + homeOptions(info, m.name) + cartBtn(cartKeyForPage(p), propTitle(p, true), propPrice(p)) + '<button type="button" class="btn btn-line" data-jump="similar">Find similar homes</button>' + (!TRACKER ? '<a class="btn btn-line" href="' + esc('mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent('About ' + info.h) + '&body=' + encodeURIComponent(note)) + '">Email Darien about this home</a>' : '') + '</div>' +
       '<p class="fine">Not ' + esc(first) + '? <button type="button" class="linkbtn" id="pf-switch">Use different info</button></p></div></div>';
 }
-/* ===== Homes like this one: close in price, same town first, then the same county ===== */
+/* ===== Homes like this one: within 30 miles and in a similar price range, v11, Nov 11, 2026 =====
+   Same rule as the toured Homes like this: 30 miles and within 30
+   percent of the price first, widening the price band to 50 percent
+   before widening distance, never a random far home. Distance comes
+   from the towns already in data.json, so a home whose city has no
+   lat/lng on file cannot be placed and is left out rather than
+   guessed. Every similar card has a photo: the home's own photo
+   first, otherwise a labelled stock photo, never a grey placeholder. */
 const SIM_STEP = 6;
 let simShown = SIM_STEP, simAuto = 0, jumpAfter = '';
+function similarPhotoFor(p) {
+  if (p.img && /^https:\/\//i.test(p.img)) return { src: p.img, tag: 'Listing photo' };
+  const m = (typeof TOURED_MEDIA !== 'undefined') ? TOURED_MEDIA[p.key] : null;
+  if (m && (m.photo || (m.photos && m.photos[0]))) return { src: m.photo || m.photos[0], tag: m.credit || 'Tour photo' };
+  return { src: TOUR_STOCK_IMG, tag: 'STOCK PHOTO, not this home' };
+}
+function similarTeaserCard(p) {
+  const ph = similarPhotoFor(p);
+  return '<a class="card teaser" href="#p/' + esc(p.key) + '"><div class="head"><span class="pill ' + (p.kind === 'community' || p.kind === 'stockton' ? 'pa' : p.kind === 'listing' ? 'ok' : 'fha') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + (toursFor(commOf(p)).length ? '<span class="pill ok">▶ Video tour</span>' : '') + '</div>' +
+    '<img class="card-photo" src="' + esc(ph.src) + '" alt="' + esc(ph.tag + ', ' + propTitle(p, false)) + '" loading="lazy" referrerpolicy="no-referrer">' +
+    '<h3>' + esc(propTitle(p, signedIn())) + '</h3>' +
+    '<p class="note">' + esc(ph.tag) + (p._distMi != null ? ' · About ' + p._distMi + ' miles away' : '') + '</p><p class="note">Price, facts, photos and links are behind one tap.</p><span class="btn btn-pa btn-sm">Click to get the details</span> <span class="go">See this home →</span></a>';
+}
 function similarProps(p) {
   const home = p.kind !== 'community';
+  const pool = PROPS.filter((x) => x !== p && (x.kind !== 'community') === home && x.price && p.price);
+  const near = nearbySimilar(p, pool);
   const beds = parseFloat(p.beds) || 0;
-  return PROPS.filter((x) => x !== p && (x.kind !== 'community') === home && x.price && p.price && (x.city === p.city || (x.county && x.county === p.county)))
-    .map((x) => {
-      const d = Math.abs(x.price - p.price) / p.price;
-      const bd = beds && parseFloat(x.beds) ? Math.abs(parseFloat(x.beds) - beds) : 0;
-      return { x, d, s: (x.city === p.city ? 0 : 1) + d * 4 + (bd >= 2 ? 0.5 : 0) + (x.page === p.page ? 0 : 0.3) };
-    })
-    .filter((o) => o.d <= 0.35).sort((a, b) => a.s - b.s).map((o) => o.x);
+  near.sort((a, b) => (a._distMi - b._distMi) || (beds && parseFloat(a.beds) && parseFloat(b.beds) ? Math.abs(parseFloat(a.beds) - beds) - Math.abs(parseFloat(b.beds) - beds) : 0));
+  return near;
 }
 // The other kind nearby: new-home communities for a resale home, homes for sale for a community
 function nearbyOther(p) {
   const home = p.kind !== 'community';
-  return PROPS.filter((x) => (x.kind === 'community') === home && x.price && p.price && (x.city === p.city || (x.county && x.county === p.county)) && Math.abs(x.price - p.price) / p.price <= 0.25)
-    .sort((a, b) => (a.city === p.city ? 0 : 1) - (b.city === p.city ? 0 : 1) || Math.abs(a.price - p.price) - Math.abs(b.price - p.price)).slice(0, 3);
+  const pool = PROPS.filter((x) => (x.kind === 'community') === home && x.price && p.price);
+  return nearbySimilar(p, pool).slice(0, 3);
 }
 function simListHtml(list) {
-  return list.slice(0, simShown).map((x) => teaserCard(x)).join('');
+  return list.slice(0, simShown).map((x) => similarTeaserCard(x)).join('');
 }
 function similarHtml(p) {
   const list = similarProps(p);
   const other = nearbyOther(p);
-  const lo = short(Math.max(0, p.price * 0.8)), hi = short(p.price * 1.2);
+  const tier = list.length && list[0]._tier ? list[0]._tier : '30 miles, within 30 percent of the price';
+  const lo = short(Math.max(0, p.price * 0.7)), hi = short(p.price * 1.3);
   return '<section class="blk" id="similar"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes like this</p>' +
       '<h2>' + (p.kind === 'community' ? 'Similar new-home communities' : 'More homes like this one') + '</h2>' +
-      '<p>Close in price (about ' + lo + ' to ' + hi + ') in ' + esc(p.city || 'the area') + (p.county ? ' and nearby ' + esc(p.county) + ' County' : '') + '. Tap one to see it.</p></div></div>' +
+      '<p>Within ' + esc(tier) + ' of ' + esc(p.city || 'the area') + ', about ' + lo + ' to ' + hi + '. Every home below has a photo. Tap one to see it.</p></div></div>' +
     (list.length ? '<div class="cards" id="sim-list">' + simListHtml(list) + '</div>' +
       '<div class="more-row"><button type="button" class="btn btn-line" id="sim-more"' + (list.length > simShown ? '' : ' hidden') + '>Show more homes like this</button></div>'
-      : '<div class="empty"><h3>No close matches on Darien\'s site right now</h3><p>Search the whole MLS below, or Darien can send them to you.</p></div>') +
+      : '<div class="empty"><h3>No close matches on Darien\'s site right now</h3><p>No home within 30 miles in this price range. Search the whole MLS below, or Darien can send them to you.</p></div>') +
     mlsLikeHtml(p) +
     (other.length ? '<div class="shead" style="margin-top:24px"><div><h2 style="font-size:1.3rem">' + (p.kind === 'community' ? 'Homes for sale nearby in this price range' : 'New-home communities nearby in this price range') + '</h2></div></div>' +
-      '<div class="cards">' + other.map((x) => teaserCard(x)).join('') + '</div>' : '') +
+      '<div class="cards">' + other.map((x) => similarTeaserCard(x)).join('') + '</div>' : '') +
     (p.page && p.page !== 'home' && NAV_ORDER.includes(p.page) ? '<div class="more-row"><button type="button" class="btn btn-line" data-go="' + p.page + '">See all ' + esc((PAGES[p.page].tileTitle || PAGES[p.page].nav).toLowerCase()) + '</button></div>' : '') +
     '</div></section>' + reachOutHtml(p);
 }
