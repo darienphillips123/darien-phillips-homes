@@ -140,13 +140,16 @@ function milesBetween(a, b) {
   const h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(A.lat)) * Math.cos(rad(B.lat)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
   return 3959 * 2 * Math.asin(Math.sqrt(h));
 }
-/* Similar homes, v11, Nov 11, 2026: within 30 miles of the home and
-   within 30 percent of its price first. If fewer than 3 qualify, widen
-   the price band to 50 percent before widening distance, then allow up
-   to 60 miles only to reach 3, and only those homes are marked with
-   their distance. Never show a random far home. Items keep their
-   distance in _distMi and their tier in _tier for the section note.
-   list is an array of objects with priceNum and city fields. */
+/* Similar homes, v11.1, Nov 11, 2026: within 30 miles of the home,
+   NEVER farther. Distance is a hard cap, it is never widened to
+   reach 3 homes. If fewer than 3 qualify, widen the price band only,
+   in steps: within 30 percent of the price, then 50, then 75, then
+   any price. If still fewer than 3 qualify at any price, show fewer,
+   do not fill the panel with a home over 30 miles away. Closest
+   distance first, then closest price. Items keep their distance in
+   _distMi, their tier in _tier and the price band in _tierPct for
+   the section note. list is an array of objects with priceNum and
+   city fields. */
 function nearbySimilar(base, list) {
   const basePrice = base.priceNum || base.price || 0;
   if (!base || !basePrice) return [];
@@ -156,12 +159,21 @@ function nearbySimilar(base, list) {
     const pr = Math.abs(priceOf(o) - basePrice) / basePrice;
     return { o, dist, pr };
   });
-  const pick = (maxPrice, maxDist) => scored.filter((x) => x.dist != null && x.dist <= maxDist && x.pr <= maxPrice)
+  const pick = (maxPrice) => scored.filter((x) => x.dist != null && x.dist <= 30 && x.pr <= maxPrice)
     .sort((a, b) => (a.dist - b.dist) || (a.pr - b.pr));
-  let tier = pick(0.30, 30), tierName = '30 miles, within 30 percent of the price';
-  if (tier.length < 3) { const t2 = pick(0.50, 30); if (t2.length > tier.length) { tier = t2; tierName = '30 miles, within 50 percent of the price'; } }
-  if (tier.length < 3) { const t3 = pick(0.50, 60); if (t3.length > tier.length) { tier = t3; tierName = '60 miles, within 50 percent of the price'; } }
-  return tier.slice(0, 12).map((x) => { x.o._distMi = Math.round(x.dist); x.o._tier = tierName; return x.o; });
+  const tiers = [
+    [0.30, '30 miles, within 30 percent of the price'],
+    [0.50, '30 miles, within 50 percent of the price'],
+    [0.75, '30 miles, within 75 percent of the price'],
+    [1.00, '30 miles, any price']
+  ];
+  let tier = [], tierName = tiers[0][1], tierPct = tiers[0][0];
+  for (const [pct, name] of tiers) {
+    const t = pick(pct);
+    if (t.length > tier.length) { tier = t; tierName = name; tierPct = pct; }
+    if (tier.length >= 3) break;
+  }
+  return tier.slice(0, 12).map((x) => { x.o._distMi = Math.round(x.dist); x.o._tier = tierName; x.o._tierPct = tierPct; return x.o; });
 }
 
 /* ===== Visitor and client code ===== */

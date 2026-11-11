@@ -353,32 +353,55 @@ function unlockedHtml(p) {
       '<div class="optlist">' + homeOptions(info, m.name) + cartBtn(cartKeyForPage(p), propTitle(p, true), propPrice(p)) + '<button type="button" class="btn btn-line" data-jump="similar">Find similar homes</button>' + (!TRACKER ? '<a class="btn btn-line" href="' + esc('mailto:darienphillips45@gmail.com?subject=' + encodeURIComponent('About ' + info.h) + '&body=' + encodeURIComponent(note)) + '">Email Darien about this home</a>' : '') + '</div>' +
       '<p class="fine">Not ' + esc(first) + '? <button type="button" class="linkbtn" id="pf-switch">Use different info</button></p></div></div>';
 }
-/* ===== Homes like this one: within 30 miles and in a similar price range, v11, Nov 11, 2026 =====
-   Same rule as the toured Homes like this: 30 miles and within 30
-   percent of the price first, widening the price band to 50 percent
-   before widening distance, never a random far home. Distance comes
-   from the towns already in data.json, so a home whose city has no
-   lat/lng on file cannot be placed and is left out rather than
-   guessed. Every similar card has a photo: the home's own photo
-   first, otherwise a labelled stock photo, never a grey placeholder. */
+/* ===== Homes like this one: within 30 miles and in a similar price range, v11.1, Nov 11, 2026 =====
+   Same rule as the toured Homes like this: 30 miles, NEVER farther,
+   and within 30 percent of the price first, widening the price band
+   to 50, then 75 percent, then any price, never the distance. If
+   fewer than 3 qualify, show fewer. Distance comes from the towns
+   already in data.json, so a home whose city has no lat/lng on file
+   cannot be placed and is left out rather than guessed. Toured homes
+   with no property page of their own, BRADY for example, are added
+   to the pool here so a detail page can show them: they carry their
+   real photo and their Zillow link, and the card links out to it.
+   Every similar card has a photo: the home's own photo first,
+   otherwise a labelled stock photo, never a grey placeholder. */
 const SIM_STEP = 6;
 let simShown = SIM_STEP, simAuto = 0, jumpAfter = '';
 function similarPhotoFor(p) {
-  if (p.img && /^https:\/\//i.test(p.img)) return { src: p.img, tag: 'Listing photo' };
+  if (p.img && /^https:\/\//i.test(p.img)) return { src: p.img, tag: p.imgTag || 'Listing photo' };
   const m = (typeof TOURED_MEDIA !== 'undefined') ? TOURED_MEDIA[p.key] : null;
   if (m && (m.photo || (m.photos && m.photos[0]))) return { src: m.photo || m.photos[0], tag: m.credit || 'Tour photo' };
   return { src: TOUR_STOCK_IMG, tag: 'STOCK PHOTO, not this home' };
 }
 function similarTeaserCard(p) {
   const ph = similarPhotoFor(p);
-  return '<a class="card teaser" href="#p/' + esc(p.key) + '"><div class="head"><span class="pill ' + (p.kind === 'community' || p.kind === 'stockton' ? 'pa' : p.kind === 'listing' ? 'ok' : 'fha') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + (toursFor(commOf(p)).length ? '<span class="pill ok">▶ Video tour</span>' : '') + '</div>' +
+  const toured = p.toured && p.touredLink;
+  const href = toured ? p.touredLink : '#p/' + esc(p.key);
+  const target = toured ? ' target="_blank" rel="noopener"' : '';
+  return '<a class="card teaser" href="' + esc(href) + '"' + target + '><div class="head"><span class="pill ' + (p.kind === 'community' || p.kind === 'stockton' ? 'pa' : p.kind === 'listing' ? 'ok' : 'fha') + '">' + esc(KIND_LABEL[p.kind]) + '</span>' + (toursFor(commOf(p)).length ? '<span class="pill ok">▶ Video tour</span>' : '') + '</div>' +
     '<img class="card-photo" src="' + esc(ph.src) + '" alt="' + esc(ph.tag + ', ' + propTitle(p, false)) + '" loading="lazy" referrerpolicy="no-referrer">' +
     '<h3>' + esc(propTitle(p, signedIn())) + '</h3>' +
-    '<p class="note">' + esc(ph.tag) + (p._distMi != null ? ' · About ' + p._distMi + ' miles away' : '') + '</p><p class="note">Price, facts, photos and links are behind one tap.</p><span class="btn btn-pa btn-sm">Click to get the details</span> <span class="go">See this home →</span></a>';
+    '<p class="note">' + esc(ph.tag) + (p._distMi != null ? ' · About ' + p._distMi + ' miles away' : '') + '</p><p class="note">' + (toured ? 'Tour home, details on Zillow.' : 'Price, facts, photos and links are behind one tap.') + '</p><span class="btn btn-pa btn-sm">' + (toured ? 'See this home' : 'Click to get the details') + '</span> <span class="go">See this home →</span></a>';
+}
+/* Toured homes with no property page, BRADY and the other toured
+   customs, as similar-pool entries: real photo, Zillow link, no
+   invented facts. Skipped when they have no photo or no link, so
+   every similar card still has a photo and a details link. */
+function touredSimilarPool(pool, baseKey) {
+  if (typeof touredSimList !== 'function') return;
+  touredSimList().forEach((t) => {
+    if (t.id === baseKey) return; // never list the home itself as similar to itself
+    if (pool.some((x) => x.key === t.id)) return;
+    if (!t.img || !(t.info && t.info.z)) return;
+    const city = cityNameOf(t.city);
+    const addr = String(t.info.h || t.title || '').replace(new RegExp(',\\s*' + city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i'), '');
+    pool.push({ key: t.id, toured: true, touredLink: t.info.z, kind: 'listing', page: 'home', addr, city, price: t.priceNum, priceNum: t.priceNum, beds: t.beds, baths: t.baths, sqft: t.sqft, img: t.img, imgTag: t.imgTag, hook: t.info.l || '' });
+  });
 }
 function similarProps(p) {
   const home = p.kind !== 'community';
   const pool = PROPS.filter((x) => x !== p && (x.kind !== 'community') === home && x.price && p.price);
+  if (home) touredSimilarPool(pool, p.key);
   const near = nearbySimilar(p, pool);
   const beds = parseFloat(p.beds) || 0;
   near.sort((a, b) => (a._distMi - b._distMi) || (beds && parseFloat(a.beds) && parseFloat(b.beds) ? Math.abs(parseFloat(a.beds) - beds) - Math.abs(parseFloat(b.beds) - beds) : 0));
@@ -397,10 +420,11 @@ function similarHtml(p) {
   const list = similarProps(p);
   const other = nearbyOther(p);
   const tier = list.length && list[0]._tier ? list[0]._tier : '30 miles, within 30 percent of the price';
-  const lo = short(Math.max(0, p.price * 0.7)), hi = short(p.price * 1.3);
+  const tierPct = list.length && list[0]._tierPct != null ? list[0]._tierPct : 0.30;
+  const range = tierPct >= 1 ? 'at any price' : 'about ' + short(Math.max(0, p.price * (1 - tierPct))) + ' to ' + short(p.price * (1 + tierPct));
   return '<section class="blk" id="similar"><div class="wrap"><div class="shead"><div><p class="mono eyebrow">Homes like this</p>' +
       '<h2>' + (p.kind === 'community' ? 'Similar new-home communities' : 'More homes like this one') + '</h2>' +
-      '<p>Within ' + esc(tier) + ' of ' + esc(p.city || 'the area') + ', about ' + lo + ' to ' + hi + '. Every home below has a photo. Tap one to see it.</p></div></div>' +
+      '<p>Within ' + esc(tier) + ' of ' + esc(p.city || 'the area') + ', ' + range + '. Every home below has a photo. Tap one to see it.</p></div></div>' +
     (list.length ? '<div class="cards" id="sim-list">' + simListHtml(list) + '</div>' +
       '<div class="more-row"><button type="button" class="btn btn-line" id="sim-more"' + (list.length > simShown ? '' : ' hidden') + '>Show more homes like this</button></div>'
       : '<div class="empty"><h3>No close matches on Darien\'s site right now</h3><p>No home within 30 miles in this price range. Search the whole MLS below, or Darien can send them to you.</p></div>') +

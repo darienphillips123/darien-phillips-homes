@@ -275,15 +275,17 @@ function touredCustomCard(t) {
 }
 /* ===== Homes like this, toured homes only =====
    Every toured card has a Homes like this button that opens a panel
-   with the top 3 similar homes from the toured list only, scored by
-   same city, price within 25 to 50 percent, beds within 1, and sq ft
-   within 25 percent. No facts are invented: every number comes from
-   the property record or the verified custom card. Each similar home
-   shows its photo, price, city, beds, baths and sq ft, plus a Click
-   to get the details button that reuses the existing details() flow,
-   details first and the agent question at the end, unchanged. BRADY
-   now has a verified real photo, so it shows that photo in the similar
-   card, labeled REAL PHOTO, never a stock photo passed off as the home. */
+   with similar homes from the toured list only, scored by
+   nearbySimilar: within 30 miles, never farther, closest first,
+   price band widened only to 50, then 75 percent, then any price.
+   If fewer than 3 qualify, show fewer. No facts are invented: every
+   number comes from the property record or the verified custom card.
+   Each similar home shows its photo, price, city, beds, baths and
+   sq ft, plus a Click to get the details button that reuses the
+   existing details() flow, details first and the agent question at
+   the end, unchanged. BRADY now has a verified real photo, so it
+   shows that photo in the similar card, labeled REAL PHOTO, never
+   a stock photo passed off as the home. */
 function touredSimList() {
   const list = [];
   const pushProp = (key, cartKey) => {
@@ -318,13 +320,14 @@ function touredSimList() {
   TOURED_CUSTOM.forEach(pushCustom);
   return list;
 }
-/* v11, Nov 11, 2026: within 30 miles and within 30 percent of the
-   price first, widening the price band to 50 percent before widening
-   distance, never a random far home. See nearbySimilar in
-   js/1-core.js. Distance comes from the towns already in data.json,
-   so a home whose city has no lat/lng on file cannot be placed and
-   is left out rather than guessed. If the visitor picked a location
-   on the home page, similar homes stay in that area only. */
+/* v11.1, Nov 11, 2026: within 30 miles, NEVER farther, and within
+   30 percent of the price first, widening the price band to 50,
+   then 75 percent, then any price, never the distance. If fewer
+   than 3 qualify, show fewer. See nearbySimilar in js/1-core.js.
+   Distance comes from the towns already in data.json, so a home
+   whose city has no lat/lng on file cannot be placed and is left
+   out rather than guessed. If the visitor picked a location on the
+   home page, similar homes stay in that area only. */
 function touredSimilarFor(entry) {
   const loc = locCity();
   let pool = touredSimList().filter((o) => o.id !== entry.id);
