@@ -58,29 +58,25 @@ __THEMES__
 * { box-sizing: border-box; }
 html { scroll-padding-top: 120px; }
 body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-/* Emerald and white granite background, v11.4, Nov 11, 2026. v11.3 tile
-   measured even overall but its main vein band ran diagonally
-   bottom-left to top-right, so the right side looked denser and bolder
-   in several sections and some veins were bold dark emerald. v11.4
-   rebuilds the tile so vein density is uniform left to right in every
-   horizontal band: thin emerald hairlines, each vein its own angle
-   around +/-45 degrees, crossing in both diagonal directions and
-   intersecting, spread evenly across the whole tile, no diagonal band,
-   no arrows, no geometric or diamond pattern, no regular grid, no
-   straight parallel lines. Seamless 1024x1024 tile in
-   img/granite-tile.jpg. Light mode, home page only. Cards keep solid
-   white backgrounds, and the whiter field keeps text on the backdrop
-   readable. */
-:root[data-page="home"][data-theme="light"] body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.4"); background-size: 1024px 1024px; background-repeat: repeat; }
-@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.4"); background-size: 1024px 1024px; background-repeat: repeat; } }
-/* Home page supporting text, v11.4, Nov 11, 2026. The green veins run
-   through the granite behind the home page, so every gray or muted
-   supporting line on it was hard to read. On the home page in light
-   mode only, all muted supporting text is now solid near-black
-   #111111, slightly heavier, while the section titles themselves are
-   untouched. This covers the intro line under every section heading,
-   the help lines above and below the options, the location and contact
-   notes, the card and tile captions, and the stat labels. */
+/* Emerald and white granite background, v11.5, Nov 11, 2026. Reverted
+   to the v11.3 tile at Darien's direction: the natural emerald streaks
+   crossing in both diagonal directions, mostly white, were good, and
+   the v11.4 thin programmatic hairlines were not. The v11.3 tile is
+   restored exactly (md5 17e92d0ec0987db8f415cb880afab10b), no veins
+   erased or repainted. Only the supporting text change from v11.4 is
+   kept. Seamless 1024x1024 tile in img/granite-tile.jpg. Light mode,
+   home page only. Cards keep solid white backgrounds. */
+:root[data-page="home"][data-theme="light"] body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.5"); background-size: 1024px 1024px; background-repeat: repeat; }
+@media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) body { background-color: #FBFCFB; background-image: url("img/granite-tile.jpg?v=11.5"); background-size: 1024px 1024px; background-repeat: repeat; } }
+/* Home page supporting text, v11.4, corrected v11.5, Nov 11, 2026. The
+   green veins run through the granite behind the home page, so every
+   gray or muted supporting line on it was hard to read. On the home
+   page in light mode only, all muted supporting text is now solid
+   near-black #111111, color only, no change to font weight, size, or
+   family, while the section titles themselves are untouched. This
+   covers the intro line under every section heading, the help lines
+   above and below the options, the location and contact notes, the
+   card and tile captions, and the stat labels. */
 :root[data-page="home"][data-theme="light"] { --muted: #111111; }
 @media (prefers-color-scheme: light) { :root[data-page="home"]:not([data-theme="dark"]) { --muted: #111111; } }
 :root[data-page="home"][data-theme="light"] .shead p,
@@ -94,7 +90,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--f-body); 
 :root[data-page="home"][data-theme="light"] .g-banner span,
 :root[data-page="home"][data-theme="light"] .stats3 span,
 :root[data-page="home"][data-theme="light"] .stats3 small,
-:root[data-page="home"][data-theme="light"] .stats3 .wide { color: #111111; font-weight: 500; }
+:root[data-page="home"][data-theme="light"] .stats3 .wide { color: #111111; }
 :root[data-page="home"][data-theme="light"] .price small { color: #111111; }
 @media (prefers-color-scheme: light) {
   :root[data-page="home"]:not([data-theme="dark"]) .shead p,
@@ -108,7 +104,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--f-body); 
   :root[data-page="home"]:not([data-theme="dark"]) .g-banner span,
   :root[data-page="home"]:not([data-theme="dark"]) .stats3 span,
   :root[data-page="home"]:not([data-theme="dark"]) .stats3 small,
-  :root[data-page="home"]:not([data-theme="dark"]) .stats3 .wide { color: #111111; font-weight: 500; }
+  :root[data-page="home"]:not([data-theme="dark"]) .stats3 .wide { color: #111111; }
   :root[data-page="home"]:not([data-theme="dark"]) .price small { color: #111111; }
 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--brand); }
